@@ -1,15 +1,40 @@
-# frontend
+# =========================
+# FRONTEND (React)
+# =========================
 frontend/node_modules/
 frontend/build/
+frontend/.env
 
-# backend (future)
+# =========================
+# BACKEND (Django/Python)
+# =========================
 backend/env/
 backend/venv/
 backend/__pycache__/
-*.pyc
-*.env
-db.sqlite3
+backend/db.sqlite3
+backend/*.log
+backend/.env
 
-# OS junk
+# Python compiled files
+*.pyc
+__pycache__/
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# =========================
+# OS / EDITOR JUNK
+# =========================
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
+
+# =========================
+# GENERAL
+# =========================
+*.log
+*.sqlite3
+*.swp
