@@ -1,8 +1,14 @@
-
-
+import AdminNavbar from "./components/AdminPanel/AdminNavbar/AdminNavbar";
+import AdminSidebar from "./components/AdminPanel/AdminSidebar/AdminSidebar";
 
 function App() {
-  return <h1>Book-E-Pedia Admin Panel</h1>;
+  return (
+    <div>
+      <AdminNavbar />
+      <AdminSidebar />
+      <h2>Admin Dashboard Coming Soon</h2>
+    </div>
+  );
 }
 
 export default App;
