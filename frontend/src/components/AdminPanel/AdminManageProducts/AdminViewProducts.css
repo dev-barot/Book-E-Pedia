@@ -1,0 +1,54 @@
+.admin-manage-products-container {
+    padding: 20px;
+  }
+  
+  .admin-manage-products-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .admin-manage-products-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .admin-manage-products-table th,
+  .admin-manage-products-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+  
+  .admin-manage-products-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .admin-manage-products-edit-btn,
+  .admin-manage-products-delete-btn {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+  }
+  
+  .admin-manage-products-edit-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .admin-manage-products-edit-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .admin-manage-products-delete-btn {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .admin-manage-products-delete-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  
