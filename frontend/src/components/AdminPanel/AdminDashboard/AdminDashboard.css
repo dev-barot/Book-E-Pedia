@@ -1,0 +1,177 @@
+/* ===============================
+   DASHBOARD MAIN CONTAINER
+================================ */
+
+.dashboard-main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: all 0.3s ease;
+  background: linear-gradient(to bottom, #c7e3f9, #e4f2fd);
+}
+
+/* ===============================
+   SIDEBAR SECTION
+================================ */
+
+.sidebar-main-section {
+  width: 100%;
+  visibility: visible;
+  transition: width 0.3s ease;
+}
+
+.sidebar-main-section.collapsed {
+  width: 0;
+}
+
+.sidebar-main-section .collapsed {
+  visibility: hidden;
+}
+
+/* ===============================
+   MAIN CONTENT
+================================ */
+
+.dashboard-main-content {
+  flex-grow: 1;
+  margin-top: 30px;
+  padding: 40px;
+  background: transparent !important;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  z-index: 999;
+}
+
+.dashboard-main-content p {
+  color: #233647;
+}
+
+/* When sidebar collapsed */
+.dashboard-main-container.collapsed .dashboard-main-content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 85% !important;
+}
+
+/* When sidebar expanded */
+.dashboard-main-container .dashboard-main-content {
+  margin-left: 22% !important;
+  width: calc(100% - 22%) !important;
+}
+
+/* ===============================
+   TOP NAVBAR
+================================ */
+
+.top-main-dashboard-navbar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  height: 65px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  color: #1f4e79;
+  box-shadow: 0 10px 25px rgba(31, 78, 121, 0.15);
+  z-index: 10;
+}
+
+.top-main-dashboard-navbar.collapsed {
+  margin-left: -10.5%;
+}
+
+.sidebar-toggler {
+  cursor: pointer;
+  font-size: 24px;
+  color: #1f4e79;
+}
+
+/* ===============================
+   DASHBOARD CARDS GRID
+================================ */
+
+.dashboard-main-content .cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 35px;
+  margin-top: 30px;
+}
+
+/* ===============================
+   DASHBOARD CARD STYLE
+================================ */
+
+.dashboard-main-content .dashboard-card {
+  background: #f4f9ff;
+  border-radius: 20px;
+  padding: 35px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(31, 78, 121, 0.08);
+}
+
+/* Top accent bar */
+.dashboard-main-content .dashboard-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #1f4e79, #2f6da3);
+}
+
+/* Hover effect */
+.dashboard-main-content .dashboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 55px rgba(31, 78, 121, 0.25);
+}
+
+/* Card title */
+.dashboard-main-content .dashboard-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #1f4e79;
+  font-weight: 600;
+}
+
+/* Card value / numbers */
+.dashboard-main-content .dashboard-card p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2f6da3;
+}
+
+/* ===============================
+   EXPAND / COLLAPSE ANIMATION
+================================ */
+
+.dashboard-main-content .dashboard-card-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.dashboard-main-content .dashboard-card.expanded .dashboard-card-content {
+  max-height: 140px;
+  margin-top: 15px;
+}
+
+/* Expand icon */
+.dashboard-main-content .expand-icon {
+  font-size: 1.3rem;
+  margin-top: 12px;
+  cursor: pointer;
+  color: #1f4e79;
+  transition: transform 0.3s ease;
+}
+
+.dashboard-main-content .dashboard-card.expanded .expand-icon {
+  transform: rotate(180deg);
+}
