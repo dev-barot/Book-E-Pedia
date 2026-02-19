@@ -1,0 +1,117 @@
+/* =====================================
+   CATEGORY PRODUCT SECTION - BLUE THEME
+===================================== */
+
+.cat-product-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 40px;
+
+    /* Slightly darker blue theme */
+    background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(31, 78, 121, 0.15);
+}
+
+/* TITLE */
+
+.cat-product-container h1 {
+    text-align: center;
+    color: #1f4e79;
+    margin-bottom: 40px;
+    font-weight: 700;
+    font-size: 42px;
+}
+
+/* GRID */
+
+.cat-product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+/* PRODUCT CARD */
+
+.cat-product {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    border-radius: 18px;
+    background: #f4f9ff;   /* soft blue white */
+    border: 1px solid #dbeaf7;
+
+    align-items: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 550px;
+}
+
+/* Hover */
+
+.cat-product:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(31, 78, 121, 0.2);
+}
+
+/* IMAGE */
+
+.cat-product img {
+    width: 160px;
+    height: 230px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+/* TEXT */
+
+.cat-product-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #233647;
+    text-align: center;
+    margin: 10px 0 5px;
+}
+
+.cat-author-name {
+    font-size: 15px;
+    color: #556877;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.cat-product-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f4e79;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.cat-product-description {
+    font-size: 14px;
+    color: #445b6e;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* BUTTON */
+
+.cat-product-add-to-cart {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: auto;
+    transition: 0.3s ease;
+}
+
+.cat-product-add-to-cart:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(31, 78, 121, 0.3);
+}
