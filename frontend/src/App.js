@@ -3,10 +3,26 @@ import AdminNavbar from "./components/AdminPanel/AdminNavbar/AdminNavbar";
 import AdminSidebar from "./components/AdminPanel/AdminSidebar/AdminSidebar";
 import AdminDashboard from "./components/AdminPanel/AdminDashboard/AdminDashboard";
 
+// Website Components
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/HomeScreen/Home';
+import AboutUs from './components/AboutUsScreen/AboutUs';
+import Categories from "./components/CategoryScreen/Category";
+import CategoryProducts from "./components/CategoryScreen/CategoryProducts";
+
 import Login from './components/LoginScreen/Login';
+
+// Customer Panel
+import CustomerRegisteration from './components/CustomerPanel/CustomerRegistration/CustomerRegisteration';
+import CustomerLogout from "./components/CustomerPanel/CustomerLogout/CustomerLogout";
+import CustomerDashboard from './components/CustomerPanel/CustomerDashboard/CustomerDashboard';
+import CustomerForgetPassword from './components/CustomerPanel/CustomerForgetPassword/CustomerForgetPassword';
+import CustomerProfile from './components/CustomerPanel/CustomerProfile/CustomerProfile';
+import CustomerOrders from './components/CustomerPanel/CustomerOrders/CustomerOrders';
+import SendOtp from './components/CustomerPanel/CustomerForgetPassword/SendOtp';
+import ResetPassword from './components/CustomerPanel/CustomerForgetPassword/ResetPassword';
+import CustomerHelpSupport from "./components/CustomerPanel/CustomerHelpSupport/CustomerHelpSupport";
 
 
 // Admin Panel
