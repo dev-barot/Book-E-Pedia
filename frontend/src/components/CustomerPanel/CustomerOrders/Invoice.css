@@ -1,0 +1,138 @@
+/* =====================================
+   INVOICE PAGE - BLUE THEME
+===================================== */
+
+.invoice {
+    background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+/* MAIN CONTAINER */
+
+.invoice-invoice-container {
+    background: #f4f9ff;
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+
+.invoice-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.invoice-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #1f4e79;
+    font-weight: 700;
+}
+
+/* DETAILS */
+
+.invoice-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.invoice-left,
+.invoice-right {
+    width: 48%;
+}
+
+.invoice-left p,
+.invoice-right p {
+    margin: 6px 0;
+    color: #445b6e;
+}
+
+/* TABLE */
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.invoice-table th,
+.invoice-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.invoice-table th {
+    background: #1f4e79;
+    color: white;
+    font-weight: 600;
+}
+
+.invoice-table td {
+    background: #ffffff;
+    border-bottom: 1px solid #e3edf7;
+    color: #445b6e;
+}
+
+.invoice-table tr:hover td {
+    background: #eaf4ff;
+}
+
+/* TOTAL */
+
+.invoice-total {
+    text-align: right;
+    margin-top: 25px;
+    font-weight: 700;
+    font-size: 1.3em;
+    color: #1f4e79;
+}
+
+/* PAYMENT INFO */
+
+.invoice-payment {
+    margin-top: 20px;
+    color: #445b6e;
+}
+
+/* SIGNATURE SECTION */
+
+.invoice-signature {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-signature div {
+    text-align: center;
+    width: 45%;
+}
+
+.invoice-signature .invoice-sold-by,
+.invoice-signature .invoice-sign {
+    border-top: 2px solid #1f4e79;
+    padding-top: 8px;
+    margin-top: 15px;
+    color: #233647;
+    font-weight: 600;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .invoice-details {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .invoice-left,
+    .invoice-right {
+        width: 100%;
+    }
+}

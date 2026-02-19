@@ -1,0 +1,148 @@
+/* =====================================
+   CUSTOMER PROFILE EDIT - BLUE THEME
+===================================== */
+
+.cust-profile-body {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+}
+
+/* MAIN CONTAINER */
+
+.cust-profile-container {
+    background: #f4f9ff;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin-left: 350px;
+    margin-top: 60px;
+    margin-bottom: 40px;
+    padding: 40px;
+}
+
+/* WELCOME MESSAGE */
+
+.welcome-message {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.welcome-message h1 {
+    background: #eaf4ff;
+    border-radius: 20px;
+    padding: 20px;
+    color: #1f4e79;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* FORM CONTAINER */
+
+.cust-profile-form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* FORM GROUP */
+
+.cust-profile-form-group {
+    flex: 1 1 calc(50% - 20px);
+    margin-bottom: 20px;
+}
+
+.cust-profile-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #233647;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* INPUTS */
+
+.cust-profile-form-group input,
+.cust-profile-form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #c7e3f9;
+    border-radius: 10px;
+    background-color: #ffffff;
+    font-size: 15px;
+    transition: 0.3s ease;
+}
+
+.cust-profile-form-group input:focus,
+.cust-profile-form-group select:focus {
+    outline: none;
+    border-color: #1f4e79;
+    box-shadow: 0 0 0 2px rgba(31, 78, 121, 0.2);
+}
+
+/* SAVE BUTTON */
+
+.cust-profile-save-btn {
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 50%;
+    transition: 0.3s ease;
+}
+
+.cust-profile-save-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(31, 78, 121, 0.3);
+}
+
+/* PAYMENT METHODS */
+
+.cust-profile-payment-methods {
+    margin-top: 30px;
+    color: #1f4e79;
+    font-size: 20px;
+}
+
+.cust-profile-payment-methods h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #1f4e79;
+}
+
+.cust-profile-payment-methods img {
+    height: 130px;
+    border-radius: 20px;
+    margin: 15px;
+    width: 160px;
+    transition: 0.3s ease;
+}
+
+.cust-profile-payment-methods img:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(31, 78, 121, 0.25);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .cust-profile-container {
+        width: 95%;
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .cust-profile-form-group {
+        flex: 1 1 100%;
+    }
+
+    .cust-profile-save-btn {
+        width: 100%;
+    }
+}

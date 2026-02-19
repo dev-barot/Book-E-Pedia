@@ -1,0 +1,82 @@
+/* =====================================
+   CUSTOMER SIDEBAR - BLUE THEME
+===================================== */
+
+.cust-sidebar {
+    width: 250px;
+    background: #f4f9ff;
+    color: #233647;
+    position: absolute;
+    margin-top: 60px;
+    margin-left: 30px;
+    height: 75vh;
+    padding: 25px;
+    border-radius: 20px;
+
+    border: 1px solid #c7e3f9;
+    box-shadow: 0 15px 35px rgba(31, 78, 121, 0.15);
+}
+
+/* TITLE */
+
+.cust-sidebar h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    color: #1f4e79;
+    margin-bottom: 40px;
+    font-weight: 600;
+}
+
+/* LIST */
+
+.cust-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cust-sidebar ul li {
+    margin: 20px 0;
+}
+
+/* LINKS */
+
+.cust-sidebar ul li a {
+    text-decoration: none;
+    color: #233647;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+/* HOVER */
+
+.cust-sidebar ul li a:hover {
+    background: #eaf4ff;
+    color: #1f4e79;
+    transform: translateX(6px);
+}
+
+/* ACTIVE LINK (optional if you add class="active") */
+
+.cust-sidebar ul li a.active {
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(31, 78, 121, 0.25);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .cust-sidebar {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 0;
+        border-radius: 0;
+        height: auto;
+    }
+}

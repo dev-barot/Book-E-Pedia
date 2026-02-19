@@ -1,0 +1,221 @@
+/* =====================================
+   CUSTOMER PROFILE - BLUE THEME
+===================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Roboto:wght@400;500&display=swap');
+
+.cust-body {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* MAIN CONTENT */
+
+.cust-main-content {
+  margin-left: 270px;
+  padding: 40px;
+  width: calc(100% - 270px);
+}
+
+/* ===============================
+   PROFILE CARD
+=============================== */
+
+.cust-profile-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #f4f9ff;
+  border-radius: 20px;
+  padding: 25px 35px;
+  margin-bottom: 40px;
+
+  box-shadow: 0 15px 30px rgba(31, 78, 121, 0.15);
+  border-left: 6px solid #1f4e79;
+
+  transition: 0.3s ease;
+}
+
+.cust-profile-card:hover {
+  transform: translateY(-5px);
+}
+
+/* DETAILS */
+
+.cust-profile-details h1 {
+  font-size: 2rem;
+  font-family: 'Playfair Display', serif;
+  color: #1f4e79;
+  margin: 0;
+  font-weight: 600;
+}
+
+.cust-profile-details p {
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #556877;
+  margin: 8px 0;
+}
+
+/* EDIT BUTTON */
+
+.cust-profile-edit-btn {
+  display: inline-block;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, #1f4e79, #2f6da3);
+  color: white;
+  border-radius: 30px;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.cust-profile-edit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(31, 78, 121, 0.3);
+}
+
+/* AVATAR */
+
+.cust-profile-avatar img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  border: 3px solid #1f4e79;
+  object-fit: cover;
+}
+
+/* ===============================
+   LIBRARY SECTION
+=============================== */
+
+.library-container {
+  margin-top: 40px;
+}
+
+.library-container h2 {
+  font-size: 2rem;
+  font-family: 'Playfair Display', serif;
+  color: #1f4e79;
+  font-weight: 600;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #1f4e79;
+  padding-bottom: 10px;
+}
+
+/* GRID */
+
+.cust-library {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+/* BOOK CARD */
+
+.cust-book-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(31, 78, 121, 0.12);
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.cust-book-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 35px rgba(31, 78, 121, 0.2);
+}
+
+/* IMAGE */
+
+.cust-book-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+/* DETAILS */
+
+.cust-book-details {
+  padding: 15px;
+}
+
+.cust-book-details h3 {
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #233647;
+  margin-bottom: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* FORMAT ICONS */
+
+.cust-book-formats {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cust-book-formats i {
+  font-size: 1.2rem;
+  color: #1f4e79;
+  transition: 0.3s ease;
+}
+
+.cust-book-formats i:hover {
+  color: #2f6da3;
+}
+
+/* EMPTY LIBRARY */
+
+.cust-empty-library {
+  text-align: center;
+  font-size: 1.1rem;
+  font-family: 'Roboto', sans-serif;
+  color: #556877;
+  padding: 20px;
+  background: #f4f9ff;
+  border-radius: 15px;
+}
+
+/* ===============================
+   RESPONSIVE
+=============================== */
+
+@media (max-width: 768px) {
+  .cust-main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .cust-profile-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .cust-profile-avatar {
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .cust-library {
+    grid-template-columns: 1fr;
+  }
+
+  .cust-book-card {
+    max-width: 260px;
+    margin: 0 auto;
+  }
+}

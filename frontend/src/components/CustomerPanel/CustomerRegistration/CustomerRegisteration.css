@@ -1,0 +1,170 @@
+/* =====================================
+   REGISTRATION PAGE - BLUE THEME
+===================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* BODY BACKGROUND */
+
+.reg-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+  padding: 40px 20px;
+}
+
+/* CONTAINER */
+
+.reg-container {
+  max-width: 900px;
+  width: 100%;
+  padding: 50px 40px;
+  border-radius: 25px;
+  background: #f4f9ff;
+  box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
+}
+
+/* TITLE */
+
+.reg-container .reg-title {
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 35px;
+  text-align: center;
+  color: #1f4e79;
+  position: relative;
+}
+
+.reg-container .reg-title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -12px;
+  height: 4px;
+  width: 70px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1f4e79, #2f6da3);
+}
+
+/* FORM GRID */
+
+.reg-content form .reg-user-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+form .reg-user-details .reg-input-box {
+  margin-bottom: 22px;
+  width: calc(50% - 15px);
+}
+
+/* LABELS */
+
+form .reg-input-box span.reg-details {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #233647;
+}
+
+/* INPUT FIELDS */
+
+.reg-user-details .reg-input-box input,
+.reg-user-details .reg-input-box select {
+  height: 50px;
+  width: 100%;
+  font-size: 15px;
+  border-radius: 12px;
+  padding-left: 15px;
+  border: 1px solid #c7e3f9;
+  background: #ffffff;
+  transition: 0.3s ease;
+}
+
+.reg-user-details .reg-input-box input:focus,
+.reg-user-details .reg-input-box select:focus {
+  outline: none;
+  border-color: #1f4e79;
+  box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.15);
+}
+
+/* GENDER + DOB */
+
+form .gender-date-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+form .gender-date-wrapper .reg-input-box {
+  width: calc(50% - 15px);
+}
+
+/* ERROR */
+
+.error-input {
+  border-color: #b71c1c !important;
+}
+
+.error-message {
+  color: #b71c1c;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* SUBMIT BUTTON */
+
+.reg-container form .reg-button input[type="submit"] {
+  height: 55px !important;
+  width: 100% !important;
+  border-radius: 40px !important;
+  border: none !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  background: linear-gradient(135deg, #1f4e79, #2f6da3) !important;
+  color: white !important;
+  box-shadow: 0 12px 30px rgba(31, 78, 121, 0.35) !important;
+}
+
+.reg-container form .reg-button input[type="submit"]:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 18px 40px rgba(31, 78, 121, 0.45) !important;
+}
+
+.reg-container form .reg-button input[type="submit"]:active {
+  transform: scale(0.97) !important;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+  form .reg-user-details .reg-input-box {
+    width: 100%;
+  }
+
+  form .gender-date-wrapper {
+    flex-direction: column;
+  }
+
+  form .gender-date-wrapper .reg-input-box {
+    width: 100%;
+  }
+
+}

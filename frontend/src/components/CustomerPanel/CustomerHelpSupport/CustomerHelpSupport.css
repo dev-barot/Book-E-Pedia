@@ -1,0 +1,125 @@
+/* =====================================
+   CUSTOMER HOME SECTION - BLUE THEME
+===================================== */
+
+.cust-hs-body {
+  background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+  min-height: 100vh;
+}
+
+/* CONTAINER */
+
+.cust-hs-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px;
+  margin-left: 300px;
+}
+
+/* HEADER */
+
+.cust-hs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.cust-hs-header h1 {
+  color: #1f4e79;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* GRID */
+
+.cust-hs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 30px;
+  padding: 30px;
+
+  background: #f4f9ff;
+  border-radius: 25px;
+  box-shadow: 0 15px 40px rgba(31, 78, 121, 0.15);
+}
+
+/* CARD */
+
+.cust-hs-card {
+  perspective: 1000px;
+}
+
+.cust-hs-card-inner {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  border-radius: 25px;
+}
+
+/* FLIP */
+
+.cust-hs-card:hover .cust-hs-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* FRONT & BACK */
+
+.cust-hs-cat-card-front,
+.cust-hs-cat-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  border-radius: 25px;
+  background: #ffffff;
+
+  box-shadow: 0 10px 25px rgba(31, 78, 121, 0.12);
+  padding: 20px;
+}
+
+/* FRONT */
+
+.cust-hs-cat-card-front img {
+  max-width: 100px;
+  margin-bottom: 15px;
+}
+
+.cust-hs-cat-card-front h3 {
+  font-size: 1.2rem;
+  color: #233647;
+  font-weight: 600;
+}
+
+/* BACK */
+
+.cust-hs-cat-card-back {
+  transform: rotateY(180deg);
+}
+
+.cust-hs-cat-card-back p {
+  font-size: 1rem;
+  color: #556877;
+  text-align: center;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .cust-hs-container {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .cust-hs-grid {
+    grid-template-columns: 1fr;
+  }
+}
