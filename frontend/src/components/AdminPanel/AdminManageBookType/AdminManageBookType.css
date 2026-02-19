@@ -1,0 +1,257 @@
+/* =====================================
+   GLOBAL LIGHT BLUE ADMIN THEME
+===================================== */
+
+/* ===============================
+   BACK TO TOP
+================================ */
+
+.back-to-top {
+    position: fixed;
+    display: none;
+    right: 45px;
+    bottom: 45px;
+    z-index: 99;
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: white;
+    padding: 14px;
+    border-radius: 50%;
+    box-shadow: 0 12px 30px rgba(31, 78, 121, 0.35);
+    transition: 0.3s ease;
+}
+
+.back-to-top:hover {
+    transform: translateY(-4px);
+}
+
+/* ===============================
+   SPINNER
+================================ */
+
+#spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s ease-out, visibility 0s linear .5s;
+    z-index: 99999;
+}
+
+#spinner.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+
+.btn {
+    transition: 0.3s ease;
+    border-radius: 50px;
+}
+
+.btn.btn-primary {
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    border: none;
+    color: #FFFFFF;
+    box-shadow: 0 10px 25px rgba(31, 78, 121, 0.3);
+}
+
+.btn.btn-primary:hover {
+    transform: translateY(-3px);
+}
+
+.btn-square,
+.btn-sm-square,
+.btn-lg-square {
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+}
+
+/* ===============================
+   NAVBAR
+================================ */
+
+.content .navbar {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 18px;
+    padding: 12px 25px;
+    box-shadow: 0 15px 35px rgba(31, 78, 121, 0.15);
+}
+
+.content .navbar .navbar-nav .nav-link {
+    margin-left: 25px;
+    padding: 12px 0;
+    color: #233647;
+    transition: 0.3s ease;
+}
+
+.content .navbar .navbar-nav .nav-link:hover,
+.content .navbar .navbar-nav .nav-link.active {
+    color: #1f4e79;
+}
+
+.content .navbar .sidebar-toggler,
+.content .navbar .navbar-nav .nav-link i {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eaf4ff;
+    border-radius: 50%;
+}
+
+/* ===============================
+   SECTION CARDS
+================================ */
+
+.section {
+    background: #f4f9ff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
+    margin-bottom: 25px;
+    border: 1px solid rgba(31, 78, 121, 0.08);
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #1f4e79;
+    font-weight: 600;
+}
+
+/* ===============================
+   FORMS
+================================ */
+
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form label {
+    flex: 1 1 calc(33.333% - 20px);
+    font-weight: 600;
+    color: #1f4e79;
+}
+
+.form input,
+.form select,
+.form button {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d0e6fa;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.form input,
+.form select {
+    background: #ffffff;
+    transition: 0.3s ease;
+}
+
+.form input:focus,
+.form select:focus {
+    outline: none;
+    border-color: #2f6da3;
+    box-shadow: 0 0 0 3px rgba(47, 109, 163, 0.2);
+}
+
+.form button {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 10px 25px rgba(31, 78, 121, 0.3);
+    transition: 0.3s ease;
+}
+
+.form button:hover {
+    transform: translateY(-4px);
+}
+
+/* ===============================
+   TABLE STYLES
+================================ */
+
+.table-container {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 15px 35px rgba(31, 78, 121, 0.1);
+}
+
+table thead th {
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: #fff;
+    padding: 14px;
+    text-align: left;
+}
+
+table tbody td {
+    padding: 14px;
+    border-bottom: 1px solid #e0effc;
+    color: #233647;
+}
+
+table tbody tr:hover {
+    background-color: #f0f8ff;
+}
+
+/* Table Buttons */
+
+table button {
+    border: none;
+    cursor: pointer;
+    font-size: larger;
+    background: #eaf4ff;
+    color: #1f4e79;
+    padding: 6px 10px;
+    border-radius: 10px;
+    transition: 0.3s ease;
+}
+
+table button:hover {
+    transform: scale(1.1);
+    background: #d4e9fb;
+}
+
+/* ===============================
+   ADMIN PANEL
+================================ */
+
+.admin-panel {
+    background: #f4f9ff;
+    border-radius: 25px;
+    margin: 80px auto;
+    padding: 40px;
+    max-width: 1100px;
+    box-shadow: 0 30px 60px rgba(31, 78, 121, 0.2);
+    border: 1px solid rgba(31, 78, 121, 0.08);
+}
+
+/* ===============================
+   MAIN CONTENT
+================================ */
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}

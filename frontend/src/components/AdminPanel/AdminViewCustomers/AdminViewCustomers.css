@@ -1,0 +1,30 @@
+.admin-view-customers-container {
+    padding: 20px;
+  }
+  
+  .admin-view-customers-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .admin-view-customers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  .admin-view-customers-table th,
+  .admin-view-customers-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .admin-view-customers-table th {
+    background-color: #000000;
+  }
+  
+  .admin-view-customers-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  

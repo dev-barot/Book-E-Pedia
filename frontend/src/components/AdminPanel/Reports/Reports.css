@@ -1,0 +1,72 @@
+/* =====================================
+   REPORTS & CHARTS - LIGHT BLUE THEME
+===================================== */
+
+/* Main Content Area */
+.dashboard-main-content {
+  flex-grow: 1;
+  padding: 2.5rem;
+  background: linear-gradient(to bottom, #c7e3f9, #eaf4ff);
+  min-height: 100vh;
+}
+
+/* Charts Grid */
+.reports-charts-container {
+  width: 85%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+/* Individual Chart Card */
+.reports-charts-container .chart-wrapper {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  padding: 2rem;
+  border-radius: 20px;
+
+  box-shadow: 0 20px 40px rgba(31, 78, 121, 0.08);
+  border: 1px solid #d9e9f7;
+
+  transition: 0.3s ease;
+  text-align: center;
+}
+
+/* Hover Effect */
+.reports-charts-container .chart-wrapper:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 50px rgba(31, 78, 121, 0.12);
+}
+
+/* Chart SVG */
+.reports-charts-container .chart-wrapper svg {
+  width: 100%;
+  max-height: 260px;
+}
+
+/* Title */
+.reports-charts-container h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.8rem;
+  color: #1f4e79;
+  font-weight: 600;
+}
+
+/* Subtitle */
+.reports-charts-container p {
+  font-size: 1rem;
+  color: #3b6f9c;
+  margin-bottom: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reports-charts-container {
+    width: 95%;
+    grid-template-columns: 1fr;
+  }
+}

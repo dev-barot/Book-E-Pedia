@@ -1,0 +1,123 @@
+/* =====================================
+   ADMIN MANAGE EMPLOYEES - LIGHT BLUE THEME
+===================================== */
+
+/* ===============================
+   CONTAINER
+================================ */
+
+.admin-view-book-type-container {
+    max-width: 100%;
+    padding: 40px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 25px 50px rgba(31, 78, 121, 0.15);
+    border: 1px solid rgba(31, 78, 121, 0.08);
+    margin-top: 40px;
+}
+
+/* ===============================
+   TITLE
+================================ */
+
+.admin-view-book-type-title {
+    text-align: center;
+    font-size: 2.2rem;
+    color: #1f4e79;
+    margin-bottom: 35px;
+    font-weight: 600;
+}
+
+/* ===============================
+   TABLE
+================================ */
+
+.admin-view-book-type-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(31, 78, 121, 0.1);
+}
+
+/* Header */
+
+.admin-view-book-type-table th {
+    padding: 15px;
+    text-align: left;
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Cells */
+
+.admin-view-book-type-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e0effc;
+    color: #233647;
+}
+
+/* Zebra rows */
+
+.admin-view-book-type-table tbody tr:nth-child(even) {
+    background-color: #f8fbff;
+}
+
+/* Hover */
+
+.admin-view-book-type-table tbody tr:hover {
+    background-color: #eaf4ff;
+    transition: 0.3s ease;
+}
+
+/* ===============================
+   ACTION BUTTONS
+================================ */
+
+.admin-view-book-type-edit-btn,
+.admin-view-book-type-delete-btn {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-right: 8px;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+/* Edit */
+
+.admin-view-book-type-edit-btn {
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    box-shadow: 0 8px 20px rgba(31, 78, 121, 0.3);
+}
+
+.admin-view-book-type-edit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(31, 78, 121, 0.4);
+}
+
+/* Delete */
+
+.admin-view-book-type-delete-btn {
+    background: linear-gradient(135deg, #c62828, #e53935);
+}
+
+.admin-view-book-type-delete-btn:hover {
+    transform: translateY(-3px);
+}
+
+/* No Data */
+
+.admin-view-book-type-table td[colspan] {
+    text-align: center;
+    padding: 25px;
+    color: #556877;
+    font-style: italic;
+}
