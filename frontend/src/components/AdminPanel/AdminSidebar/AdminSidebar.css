@@ -1,0 +1,122 @@
+/* =====================================
+   MODERN LIGHT BLUE ADMIN SIDEBAR
+===================================== */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  overflow-y: auto;
+
+  /* Light Blue Gradient */
+  background: linear-gradient(to bottom, #2f6da3, #4f8ec9);
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+
+  transition: 0.3s ease;
+  z-index: 1000;
+}
+
+/* COLLAPSE */
+.sidebar.collapsed {
+  width: 0;
+  overflow: hidden;
+}
+
+/* Remove Bootstrap white */
+.sidear-exclude-navbar {
+  background: transparent !important;
+}
+
+/* BRAND */
+.brand-title,
+.navbar-brand h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* PROFILE */
+.profile-box,
+.border-profile-admin {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.profile-icon {
+  font-size: 22px;
+}
+
+/* NAV LINKS */
+.nav-link-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 20px !important;
+  margin: 6px 12px;
+
+  border-radius: 10px;
+  color: white !important;
+  text-decoration: none;
+  font-weight: 500;
+
+  transition: all 0.3s ease;
+  background: transparent !important;
+}
+
+/* ICON */
+.nav-link-title i {
+  width: 30px;
+  text-align: center;
+  color: white !important;
+}
+
+/* HOVER */
+.nav-link-title:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateX(5px);
+}
+
+/* ACTIVE FIX (NO WHITE) */
+.sidebar .nav-link-title.active {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar .nav-link-title.active i {
+  color: #ffffff !important;
+}
+
+/* ===== BOTTOM SECTION (Logout Area Different Shade) ===== */
+
+.sidebar .nav-link-title:last-child {
+  margin-top: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+/* Logout Hover */
+.sidebar .nav-link-title:last-child:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Optional smooth scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
