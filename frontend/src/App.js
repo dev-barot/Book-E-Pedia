@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import './App.css';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
-// Assets
+// Bootstrap
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 
+// Layout Components (SAFE IMPORTS)
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+
 // Website Components
-import Header from './components/Header';
-import Footer from './components/Footer';
 import Home from './components/HomeScreen/Home';
 import AboutUs from './components/AboutUsScreen/AboutUs';
 import ContactForm from './components/ContactUsScreen/contactUs';
@@ -24,6 +26,7 @@ import E_Book from "./components/ProductScreen/E_Book";
 import Payment from "./components/PaymentScreen/Payment";
 import Invoice from "./components/CustomerPanel/CustomerOrders/Invoice";
 import Entertainment from "./components/CategoryScreen/Entertainment";
+import Technology from "./components/CategoryScreen/Technology";
 
 // Customer Panel
 import CustomerRegisteration from './components/CustomerPanel/CustomerRegistration/CustomerRegisteration';
@@ -62,14 +65,14 @@ import AdminAddCategory from './components/AdminPanel/AdminManageCategory/AdminA
 import AdminAddBookType from './components/AdminPanel/AdminManageBookType/AdminAddBookType';
 import AdminAddEmployees from './components/AdminPanel/AdminManageEmployees/AdminAddEmployees';
 import AdminAddProducts from './components/AdminPanel/AdminManageProducts/AdminAddProducts';
-import Technology from "./components/CategoryScreen/Technology";
 
-// Contexts
+// Context
 import { CartContext, UserProvider } from './Context';
 
 const checkCart = localStorage.getItem('cartData');
 
 function App() {
+
   const [cartData, setCartData] = useState(checkCart ? JSON.parse(checkCart) : []);
   const [products, setProducts] = useState([]);
   const [employeeList, setEmployeeList] = useState([]);
@@ -77,20 +80,20 @@ function App() {
   const [bookTypes, setBookTypes] = useState([]);
 
   const handleAddCategory = (newCategory) => {
-    setCategories((prevCategories) => [...prevCategories, newCategory]);
+    setCategories((prev) => [...prev, newCategory]);
   };
 
   const handleAddProduct = (newProduct) => {
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
+    setProducts((prev) => [...prev, newProduct]);
   };
 
   const handleAddBookType = (newBookType) => {
     newBookType.Book_ID = bookTypes.length + 1;
-    setBookTypes((prevBookTypes) => [...prevBookTypes, newBookType]);
+    setBookTypes((prev) => [...prev, newBookType]);
   };
 
   const handleAddEmployee = (newEmployee) => {
-    setEmployeeList((prevList) => [...prevList, newEmployee]);
+    setEmployeeList((prev) => [...prev, newEmployee]);
   };
 
   const location = useLocation();
@@ -132,9 +135,53 @@ function App() {
     <UserProvider>
       <CartContext.Provider value={{ cartData, setCartData }}>
         {shouldDisplayHeaderFooter && <Header />}
+
         <Routes>
-          {/* All your routes exactly same */}
+          <Route path='/' element={<Home />} />
+          <Route path='/aboutus' element={<AboutUs />} />
+          <Route path='/contactus' element={<ContactForm />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/cart' element={<CustomerCart />} />
+          <Route path='/payment' element={<Payment />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path='/category/:category_slug/:Category_ID' element={<CategoryProducts />} />
+          <Route path="/products/Entertainment" element={<Entertainment />} />
+          <Route path="/products/Technology" element={<Technology />} />
+          <Route path='/products' element={<Products />} />
+          <Route path='/product/:product_slug/:Product_ID' element={<ProductDetail />} />
+          <Route path='/audio-book' element={<AudioBook />} />
+          <Route path='/video-book' element={<VideoBook />} />
+          <Route path='/e-book' element={<E_Book />} />
+          <Route path='/invoice' element={<Invoice />} />
+
+                    {/* Employee */}
+          <Route exact path='/employee/dashboard' element={<EmployeeDashboard />} />
+          <Route exact path='/employee/manage-orders' element={<EmployeeManageOrders />} />
+          <Route exact path='/employee/manage-categories' element={<EmployeeViewCategory categories={categories} onAddCategory={handleAddCategory} />} />
+          <Route exact path='/employee/manage-booktype' element={<EmployeeManageBookType bookTypes={bookTypes} onAddBookType={handleAddBookType} />} />
+          <Route exact path='/employee/add-booktype' element={<EmployeeAddBookType onAddBookType={handleAddBookType} />} />
+          <Route exact path='/employee/manage-products' element={<EmployeeManageProducts products={products} />} />
+          <Route exact path='/employee/add-products' element={<EmployeeAddProducts onAddProduct={handleAddProduct} />} />
+          <Route exact path='/employee/profile' element={<EmployeeProfile />} />
+          <Route exact path='/employee/forget-password' element={<EmployeeForgetPassword />} />
+
+          {/* Admin */}
+          <Route exact path='/admin/dashboard' element={<AdminDashboard />} />
+          <Route exact path='/admin/manage-orders' element={<AdminManageOrders />} />
+          <Route path="/admin/manage-categories" element={<AdminManageCategory categories={categories} onAddCategory={handleAddCategory} />} />
+          <Route path="/admin/add-category" element={<AdminAddCategory onAddCategory={handleAddCategory} />} />
+          <Route path="/admin/manage-booktype" element={<AdminManageBookType bookTypes={bookTypes} onAddBookType={handleAddBookType} />} />
+          <Route path="/admin/add-booktype" element={<AdminAddBookType onAddBookType={handleAddBookType} />} />
+          <Route exact path='/admin/manage-products' element={<AdminManageProducts products={products} />} />
+          <Route exact path='/admin/add-products' element={<AdminAddProducts onAddProduct={handleAddProduct} />} />
+          <Route path="/admin/manage-employees" element={<AdminManageEmployees employeeList={employeeList} onAddEmployee={handleAddEmployee} />} />
+          <Route path="/admin/add-employees" element={<AdminAddEmployees onAddEmployee={handleAddEmployee} />} />
+          <Route exact path='/admin/view-customers' element={<AdminViewCustomers />} />
+          <Route exact path='/admin/profile' element={<AdminProfile />} />
+          <Route exact path='/admin/manage-feedback' element={<AdminManageFeedback />} />
+          <Route exact path='/admin/reports' element={<Reports />} />
         </Routes>
+
         {shouldDisplayHeaderFooter && <Footer />}
       </CartContext.Provider>
     </UserProvider>
