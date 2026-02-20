@@ -1,0 +1,56 @@
+.admin-manage-orders-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+  
+  .admin-manage-orders-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .admin-manage-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-manage-orders-table th,
+  .admin-manage-orders-table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .admin-manage-orders-table th {
+    background-color: #f4f4f4;
+    color: #555;
+    font-weight: bold;
+  }
+  
+  .admin-manage-orders-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .admin-manage-orders-status-select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #333;
+  }
+  
+  .admin-manage-orders-status-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .admin-manage-orders-container table tr:hover {
+    background-color: #f1f1f1;
+  }
+  

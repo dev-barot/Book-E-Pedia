@@ -1,0 +1,90 @@
+/* =====================================
+   CATEGORY PRODUCT CARD - BLUE THEME
+===================================== */
+
+.cat-product {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 20px;
+    background: #f4f9ff;
+    align-items: center;
+    transition: 0.3s ease;
+    cursor: pointer;
+    height: 550px;
+    box-shadow: 0 15px 35px rgba(31, 78, 121, 0.15);
+    border: 1px solid rgba(31, 78, 121, 0.08);
+}
+
+.cat-product:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(31, 78, 121, 0.25);
+}
+
+/* IMAGE */
+
+.cat-product img {
+    width: 160px;
+    height: 230px;
+    object-fit: contain;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 10px 25px rgba(31, 78, 121, 0.2);
+}
+
+/* NAME */
+
+.cat-product-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f4e79;
+    text-align: center;
+    margin: 10px 0 5px;
+}
+
+/* AUTHOR */
+
+.cat-author-name {
+    font-size: 15px;
+    color: #556877;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* PRICE */
+
+.cat-product-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f4e79;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* DESCRIPTION */
+
+.cat-product-description {
+    font-size: 14px;
+    color: #445b6e;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* BUTTON */
+
+.cat-add-to-cart {
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: auto;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.cat-add-to-cart:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(31, 78, 121, 0.3);
+}

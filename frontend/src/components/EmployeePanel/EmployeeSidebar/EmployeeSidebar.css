@@ -1,0 +1,322 @@
+/********** Template CSS **********/
+:root {
+    --primary: #25476A;
+    --light: #F3F6F9;
+    --dark: #191C24;
+  }
+  
+  
+  
+  /*** Layout ***/
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--light);
+    transition: 0.5s;
+    z-index: 999;
+  }
+  
+  .content {
+    margin-left: 250px;
+    min-height: 100vh;
+    background: #FFFFFF;
+    transition: 0.5s;
+  }
+  
+  @media (min-width: 992px) {
+    .sidebar {
+        margin-left: 0;
+    }
+  
+    .sidebar.open {
+        margin-left: -250px;
+    }
+  
+    .content {
+        width: calc(100% - 250px);
+    }
+  
+    .content.open {
+        width: 100%;
+        margin-left: 0;
+    }
+  }
+  
+  @media (max-width: 991.98px) {
+    .sidebar {
+        margin-left: -250px;
+    }
+  
+    .sidebar.open {
+        margin-left: 0;
+    }
+  
+    .content {
+        width: 100%;
+        margin-left: 0;
+    }
+  }
+  
+  /*** Navbar ***/
+  .sidebar .navbar .navbar-nav .nav-link {
+    color: #ffffff !important;
+    font-weight: 500;
+    border-style: none;
+    border-radius: 0 30px 30px 0;
+    outline: none;
+  }
+  .navbar-nav.w-100 .nav-item.nav-link{
+    padding-left: 40px !important;
+  }
+  .sidebar .navbar .navbar-nav .nav-link:hover,
+  .sidebar .navbar .navbar-nav .nav-link.active {
+    color: #ffffff;
+    color: #DEF2F1;
+    background: #0FA4AF;
+    border-color: #AfDDE5;
+  }
+  
+  .sidebar .navbar .navbar-nav .nav-link i {
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 40px;
+  }
+  
+  .sidebar .navbar .navbar-nav .nav-link:hover i,
+  .sidebar .navbar .navbar-nav .nav-link .active i {
+    background-color: #AFDDE5;
+  }
+  
+  .sidebar .navbar .dropdown-toggle::after {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: none;
+    content: "\f107";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: .5s;
+  }
+  
+  .sidebar .navbar .dropdown-toggle[aria-expanded=true]::after {
+    transform: rotate(-180deg);
+  }
+  
+  .sidebar .navbar .dropdown-item {
+    padding-left: 25px;
+    border-radius: 0 30px 30px 0;
+  }
+  
+  .content .navbar .navbar-nav .nav-link {
+    margin-left: 25px;
+    padding: 12px 0;
+    color: white;
+    outline: none;
+  }
+  
+  .content .navbar .navbar-nav .nav-link:hover,
+  .content .navbar .navbar-nav .nav-link.active {
+    color: rgb(255, 255, 255);
+  }
+  
+  .content .navbar .sidebar-toggler,
+  .content .navbar .navbar-nav .nav-link i {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    border-radius: 40px;
+  }
+  
+  .content .navbar .dropdown-toggle::after {
+    margin-left: 6px;
+    vertical-align: middle;
+    border: none;
+    content: "\f107";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: .5s;
+  }
+  
+  .content .navbar .dropdown-toggle[aria-expanded=true]::after {
+    transform: rotate(-180deg);
+  }
+  
+  @media (max-width: 575.98px) {
+    .content .navbar .navbar-nav .nav-link {
+        margin-left: 15px;
+    }
+  }
+  
+  
+  /*** Date Picker ***/
+  .bootstrap-datetimepicker-widget.bottom {
+    top: auto !important;
+  }
+  
+  .bootstrap-datetimepicker-widget .table * {
+    border-bottom-width: 0px;
+  }
+  
+  .bootstrap-datetimepicker-widget .table th {
+    font-weight: 500;
+  }
+  
+  .bootstrap-datetimepicker-widget.dropdown-menu {
+    padding: 10px;
+    border-radius: 2px;
+  }
+  
+  .bootstrap-datetimepicker-widget table td.active,
+  .bootstrap-datetimepicker-widget table td.active:hover {
+    background: var(--primary);
+  }
+  
+  .bootstrap-datetimepicker-widget table td.today::before {
+    border-bottom-color: var(--primary);
+  }
+  
+  
+  /*** Testimonial ***/
+  .progress .progress-bar {
+    width: 0px;
+    transition: 2s;
+  }
+  
+  
+  /*** Testimonial ***/
+  .testimonial-carousel .owl-dots {
+    margin-top: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  
+  .testimonial-carousel .owl-dot {
+    position: relative;
+    display: inline-block;
+    margin: 0 5px;
+    width: 15px;
+    height: 15px;
+    border: 5px solid var(--primary);
+    border-radius: 15px;
+    transition: .5s;
+  }
+  
+  .testimonial-carousel .owl-dot.active {
+    background: var(--dark);
+    border-color: var(--primary);
+  }
+  
+  .d-none.d-md-flex.ms-4 input{
+    margin-left: 100px;
+    margin-top: 10px;
+    position: relative;
+    top:10px;
+  }
+  
+  .navbar.bg-light.navbar-light .d-flex.align-items-center .position-relative{
+    margin-left: 30px;
+  }
+  .navbar.bg-light.navbar-light .d-flex.align-items-center .position-relative .fa-user{
+  font-size: xx-large;
+  }
+  .navbar.bg-light.navbar-light .d-flex.align-items-center .ms-3 h6{
+  font-size: x-large;
+  }
+  .navbar.bg-light.navbar-light .navbar-nav.w-100 {
+  font-size: large;
+  }
+  .navbar.bg-light.navbar-light .navbar-nav.w-100 .nav-item.nav-link.active{
+    margin-top: 0px;
+    padding-top:15px;
+    padding-bottom: 15px;
+  }
+  .navbar-nav.w-100{
+    background-color: #024950;
+  }
+  .nav-link-title {
+    color: white !important; /* Adjust text color */
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  padding-top:15px !important;
+  padding-bottom: 20px !important;
+  }
+  .nav-link-title .fa-sidebar-icons{
+    padding-left: 20px !important;
+  }
+  .d-flex.align-items-center.ms-4.mb-4{
+    padding-top:10px;
+    padding-bottom: 0px;
+  }
+  .sidear-exclude-navbar .border-profile-admin{
+    border: 2px solid white;
+    border-radius:50%;
+    background-color: #ffffff;
+  }
+  .nav-link-title a:hover, 
+  .nav-link-title a.active {
+    background-color: var(--light); /* Highlighted background */
+    color: black; /* Highlighted text color */
+  }
+  /* AdminSidebar.css */
+  
+  /* Sidebar default state */
+  .sidebar.pe-4.pb-3 {
+    width: 21%; /* Full width */
+    transition: all 0.3s ease;
+  }
+  .navbar-brand.mx-4.mb-3 h3{
+    font-size: 130%;
+    color: #ffffff !important;
+  }
+  
+  /* Collapsed sidebar - completely disappears */
+  .sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  /* Navbar and items inside the sidebar should also be hidden when collapsed */
+  .sidebar.collapsed .navbar-nav {
+    display: none;
+  }
+  
+  .navbar-brand.mx-4.mb-3 h3 .fa-book-open-reader{
+    padding-right: 10px;
+  }
+  
+  .nav-link-title .fa-sidebar-icons{
+    padding-left: 10px;
+  }
+  .sidebar.pe-4.pb-3{
+    background-color: #DEF2F1 !important;
+    
+  }
+  .sidear-exclude-navbar{
+    
+    background-color: #2B787A !important;
+    width:350px;
+  }
+  
+  .border-profile-admin .ms-3 h6{
+    color: #000000;
+    padding-right: 40px;
+  }
+  .border-profile-admin .ms-3 .span{
+    padding-right:-40px;
+  }
+  .border-profile-admin .position-relative .fa-user{
+    color: #000000;
+  }

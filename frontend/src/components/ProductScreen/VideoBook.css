@@ -1,0 +1,115 @@
+/* VideoBook.css - LIGHT BLUE THEME */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Roboto:wght@400;500&display=swap');
+
+.video-book-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 90vh;
+  background: linear-gradient(to bottom, #c7e3f9, #e4f2fd);
+  padding: 60px 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* ===============================
+   HEADER
+================================ */
+
+.video-book-header {
+  text-align: center;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px 20px 0 0;
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 15px 35px rgba(31, 78, 121, 0.15);
+}
+
+.video-book-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #1f4e79;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.video-book-chapter-title {
+  font-size: 1.1rem;
+  color: #445b6e;
+}
+
+/* ===============================
+   VIDEO CONTAINER
+================================ */
+
+.video-book-video-container {
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0 0 20px 20px;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
+}
+
+.video-book-video {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(31, 78, 121, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.video-book-video:hover {
+  transform: scale(1.02);
+}
+
+/* ===============================
+   ERROR
+================================ */
+
+.video-book-error {
+  color: #d32f2f;
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 20px;
+}
+
+/* ===============================
+   FOOTER
+================================ */
+
+.video-book-footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9rem;
+  color: #556877;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+  .video-book-title {
+    font-size: 2rem;
+  }
+
+  .video-book-video-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-book-title {
+    font-size: 1.5rem;
+  }
+
+  .video-book-chapter-title {
+    font-size: 1rem;
+  }
+}
