@@ -11,8 +11,7 @@ function AdminViewCustomers() {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-  // Demo customer data (Frontend Only)
-  const [customers] = useState([
+  const [customers, setCustomers] = useState([
     {
       Cust_ID: 1,
       Fname: "John",
@@ -45,6 +44,22 @@ function AdminViewCustomers() {
     }
   ]);
 
+  const toggleStatus = (id) => {
+    setCustomers(
+      customers.map((customer) =>
+        customer.Cust_ID === id
+          ? { ...customer, IsActive: customer.IsActive === "1" ? "0" : "1" }
+          : customer
+      )
+    );
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      setCustomers(customers.filter(customer => customer.Cust_ID !== id));
+    }
+  };
+
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
 
@@ -66,14 +81,14 @@ function AdminViewCustomers() {
           <table className="admin-view-book-type-table">
             <thead>
               <tr>
-                <th>Customer ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th>ID</th>
+                <th>Name</th>
                 <th>Gender</th>
                 <th>Email</th>
-                <th>Phone Number</th>
+                <th>Phone</th>
                 <th>Address</th>
                 <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
 
@@ -82,20 +97,33 @@ function AdminViewCustomers() {
                 customers.map((customer) => (
                   <tr key={customer.Cust_ID}>
                     <td>{customer.Cust_ID}</td>
-                    <td>{customer.Fname}</td>
-                    <td>{customer.Lname}</td>
+                    <td>{customer.Fname} {customer.Lname}</td>
                     <td>{customer.Gender === "M" ? "Male" : "Female"}</td>
                     <td>{customer.Email}</td>
                     <td>{customer.Phone_Number}</td>
                     <td>
-                      {customer.Building && `${customer.Building}, `}
-                      {customer.Street && `${customer.Street}, `}
-                      {customer.City && `${customer.City}, `}
-                      {customer.State && `${customer.State}, `}
-                      {customer.Country && `${customer.Country} - `}
-                      {customer.Pincode}
+                      {customer.Building}, {customer.Street}, {customer.City}, {customer.State}, {customer.Country} - {customer.Pincode}
                     </td>
-                    <td>{customer.IsActive === "1" ? "Active" : "Inactive"}</td>
+                    <td>
+                      <span className={customer.IsActive === "1" ? "status-active" : "status-inactive"}>
+                        {customer.IsActive === "1" ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-warning me-2"
+                        onClick={() => toggleStatus(customer.Cust_ID)}
+                      >
+                        Toggle Status
+                      </button>
+
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDelete(customer.Cust_ID)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
