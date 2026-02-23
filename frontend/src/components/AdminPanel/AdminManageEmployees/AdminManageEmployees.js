@@ -1,69 +1,65 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "./AdminManageEmployees.css";
 
 function AdminManageEmployees() {
-  const [employeeList, setEmployeeList] = useState([]);
   const navigate = useNavigate();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  const fetchEmployees = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/employees/");
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log("Raw response from /api/employees/:", data); // Debug log
-      setEmployeeList(data.data || []);
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-      setEmployeeList([]);
+  // Static demo data (frontend only)
+  const [employeeList, setEmployeeList] = useState([
+    {
+      Emp_ID: 1,
+      Fname: "John",
+      Lname: "Doe",
+      email: "john@example.com",
+      Phone_Number: "9876543210",
+      Designation: "Manager"
+    },
+    {
+      Emp_ID: 2,
+      Fname: "Jane",
+      Lname: "Smith",
+      email: "jane@example.com",
+      Phone_Number: "9123456780",
+      Designation: "Sales Executive"
     }
-  };
-
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
+  ]);
 
   const handleEdit = (employee) => {
     navigate("/admin/add-employees", { state: { employee } });
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/employees/${id}/`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) {
-          throw new Error("Failed to delete employee");
-        }
-        fetchEmployees();
-      } catch (error) {
-        console.error("Error deleting employee:", error);
-      }
+      setEmployeeList(employeeList.filter(emp => emp.Emp_ID !== id));
     }
   };
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const handleSidebarToggle = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
+      
       <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
+
       <div className={`sidebar-main-section ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminSidebar isCollapsed={isSidebarCollapsed} />
       </div>
+
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
+        
         <Link to="/admin/add-employees" className="btn btn-primary">
           <i className="fa fa-plus-circle"></i> Add Employee
         </Link>
+
         <div className="admin-view-book-type-container">
           <h1 className="admin-view-book-type-title">Employee List</h1>
+
           <table className="admin-view-book-type-table">
             <thead>
               <tr>
@@ -76,6 +72,7 @@ function AdminManageEmployees() {
                 <th>Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {employeeList.length === 0 ? (
                 <tr>
@@ -97,6 +94,7 @@ function AdminManageEmployees() {
                       >
                         <i className="fa-solid fa-pen"></i>
                       </button>
+
                       <button
                         className="admin-view-book-type-delete-btn"
                         onClick={() => handleDelete(employee.Emp_ID)}
@@ -108,6 +106,7 @@ function AdminManageEmployees() {
                 ))
               )}
             </tbody>
+
           </table>
         </div>
       </div>
