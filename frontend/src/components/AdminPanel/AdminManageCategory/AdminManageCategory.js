@@ -1,68 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "./AdminManageCategory.css";
 
 function AdminManageCategory() {
-  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/category/"); // Added /api/
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
-      }
-      const data = await response.json();
-      setCategories(data.data || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setCategories([]);
+  // Static demo data (frontend only)
+  const [categories, setCategories] = useState([
+    {
+      Category_ID: 1,
+      Category_Name: "Fiction",
+      Category_Description: "Stories that contain imaginary events and characters.",
+      IsActive: "1"
+    },
+    {
+      Category_ID: 2,
+      Category_Name: "Education",
+      Category_Description: "Academic and learning-related books.",
+      IsActive: "0"
     }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  ]);
 
   const handleEdit = (category) => {
     navigate("/admin/add-category", { state: { category } });
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/category/${id}/`, { // Added /api/
-          method: 'DELETE',
-        });
-        if (!response.ok) {
-          throw new Error("Failed to delete category");
-        }
-        fetchCategories();
-      } catch (error) {
-        console.error("Error deleting category:", error);
-      }
+      setCategories(categories.filter(category => category.Category_ID !== id));
     }
   };
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const handleSidebarToggle = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
+      
       <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
+
       <div className={`sidebar-main-section ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminSidebar isCollapsed={isSidebarCollapsed} />
       </div>
+
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
+        
         <Link to="/admin/add-category" className="btn btn-primary">
           <i className="fa fa-plus-circle"></i> Add Category
         </Link>
+
         <div className="admin-view-book-type-container">
           <h1 className="admin-view-book-type-title">Category List</h1>
+
           <table className="admin-view-book-type-table">
             <thead>
               <tr>
@@ -73,6 +66,7 @@ function AdminManageCategory() {
                 <th>Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {categories.length > 0 ? (
                 categories.map((category) => (
@@ -88,6 +82,7 @@ function AdminManageCategory() {
                       >
                         <i className="fa-solid fa-pen"></i>
                       </button>
+
                       <button
                         className="admin-view-book-type-delete-btn"
                         onClick={() => handleDelete(category.Category_ID)}
@@ -105,6 +100,7 @@ function AdminManageCategory() {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
       </div>
