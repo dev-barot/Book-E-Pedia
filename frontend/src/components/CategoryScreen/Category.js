@@ -1,132 +1,104 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Nav } from "react-bootstrap";
+import React, { useState } from "react";
+import "./Category.css";
+import { Link } from "react-router-dom";
 
-// Import images
-import book2 from "./download(1).jpeg";
-import book4 from "./download (2).jpeg";
-import book6 from "./harry.jpeg";
-import book7 from "./gatsby.jpeg";
+function Category() {
 
-const books = [
-  {
-    id: "SAGEThePower",
-    name: "SAGE The Power",
-    author: "Stephanie Folder",
-    publisher: "Publisher A",
-    language: "English",
-    pages: 300,
-    audioDuration: "10 hours",
-    videoDuration: "5 hours",
-    price: 200,
-    image: book2,
-    description: "An inspiring tale of resilience and strength.",
-    formats: ["Audio Book", "Video Book", "E-book", "Physical Book"],
-  },
-  {
-    id: "MyBookCover",
-    name: "My Book Cover",
-    author: "Harper Lee",
-    price: 350,
-    image: book4,
-    description: "A gripping story of hope and justice.",
-    formats: ["E-book", "Physical Book"],
-    publisher: "Publisher B",
-    language: "English",
-    pages: 250,
-    audioDuration: "8 hours",
-    videoDuration: "4 hours",
-  },
-  {
-    id: "TheGreatGatsby",
-    name: "The Great Gatsby",
-    author: "P Scott",
-    price: 300,
-    image: book7,
-    description: "Discover the secrets of the unknown.",
-    formats: ["Audio Book", "E-book"],
-    publisher: "Publisher C",
-    language: "English",
-    pages: 400,
-    audioDuration: "12 hours",
-    videoDuration: "6 hours",
-  },
-  {
-    id: "HarryPotter",
-    name: "Harry Potter",
-    author: "J.K. Rowling",
-    price: 400,
-    image: book6,
-    description: "A thrilling journey through time.",
-    formats: ["Video Book", "Physical Book"],
-    publisher: "Publisher D",
-    language: "English",
-    pages: 500,
-    audioDuration: "15 hours",
-    videoDuration: "7 hours",
-  },
-];
-
-const ProductItem = ({ book, addToCart }) => {
-  return (
-    <div className="product">
-      <Nav.Link as={Link} to={`/product-detail/${book.id}`}>
-        <img className="prodImg" src={book.image} alt={book.name} />
-        <div className="product-name">{book.name}</div>
-        <div className="author-name">By {book.author}</div>
-        <div className="product-price">Rs. {book.price}</div>
-        <div className="product-description">{book.description}</div>
-        <div className="product-description">
-          <strong>Available Formats:</strong> {book.formats.join(", ")}
-        </div>
-      </Nav.Link>
-
-      <button className="add-to-cart" onClick={() => addToCart(book)}>
-        Add to Cart
-      </button>
-    </div>
-  );
-};
-
-function Technology() {
-  const [cart, setCart] = useState([]);
-  const navigate = useNavigate();
-
-  // Load cart from localStorage when component loads
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(storedCart);
-  }, []);
-
-  const addToCart = (product) => {
-    let updatedCart = [...cart];
-
-    const existingItemIndex = updatedCart.findIndex(
-      (item) => item.id === product.id
-    );
-
-    if (existingItemIndex !== -1) {
-      // Increase quantity if already exists
-      updatedCart[existingItemIndex].quantity += 1;
-    } else {
-      updatedCart.push({ ...product, quantity: 1 });
+  // Demo Category Data (Frontend Only)
+  const allCategories = [
+    {
+      Category_ID: 1,
+      Category_Name: "Technology",
+      Category_Description: "Explore modern tech books and innovations.",
+      Category_Photo: "https://via.placeholder.com/250x180?text=Technology",
+      IsActive: "1"
+    },
+    {
+      Category_ID: 2,
+      Category_Name: "Fiction",
+      Category_Description: "Dive into amazing fictional worlds.",
+      Category_Photo: "https://via.placeholder.com/250x180?text=Fiction",
+      IsActive: "1"
+    },
+    {
+      Category_ID: 3,
+      Category_Name: "Science",
+      Category_Description: "Scientific discoveries and research.",
+      Category_Photo: "https://via.placeholder.com/250x180?text=Science",
+      IsActive: "1"
+    },
+    {
+      Category_ID: 4,
+      Category_Name: "History",
+      Category_Description: "Learn from the past.",
+      Category_Photo: "https://via.placeholder.com/250x180?text=History",
+      IsActive: "0" // Inactive category (will not show)
     }
+  ];
 
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    navigate("/cart");
-  };
+  const limit = 2; // How many categories per page
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const activeCategories = allCategories.filter(
+    (category) => category.IsActive === "1"
+  );
+
+  const totalResult = activeCategories.length;
+  const totalPages = Math.ceil(totalResult / limit);
+
+  const startIndex = (currentPage - 1) * limit;
+  const currentCategories = activeCategories.slice(
+    startIndex,
+    startIndex + limit
+  );
 
   return (
-    <div className="product-container">
-      <h1>Technology Books Collection</h1>
-      <div className="product-list">
-        {books.map((book) => (
-          <ProductItem key={book.id} book={book} addToCart={addToCart} />
-        ))}
+    <div className="category-page">
+      <h1>Browse Our Book Categories</h1>
+
+      <div className="category-grid">
+        {currentCategories.length > 0 ? (
+          currentCategories.map((category) => (
+            <div className="category-card" key={category.Category_ID}>
+              <Link to={`/category/${category.Category_Name}/${category.Category_ID}`}>
+                <div className="card-inner">
+                  <div className="cat-card-front">
+                    <img
+                      src={category.Category_Photo}
+                      alt={category.Category_Name}
+                    />
+                    <h3>{category.Category_Name}</h3>
+                  </div>
+                  <div className="cat-card-back">
+                    <p>{category.Category_Description}</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>No categories available.</p>
+        )}
       </div>
+
+      {/* Frontend Pagination */}
+      <ul className="pagination">
+        {[...Array(totalPages)].map((_, index) => (
+          <li
+            key={index}
+            className={`page-item ${currentPage === index + 1 ? "active" : ""}`}
+          >
+            <button
+              className="page-link"
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export default Technology;
+export default Category;
