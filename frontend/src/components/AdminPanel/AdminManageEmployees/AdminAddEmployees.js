@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
@@ -9,30 +9,8 @@ function AdminAddEmployees() {
   const navigate = useNavigate();
   const employeeToEdit = location.state?.employee;
 
-  const [nextEmpId, setNextEmpId] = useState(null); // Initialize as null until fetched
-
-  // Fetch the highest Emp_ID on mount
-  useEffect(() => {
-    if (!employeeToEdit) {
-      const fetchMaxEmpId = async () => {
-        try {
-          const response = await fetch("http://127.0.0.1:8000/api/employees/");
-          if (!response.ok) throw new Error("Failed to fetch employees");
-          const data = await response.json();
-          const employees = data.data || [];
-          const maxId = employees.length > 0 ? Math.max(...employees.map(e => e.Emp_ID)) : 0;
-          setNextEmpId(maxId + 1);
-        } catch (error) {
-          console.error("Error fetching max Emp_ID:", error);
-          setNextEmpId(1); // Fallback to 1 if fetch fails
-        }
-      };
-      fetchMaxEmpId();
-    }
-  }, [employeeToEdit]);
-
   const [formData, setFormData] = useState({
-    Emp_ID: employeeToEdit ? employeeToEdit.Emp_ID : nextEmpId,
+    Emp_ID: employeeToEdit ? employeeToEdit.Emp_ID : 1,
     Emp_Type: employeeToEdit ? employeeToEdit.Emp_Type : "0",
     Fname: employeeToEdit ? employeeToEdit.Fname : "",
     Lname: employeeToEdit ? employeeToEdit.Lname : "",
@@ -49,12 +27,9 @@ function AdminAddEmployees() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  useEffect(() => {
-    if (nextEmpId && !employeeToEdit) {
-      setFormData((prev) => ({ ...prev, Emp_ID: nextEmpId }));
-    }
-  }, [nextEmpId, employeeToEdit]);
+  const handleSidebarToggle = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -64,104 +39,75 @@ function AdminAddEmployees() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    const formDataToSend = new FormData();
-    for (const key in formData) {
-      if (formData[key] !== null) {
-        formDataToSend.append(key, formData[key]);
-      }
-    }
-
-    try {
-      const url = employeeToEdit
-        ? `http://127.0.0.1:8000/api/employees/${employeeToEdit.Emp_ID}/`
-        : "http://127.0.0.1:8000/api/employees/";
-      const method = employeeToEdit ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method: method,
-        body: formDataToSend,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to save employee: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log("Employee saved:", data);
-
-      // Increment nextEmpId only on successful POST
-      if (!employeeToEdit) {
-        setNextEmpId((prevId) => prevId + 1);
-      }
-
-      navigate("/admin/manage-employees");
-    } catch (error) {
-      console.error("Error saving employee:", error);
-      setErrors({ submit: error.message });
-    }
-  };
-
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.Fname.trim()) newErrors.Fname = "Please enter First Name.";
-    else if (formData.Fname.length > 20) newErrors.Fname = "First name should not be more than 20 letters.";
 
-    if (!formData.Lname.trim()) newErrors.Lname = "Please enter Last Name.";
-    else if (formData.Lname.length > 25) newErrors.Lname = "Last name should not be more than 25 letters.";
+    if (!formData.Fname.trim())
+      newErrors.Fname = "Please enter First Name.";
 
-    if (!formData.Gender) newErrors.Gender = "Please select gender.";
+    if (!formData.Lname.trim())
+      newErrors.Lname = "Please enter Last Name.";
 
-    if (!formData.DOB) newErrors.DOB = "Please enter date of Birth.";
-    else if (new Date().getFullYear() - new Date(formData.DOB).getFullYear() < 18)
-      newErrors.DOB = "Employee must be at least 18 years old.";
+    if (!formData.Gender)
+      newErrors.Gender = "Please select gender.";
 
-    if (!formData.email) newErrors.email = "Email is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Invalid email format.";
+    if (!formData.DOB)
+      newErrors.DOB = "Please enter date of Birth.";
 
-    if (!formData.Password) newErrors.Password = "Please enter Password.";
-    else if (formData.Password.length < 8 || formData.Password.length > 15)
-      newErrors.Password = "Password must be 8-15 characters.";
+    if (!formData.email)
+      newErrors.email = "Email is required.";
 
-    if (!formData.Phone_Number) newErrors.Phone_Number = "Please enter Phone Number.";
-    else if (!/^\d{10}$/.test(formData.Phone_Number)) newErrors.Phone_Number = "Phone number must be 10 digits.";
+    if (!formData.Password)
+      newErrors.Password = "Please enter Password.";
 
-    if (!formData.Address.trim()) newErrors.Address = "Please enter Address.";
-    else if (formData.Address.length > 250) newErrors.Address = "Address should not be more than 250 letters.";
+    if (!formData.Phone_Number)
+      newErrors.Phone_Number = "Please enter Phone Number.";
 
-    if (!formData.Salary) newErrors.Salary = "Please enter salary.";
-    else if (isNaN(Number(formData.Salary))) newErrors.Salary = "Salary must be a valid number.";
+    if (!formData.Address.trim())
+      newErrors.Address = "Please enter Address.";
 
-    if (!formData.Designation.trim()) newErrors.Designation = "Please enter Designation.";
-    else if (formData.Designation.length > 25) newErrors.Designation = "Designation should not be more than 25 letters.";
+    if (!formData.Salary)
+      newErrors.Salary = "Please enter salary.";
 
-    if (!formData.Emp_Photo && !employeeToEdit) newErrors.Emp_Photo = "Employee photo is required.";
+    if (!formData.Designation.trim())
+      newErrors.Designation = "Please enter Designation.";
+
+    if (!formData.Emp_Photo && !employeeToEdit)
+      newErrors.Emp_Photo = "Employee photo is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const handleSidebarToggle = () => setIsSidebarCollapsed(!isSidebarCollapsed);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    console.log("Employee Data (Frontend Only):", formData);
+
+    navigate("/admin/manage-employees");
+  };
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
       <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
+
       <div className={`sidebar-main-section ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminSidebar isCollapsed={isSidebarCollapsed} />
       </div>
+
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
         <div className="admin-add-product-container">
-          <h1 className="admin-add-product-title">{employeeToEdit ? "Edit Employee" : "Add Employee"}</h1>
+          <h1 className="admin-add-product-title">
+            {employeeToEdit ? "Edit Employee" : "Add Employee"}
+          </h1>
+
           <form onSubmit={handleSubmit} className="admin-add-product-form">
+
             <div className="form-row">
+
               <div className="admin-add-product-field">
                 <label>Employee Type:</label>
                 <select name="Emp_Type" value={formData.Emp_Type} onChange={handleChange}>
@@ -169,6 +115,7 @@ function AdminAddEmployees() {
                   <option value="0">Staff</option>
                 </select>
               </div>
+
               <div className="admin-add-product-field">
                 <label>Active Status:</label>
                 <select name="IsActive" value={formData.IsActive} onChange={handleChange}>
@@ -176,16 +123,19 @@ function AdminAddEmployees() {
                   <option value="0">Inactive</option>
                 </select>
               </div>
+
               <div className="admin-add-product-field">
                 <label>First Name:</label>
                 <input type="text" name="Fname" value={formData.Fname} onChange={handleChange} />
                 {errors.Fname && <p className="admin-manage-emp-error">{errors.Fname}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Last Name:</label>
                 <input type="text" name="Lname" value={formData.Lname} onChange={handleChange} />
                 {errors.Lname && <p className="admin-manage-emp-error">{errors.Lname}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Gender:</label>
                 <select name="Gender" value={formData.Gender} onChange={handleChange}>
@@ -195,59 +145,61 @@ function AdminAddEmployees() {
                 </select>
                 {errors.Gender && <p className="admin-manage-emp-error">{errors.Gender}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Date of Birth:</label>
                 <input type="date" name="DOB" value={formData.DOB} onChange={handleChange} />
                 {errors.DOB && <p className="admin-manage-emp-error">{errors.DOB}</p>}
               </div>
+
               <div className="admin-add-product-field admin-add-product-description">
                 <label>Address:</label>
                 <textarea name="Address" value={formData.Address} onChange={handleChange} />
                 {errors.Address && <p className="admin-manage-emp-error">{errors.Address}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Email:</label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} />
                 {errors.email && <p className="admin-manage-emp-error">{errors.email}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Password:</label>
                 <input type="text" name="Password" value={formData.Password} onChange={handleChange} />
                 {errors.Password && <p className="admin-manage-emp-error">{errors.Password}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Phone Number:</label>
                 <input type="text" name="Phone_Number" value={formData.Phone_Number} onChange={handleChange} />
                 {errors.Phone_Number && <p className="admin-manage-emp-error">{errors.Phone_Number}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Salary:</label>
                 <input type="text" name="Salary" value={formData.Salary} onChange={handleChange} />
                 {errors.Salary && <p className="admin-manage-emp-error">{errors.Salary}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Designation:</label>
                 <input type="text" name="Designation" value={formData.Designation} onChange={handleChange} />
                 {errors.Designation && <p className="admin-manage-emp-error">{errors.Designation}</p>}
               </div>
+
               <div className="admin-add-product-field">
                 <label>Employee Photo:</label>
                 <input type="file" name="Emp_Photo" onChange={handleChange} />
-                {employeeToEdit && employeeToEdit.Emp_Photo && (
-                  <img
-                    src={`http://127.0.0.1:8000${employeeToEdit.Emp_Photo}`}
-                    alt="Employee"
-                    className="employee-photo-preview"
-                    style={{ width: "80px", height: "80px", objectFit: "cover" }}
-                  />
-                )}
                 {errors.Emp_Photo && <p className="admin-manage-emp-error">{errors.Emp_Photo}</p>}
               </div>
+
               <button type="submit" className="admin-add-product-submit-btn">
                 {employeeToEdit ? "Update Employee" : "Add Employee"}
               </button>
-              {errors.submit && <p className="admin-manage-emp-error">{errors.submit}</p>}
+
             </div>
+
           </form>
         </div>
       </div>
