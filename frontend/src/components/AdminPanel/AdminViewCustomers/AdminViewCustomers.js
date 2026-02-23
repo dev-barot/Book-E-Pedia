@@ -1,39 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "./AdminViewCustomers.css";
 
 function AdminViewCustomers() {
-  const [customers, setCustomers] = useState([]);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [error, setError] = useState(null);
 
-  // Function to handle sidebar toggle
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
   const handleSidebarToggle = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-  // Fetch customer details from API
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/api/customers/");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        setCustomers(result.data);
-      } catch (err) {
-        setError("Failed to fetch customer details");
-        console.error("Error fetching customers:", err);
-      }
-    };
-
-    fetchCustomers();
-  }, []);
+  // Demo customer data (Frontend Only)
+  const [customers] = useState([
+    {
+      Cust_ID: 1,
+      Fname: "John",
+      Lname: "Doe",
+      Gender: "M",
+      Email: "john@example.com",
+      Phone_Number: "9876543210",
+      Building: "A-101",
+      Street: "Main Road",
+      City: "Ahmedabad",
+      State: "Gujarat",
+      Country: "India",
+      Pincode: "380001",
+      IsActive: "1"
+    },
+    {
+      Cust_ID: 2,
+      Fname: "Jane",
+      Lname: "Smith",
+      Gender: "F",
+      Email: "jane@example.com",
+      Phone_Number: "9123456780",
+      Building: "B-202",
+      Street: "Park Street",
+      City: "Gandhinagar",
+      State: "Gujarat",
+      Country: "India",
+      Pincode: "382010",
+      IsActive: "0"
+    }
+  ]);
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
+
       {/* Top Navbar */}
       <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminNavbar onToggleSidebar={handleSidebarToggle} />
@@ -48,9 +62,7 @@ function AdminViewCustomers() {
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
         <div className="admin-view-book-type-container">
           <h1 className="admin-view-book-type-title">Customer Details</h1>
-          
-          {error && <p className="error-message">{error}</p>}
-          
+
           <table className="admin-view-book-type-table">
             <thead>
               <tr>
@@ -64,6 +76,7 @@ function AdminViewCustomers() {
                 <th>Status</th>
               </tr>
             </thead>
+
             <tbody>
               {customers.length > 0 ? (
                 customers.map((customer) => (
@@ -91,6 +104,7 @@ function AdminViewCustomers() {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
       </div>
