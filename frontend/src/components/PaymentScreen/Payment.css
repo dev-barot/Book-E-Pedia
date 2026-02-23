@@ -1,0 +1,181 @@
+/* =====================================
+   PAYMENT PAGE - LIGHT BLUE THEME
+===================================== */
+
+.payment-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding: 60px 40px;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to bottom, #c7e3f9, #e4f2fd);
+    min-height: 100vh;
+    gap: 40px;
+}
+
+/* ===============================
+   CHECKOUT + CARD SECTIONS
+================================ */
+
+.payment-checkout-section,
+.payment-card-section {
+    background: #f4f9ff;
+    padding: 35px;
+    border-radius: 25px;
+    box-shadow: 0 25px 50px rgba(31, 78, 121, 0.15);
+    width: 45%;
+    border: 1px solid rgba(31, 78, 121, 0.08);
+}
+
+/* HEADINGS */
+
+.payment-checkout-section h2,
+.payment-card-section h2 {
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+    color: #1f4e79;
+    font-weight: 600;
+}
+
+/* ===============================
+   ITEM LIST
+================================ */
+
+.payment-item-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.payment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.payment-product-image {
+    width: 70px;
+    height: auto;
+    margin-right: 15px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(31, 78, 121, 0.2);
+}
+
+.payment-item span {
+    flex-grow: 1;
+    text-align: right;
+    color: #233647;
+    font-weight: 500;
+}
+
+/* TOTAL */
+
+.payment-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1f4e79;
+}
+
+/* ===============================
+   CARD DISPLAY BOX
+================================ */
+
+.payment-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(31, 78, 121, 0.15);
+}
+
+/* Fake VISA Header */
+
+.payment-card-visa {
+    font-size: 1.3rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    padding: 12px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* ===============================
+   CARD FORM
+================================ */
+
+.payment-card-info label {
+    display: block;
+    margin: 12px 0 6px;
+    font-weight: 600;
+    color: #233647;
+}
+
+.payment-card-info input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d0e6fa;
+    border-radius: 14px;
+    background: #ffffff;
+    transition: 0.3s ease;
+}
+
+.payment-card-info input:focus {
+    outline: none;
+    border-color: #2f6da3;
+    box-shadow: 0 0 0 3px rgba(47, 109, 163, 0.2);
+}
+
+/* Expiry + CVC */
+
+.payment-exp-cvc {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.payment-exp,
+.payment-cvc {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* ===============================
+   PURCHASE BUTTON
+================================ */
+
+.payment-purchase-button {
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: white;
+    padding: 14px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    font-weight: 600;
+    transition: 0.3s ease;
+    box-shadow: 0 12px 30px rgba(31, 78, 121, 0.3);
+}
+
+.payment-purchase-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(31, 78, 121, 0.4);
+}
+
+/* ===============================
+   CARD IMAGE
+================================ */
+
+.payment-card-image {
+    width: 250px;
+    margin: 0 auto 20px;
+    display: block;
+}
