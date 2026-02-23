@@ -1,77 +1,132 @@
-import React, { useState,useEffect } from "react";
-import "./Category.css";
-import {Link} from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Nav } from "react-bootstrap";
 
+// Import images
+import book2 from "./download(1).jpeg";
+import book4 from "./download (2).jpeg";
+import book6 from "./harry.jpeg";
+import book7 from "./gatsby.jpeg";
 
-function Category() {
-  //Using useState concept
-  const [categories,setCategories] = useState([])
-  const baseUrl = "http://127.0.0.1:8000/api"
-  const [totalResult, setTotalResults] = useState(0); //Pagination
-
-  //Using useEffect concept
-  useEffect(()=> {
-    fetchData(baseUrl+'/category/')
-  },[])
-
-  function fetchData(baseurl) {
-    fetch(baseurl)
-      .then((response) => response.json())
-      .then((data) => {
-        const activeCategories = data.data.filter((category) => category.IsActive === "1");
-        setCategories(activeCategories);
-        setTotalResults(activeCategories.length);
-      });
-  }
-
-  function changeUrl(baseurl){
-    // setbaseurl(baseurl);
-    fetchData(baseurl)
-  }
-
-  var links = [];  //creting links for pagination
-  var limit = 1; //how many data to show on the pages
-  var totalLinks = totalResult/limit;
-
-  for(let i=1; i<=totalLinks; i++)
+const books = [
   {
-    links.push(
-    <li class="page-item">
-      <Link onClick={()=> changeUrl(baseUrl+`/category/?page=${i}`)} to={`/category/?page=${i}`} class="page-link">{i}</Link>
-    </li>)
-  }
+    id: "SAGEThePower",
+    name: "SAGE The Power",
+    author: "Stephanie Folder",
+    publisher: "Publisher A",
+    language: "English",
+    pages: 300,
+    audioDuration: "10 hours",
+    videoDuration: "5 hours",
+    price: 200,
+    image: book2,
+    description: "An inspiring tale of resilience and strength.",
+    formats: ["Audio Book", "Video Book", "E-book", "Physical Book"],
+  },
+  {
+    id: "MyBookCover",
+    name: "My Book Cover",
+    author: "Harper Lee",
+    price: 350,
+    image: book4,
+    description: "A gripping story of hope and justice.",
+    formats: ["E-book", "Physical Book"],
+    publisher: "Publisher B",
+    language: "English",
+    pages: 250,
+    audioDuration: "8 hours",
+    videoDuration: "4 hours",
+  },
+  {
+    id: "TheGreatGatsby",
+    name: "The Great Gatsby",
+    author: "P Scott",
+    price: 300,
+    image: book7,
+    description: "Discover the secrets of the unknown.",
+    formats: ["Audio Book", "E-book"],
+    publisher: "Publisher C",
+    language: "English",
+    pages: 400,
+    audioDuration: "12 hours",
+    videoDuration: "6 hours",
+  },
+  {
+    id: "HarryPotter",
+    name: "Harry Potter",
+    author: "J.K. Rowling",
+    price: 400,
+    image: book6,
+    description: "A thrilling journey through time.",
+    formats: ["Video Book", "Physical Book"],
+    publisher: "Publisher D",
+    language: "English",
+    pages: 500,
+    audioDuration: "15 hours",
+    videoDuration: "7 hours",
+  },
+];
 
+const ProductItem = ({ book, addToCart }) => {
+  return (
+    <div className="product">
+      <Nav.Link as={Link} to={`/product-detail/${book.id}`}>
+        <img className="prodImg" src={book.image} alt={book.name} />
+        <div className="product-name">{book.name}</div>
+        <div className="author-name">By {book.author}</div>
+        <div className="product-price">Rs. {book.price}</div>
+        <div className="product-description">{book.description}</div>
+        <div className="product-description">
+          <strong>Available Formats:</strong> {book.formats.join(", ")}
+        </div>
+      </Nav.Link>
+
+      <button className="add-to-cart" onClick={() => addToCart(book)}>
+        Add to Cart
+      </button>
+    </div>
+  );
+};
+
+function Technology() {
+  const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
+
+  // Load cart from localStorage when component loads
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+  }, []);
+
+  const addToCart = (product) => {
+    let updatedCart = [...cart];
+
+    const existingItemIndex = updatedCart.findIndex(
+      (item) => item.id === product.id
+    );
+
+    if (existingItemIndex !== -1) {
+      // Increase quantity if already exists
+      updatedCart[existingItemIndex].quantity += 1;
+    } else {
+      updatedCart.push({ ...product, quantity: 1 });
+    }
+
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    navigate("/cart");
+  };
 
   return (
-    <div className="category-page">
-      <h1>Browse Our Book Categories</h1>
-      <div className="category-grid">
-        {categories.length > 0 ? (
-          categories.map((category) => (
-            <div className="category-card" key={category.Category_ID}>
-              <Link to={`/category/${category.Category_Name}/${category.Category_ID}`}>
-              <div className="card-inner">
-                <div className="cat-card-front">
-                  <img
-                    src={category.Category_Photo}
-                    alt={category.Category_Name}
-                  />
-                  <h3>{category.Category_Name}</h3>
-                </div>
-                <div className="cat-card-back">
-                  <p>{category.Category_Description}</p>
-                </div>
-              </div>
-              </Link>
-            </div>
-          ))
-        ) : (
-          <p>No categories available.</p>
-        )}
+    <div className="product-container">
+      <h1>Technology Books Collection</h1>
+      <div className="product-list">
+        {books.map((book) => (
+          <ProductItem key={book.id} book={book} addToCart={addToCart} />
+        ))}
       </div>
-      <ul className="pagination">{links}</ul>
     </div>
   );
 }
 
-export default Category;
+export default Technology;
