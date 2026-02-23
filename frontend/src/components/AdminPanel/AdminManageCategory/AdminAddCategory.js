@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
@@ -17,6 +17,9 @@ function AdminAddCategory() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const handleSidebarToggle = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,77 +36,52 @@ function AdminAddCategory() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     let formErrors = {};
 
-    if (!categoryData.Category_Name) formErrors.Category_Name = 'Please enter Category Name.';
-    else if (categoryData.Category_Name.length > 25) {
+    if (!categoryData.Category_Name)
+      formErrors.Category_Name = 'Please enter Category Name.';
+    else if (categoryData.Category_Name.length > 25)
       formErrors.Category_Name = "Category name should not be more than 25 letters.";
-    }
-    if (!categoryData.Category_Photo && !categoryToEdit?.Category_Photo) {
+
+    if (!categoryData.Category_Photo && !categoryToEdit?.Category_Photo)
       formErrors.Category_Photo = 'Please enter Category photo.';
-    }
-    if (!categoryData.Category_Description) formErrors.Category_Description = 'Please enter Category description.';
-    else if (categoryData.Category_Description.length > 250) {
+
+    if (!categoryData.Category_Description)
+      formErrors.Category_Description = 'Please enter Category description.';
+    else if (categoryData.Category_Description.length > 250)
       formErrors.Category_Description = "Category Description should not be more than 250 letters.";
-    }
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       return;
     }
 
-    const formData = new FormData();
-    formData.append('Category_Name', categoryData.Category_Name);
-    formData.append('Category_Description', categoryData.Category_Description);
-    formData.append('IsActive', categoryData.IsActive);
-    if (categoryData.Category_Photo) {
-      formData.append('Category_Photo', categoryData.Category_Photo);
-    }
+    console.log("Category Data (Frontend Only):", categoryData);
 
-    try {
-      const url = categoryToEdit 
-        ? `http://127.0.0.1:8000/api/category/${categoryToEdit.Category_ID}/` // Added /api/
-        : 'http://127.0.0.1:8000/api/category/'; // Added /api/
-      const method = categoryToEdit ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method: method,
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to save category: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log("Category saved:", data);
-      navigate("/admin/manage-categories");
-    } catch (error) {
-      console.error('Error saving category:', error);
-      setErrors({ submit: error.message });
-    }
+    navigate("/admin/manage-categories");
   };
-
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const handleSidebarToggle = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
       <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
+
       <div className={`sidebar-main-section ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminSidebar isCollapsed={isSidebarCollapsed} />
       </div>
+
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
         <div className="admin-add-category-container admin-add-product-container">
+          
           <h1 className="admin-add-category-title admin-add-product-title">
             {categoryToEdit ? "Edit Category" : "Add New Category"}
           </h1>
+
           <form onSubmit={handleSubmit} className="admin-add-category-form admin-add-product-form">
+
             <div className="form-group">
               <label htmlFor="Category_Name">Category Name</label>
               <input
@@ -126,15 +104,6 @@ function AdminAddCategory() {
                 onChange={handleFileChange}
                 className="form-input"
               />
-              {categoryToEdit && categoryToEdit.Category_Photo && (
-                <div>
-                  <img
-                    src={`http://127.0.0.1:8000${categoryToEdit.Category_Photo}`}
-                    alt={categoryToEdit.Category_Name}
-                    className="category-photo-preview"
-                  />
-                </div>
-              )}
               {errors.Category_Photo && <div className="error">{errors.Category_Photo}</div>}
             </div>
 
@@ -167,6 +136,7 @@ function AdminAddCategory() {
             <button type="submit" className="submit-btn">
               {categoryToEdit ? "Update Category" : "Add Category"}
             </button>
+
             {errors.submit && <div className="error">{errors.submit}</div>}
           </form>
         </div>
