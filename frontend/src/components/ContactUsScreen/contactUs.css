@@ -1,0 +1,128 @@
+/* =====================================
+   CONTACT US - PREMIUM LIGHT BLUE THEME
+===================================== */
+
+/* PAGE BACKGROUND */
+
+.background-contact-us {
+    background: linear-gradient(to bottom, #c7e3f9, #e4f2fd);
+    padding: 100px 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* CONTAINER */
+
+.contact-us-container {
+    max-width: 820px;
+    width: 100%;
+    margin: 0 auto;
+    background: #f4f9ff;
+    border-radius: 30px;
+    box-shadow: 0 25px 50px rgba(31, 78, 121, 0.15);
+    padding: 60px 50px;
+    border: 1px solid rgba(31, 78, 121, 0.08);
+    transition: 0.3s ease;
+}
+
+.contact-us-container:hover {
+    box-shadow: 0 30px 60px rgba(31, 78, 121, 0.22);
+}
+
+/* HEADER */
+
+.contact-us-header {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 35px;
+    color: #1f4e79;
+    font-weight: 600;
+}
+
+/* FORM */
+
+.contact-us-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* LABELS */
+
+.contact-us-form label {
+    font-weight: 600;
+    color: #233647;
+}
+
+/* INPUTS */
+
+.contact-us-form input,
+.contact-us-form textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d0e6fa;
+    border-radius: 16px;
+    font-size: 15px;
+    background: #ffffff;
+    transition: 0.3s ease;
+}
+
+/* FOCUS */
+
+.contact-us-form input:focus,
+.contact-us-form textarea:focus {
+    outline: none;
+    border-color: #2f6da3;
+    box-shadow: 0 0 0 3px rgba(47, 109, 163, 0.2);
+}
+
+.contact-us-form textarea {
+    resize: vertical;
+    min-height: 130px;
+}
+
+/* BUTTON */
+
+.contact-us-form button {
+    padding: 15px;
+    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: 0.3s ease;
+    box-shadow: 0 12px 30px rgba(31, 78, 121, 0.3);
+}
+
+.contact-us-form button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(31, 78, 121, 0.4);
+}
+
+/* INFO SECTION */
+
+.contact-us-info {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 1rem;
+    color: #445b6e;
+}
+
+.contact-us-info p {
+    color: #445b6e;
+}
+
+.contact-us-info a {
+    color: #1f4e79;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+.contact-us-info a:hover {
+    text-decoration: underline;
+    color: #2f6da3;
+}
