@@ -1,73 +1,98 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Nav } from "react-bootstrap";
-// import SingleCategoryProduct from "./SingleCategoryProduct";
-import './CategoryProducts.css';
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import "./CategoryProducts.css";
 import SingleProduct from "../ProductScreen/SingleProduct";
 
 function CategoryProducts() {
-  //Using useState concept
-  const [categoryProducts, setcategoryProducts] = useState([]);
-  const baseUrl = "http://127.0.0.1:8000/api";
-  const [totalResult, setTotalResults] = useState(0); //Pagination
 
-  const {category_slug,Category_ID} = useParams();
+  const { category_slug, Category_ID } = useParams();
 
-  //Using useEffect concept
-  useEffect(() => {
-    fetchData(baseUrl + "/products/?category="+Category_ID);
-  }, [Category_ID]);
+  // Demo Product Data (Frontend Only)
+  const allProducts = [
+    {
+      Product_ID: 1,
+      Product_Name: "React Mastery",
+      Category_ID: "1",
+      Product_Price: 500,
+      IsActive: "1",
+      Product_Description: "Learn React step by step."
+    },
+    {
+      Product_ID: 2,
+      Product_Name: "JavaScript Pro",
+      Category_ID: "1",
+      Product_Price: 400,
+      IsActive: "1",
+      Product_Description: "Advanced JavaScript concepts."
+    },
+    {
+      Product_ID: 3,
+      Product_Name: "Fictional World",
+      Category_ID: "2",
+      Product_Price: 300,
+      IsActive: "1",
+      Product_Description: "Amazing fictional journey."
+    },
+    {
+      Product_ID: 4,
+      Product_Name: "History of India",
+      Category_ID: "3",
+      Product_Price: 350,
+      IsActive: "0", // Inactive product
+      Product_Description: "Deep dive into history."
+    }
+  ];
 
-  function fetchData(baseurl) {
-    fetch(baseurl)
-      .then((response) => response.json())
-      .then((data) => {
-        const activeProducts = data.data.filter(
-          (product) => product.IsActive === "1"
-        );
-        setcategoryProducts(activeProducts);
-        setTotalResults(activeProducts.length);
-      });
-  }
+  // Filter active products of selected category
+  const filteredProducts = allProducts.filter(
+    (product) =>
+      product.Category_ID === Category_ID &&
+      product.IsActive === "1"
+  );
 
-  function changeUrl(baseurl) {
-    // setbaseurl(baseurl);
-    fetchData(baseurl);
-  }
+  // Frontend Pagination
+  const limit = 2;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  var links = []; //creting links for pagination
-  var limit = 1; //how many data to show on the pages
-  var totalLinks = totalResult / limit;
-
-  for (let i = 1; i <= totalLinks; i++) {
-    links.push(
-      <li class="page-item">
-        <Link
-          onClick={() => changeUrl(baseUrl + `/products/?category=${Category_ID}&page=${i}`)}
-          to={`/category/${category_slug}/${Category_ID}/?page=${i}`}
-          class="page-link"
-        >
-          {i}
-        </Link>
-      </li>
-    );
-  }
+  const totalPages = Math.ceil(filteredProducts.length / limit);
+  const startIndex = (currentPage - 1) * limit;
+  const currentProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + limit
+  );
 
   return (
     <div className="product-container">
       <h1>Shop Our Book Collection</h1>
+
       <div className="product-list">
-      {categoryProducts.length > 0 ? (
-          categoryProducts.map((product) => (
-            <SingleProduct product={product} />
+        {currentProducts.length > 0 ? (
+          currentProducts.map((product) => (
+            <SingleProduct key={product.Product_ID} product={product} />
           ))
         ) : (
           <p>No active products available.</p>
         )}
       </div>
-      <ul className="pagination">{links}</ul>
+
+      {/* Frontend Pagination */}
+      <ul className="pagination">
+        {[...Array(totalPages)].map((_, index) => (
+          <li
+            key={index}
+            className={`page-item ${currentPage === index + 1 ? "active" : ""}`}
+          >
+            <button
+              className="page-link"
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
 
-export default CategoryProducts
+export default CategoryProducts;
