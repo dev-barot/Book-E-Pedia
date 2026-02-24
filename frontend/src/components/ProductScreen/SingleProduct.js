@@ -1,77 +1,73 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
-import { CartContext } from "../../Context";
 
 function SingleProduct(props) {
   const { product } = props;
-  const { cartData = [], setCartData } = useContext(CartContext);
   const navigate = useNavigate();
-  const baseUrl = "http://127.0.0.1:8000"; // Add the backend base URL
 
   const cartAddButtonHandler = () => {
-    let previousCart = localStorage.getItem("cartData");
-    let cartJson = JSON.parse(previousCart) || []; // Ensure it's an array
+    let existingCart =
+      JSON.parse(localStorage.getItem("cart")) || [];
 
-    // Check if the product already exists in the cart
-    const existingProduct = cartJson.find(
-      (item) => item.product.id === product.Product_ID
+    const existingProduct = existingCart.find(
+      (item) => item.id === product.id
     );
 
     if (existingProduct) {
-      // If the product already exists, redirect to the cart
-      navigate("/cart");
+      existingProduct.quantity += 1;
     } else {
-      // If the product does not exist, add it to the cart
-      const cartData = {
-        product: {
-          id: product.Product_ID,
-          prod_name: product.Product_Name,
-          price: product.Product_Price,
-          image: product.Cover_Photo,
-        },
-        user: {
-          id: 1,
-        },
+      existingCart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
         quantity: 1,
-      };
-
-      cartJson.push(cartData);
-      localStorage.setItem("cartData", JSON.stringify(cartJson));
-      setCartData(cartJson);
-      navigate("/cart"); // Redirect to cart after adding
+      });
     }
+
+    localStorage.setItem("cart", JSON.stringify(existingCart));
+    navigate("/cart");
   };
 
   return (
     <div className="product">
+
       <Nav.Link
         as={Link}
-        to={`/product/${product.Product_Name}/${product.Product_ID}`}
+        to={`/product/${product.name}/${product.id}`}
         className="product-link"
       >
         <div className="product-image">
           <img
-            src={`${baseUrl}${product.Cover_Photo}`} // Prepend the backend base URL
-            alt={product.Product_Name}
-            onError={() => console.log(`Failed to load image: ${baseUrl}${product.Cover_Photo}`)} // Add error logging
+            src={product.image}
+            alt={product.name}
           />
         </div>
       </Nav.Link>
+
       <div className="product-details">
+
         <Nav.Link
           as={Link}
-          to={`/product/${product.Product_Name}/${product.Product_ID}`}
+          to={`/product/${product.name}/${product.id}`}
           className="product-link"
         >
           <div className="product-header">
-            <h2 className="product-name">{product.Product_Name}</h2>
-            <p className="author-name">By {product.Author}</p>
+            <h2 className="product-name">{product.name}</h2>
+            <p className="author-name">By {product.author}</p>
           </div>
-          <p className="product-description">{product.Product_Description}</p>
+
+          <p className="product-description">
+            {product.description}
+          </p>
         </Nav.Link>
+
         <div className="product-footer">
-          <p className="product-price">Rs. {product.Product_Price}</p>
+          <p className="product-price">
+            Rs. {product.price}
+          </p>
+
           <button
             type="button"
             onClick={cartAddButtonHandler}
@@ -80,6 +76,7 @@ function SingleProduct(props) {
             Add to Cart
           </button>
         </div>
+
       </div>
     </div>
   );
