@@ -5,83 +5,48 @@ import "./EmployeeManageOrders.css";
 
 function EmployeeManageOrders() {
   const [orders, setOrders] = useState([]);
-  const statusOptions = ["Pending", "Processing","Shipped", "Completed"];
+  const statusOptions = ["Pending", "Processing", "Shipped", "Completed"];
 
+  // ✅ Load Orders from localStorage
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        console.log("Fetching orders from http://localhost:8000/api/master-orders/");
-        const response = await fetch("http://localhost:8000/api/master-orders/");
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.log("Error details:", errorText);
-          throw new Error("Failed to fetch orders");
-        }
-        const data = await response.json();
-        console.log("Response data:", data);
-        console.log("Order details:", data.orders);
-        setOrders(data.orders || []);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    };
-
-    fetchOrders();
+    const storedOrders =
+      JSON.parse(localStorage.getItem("orders")) || [];
+    setOrders(storedOrders);
   }, []);
 
-  const handleStatusChange = async (orderId, newStatus) => {
-    try {
-      const csrfToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("csrftoken="))
-        ?.split("=")[1];
-      if (!csrfToken) throw new Error("CSRF token not found");
+  const handleStatusChange = (orderId, newStatus) => {
+    const updatedOrders = orders.map((order) =>
+      order.id === orderId
+        ? { ...order, Order_Status: newStatus }
+        : order
+    );
 
-      const response = await fetch(
-        `http://localhost:8000/api/masterorders/${orderId}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-          },
-          credentials: "include",
-          body: JSON.stringify({ Order_Status: newStatus }),
-        }
-      );
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log("Error details:", errorText);
-        throw new Error("Failed to update status");
-      }
-      setOrders(
-        orders.map((order) =>
-          order.MasterOrder_ID === orderId
-            ? { ...order, Order_Status: newStatus }
-            : order
-        )
-      );
-      console.log(`Status updated to ${newStatus} for order ${orderId}`);
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
+    setOrders(updatedOrders);
+    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+    console.log(`Status updated to ${newStatus} for order ${orderId}`);
   };
 
   const handleSidebarToggle = () => {
-    // Assuming this is part of your existing toggle logic
+    // Optional toggle logic if needed
   };
 
   return (
-    <div className={`dashboard-main-container`}>
-      <div className={`top-main-dashboard-navbar`}>
+    <div className="dashboard-main-container">
+      <div className="top-main-dashboard-navbar">
         <EmployeeNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
-      <div className={`sidebar-main-section`}>
+
+      <div className="sidebar-main-section">
         <EmployeeSidebar />
       </div>
-      <div className={`dashboard-main-content`}>
+
+      <div className="dashboard-main-content">
         <div className="admin-view-book-type-container">
-          <h1 className="admin-view-book-type-title">Manage Orders</h1>
+          <h1 className="admin-view-book-type-title">
+            Manage Orders
+          </h1>
+
           <table className="admin-view-book-type-table">
             <thead>
               <tr>
@@ -94,6 +59,7 @@ function EmployeeManageOrders() {
                 <th>Order Status</th>
               </tr>
             </thead>
+
             <tbody>
               {orders.length === 0 ? (
                 <tr>
@@ -101,27 +67,41 @@ function EmployeeManageOrders() {
                 </tr>
               ) : (
                 orders.map((order) => (
-                  <tr key={order.MasterOrder_ID}>
-                    <td>{order.MasterOrder_ID}</td>
+                  <tr key={order.id}>
+                    <td>{order.id}</td>
                     <td>{order.Cust_ID || "N/A"}</td>
                     <td>{order.Emp_ID || "N/A"}</td>
                     <td>
                       {order.Order_DateTime
-                        ? new Date(order.Order_DateTime).toLocaleDateString()
-                        : "Invalid Date"}
+                        ? new Date(
+                            order.Order_DateTime
+                          ).toLocaleDateString()
+                        : "N/A"}
                     </td>
                     <td>{order.T_Quantity || 0}</td>
-                    <td>Rs. {parseFloat(order.T_Amount || 0).toFixed(2)}</td>
+                    <td>
+                      Rs.{" "}
+                      {parseFloat(order.T_Amount || 0).toFixed(
+                        2
+                      )}
+                    </td>
+
                     <td>
                       {statusOptions.map((status) => (
                         <div key={status}>
                           <input
                             type="radio"
-                            name={`status-${order.MasterOrder_ID}`}
+                            name={`status-${order.id}`}
                             value={status}
-                            checked={order.Order_Status === status}
-                            onChange={() => handleStatusChange(order.MasterOrder_ID, status)}
-                            disabled={order.Order_Status === status}
+                            checked={
+                              order.Order_Status === status
+                            }
+                            onChange={() =>
+                              handleStatusChange(
+                                order.id,
+                                status
+                              )
+                            }
                           />
                           <label>{status}</label>
                         </div>
@@ -137,4 +117,5 @@ function EmployeeManageOrders() {
     </div>
   );
 }
+
 export default EmployeeManageOrders;
