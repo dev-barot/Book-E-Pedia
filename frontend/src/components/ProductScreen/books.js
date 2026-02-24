@@ -9,7 +9,7 @@ import book8 from "./alchemist.jpeg";
 
 export const books = [
   {
-    id: "SAGEThePower",
+    id: "sage-the-power",
     name: "SAGE The Power",
     author: "Stephanie Folder",
     price: 200,
@@ -18,7 +18,7 @@ export const books = [
     formats: ["Audio Book", "Video Book", "E-book", "Physical Book"],
   },
   {
-    id: "MyBookCover",
+    id: "my-book-cover",
     name: "My Book Cover",
     author: "Harper Lee",
     price: 350,
@@ -27,7 +27,7 @@ export const books = [
     formats: ["E-book", "Physical Book"],
   },
   {
-    id: "TheUntoldJourney",
+    id: "the-untold-journey",
     name: "The Untold Journey",
     author: "John Doe",
     price: 300,
@@ -36,25 +36,25 @@ export const books = [
     formats: ["Audio Book", "E-book"],
   },
   {
-    id: "HarryPotter",
+    id: "harry-potter",
     name: "Harry Potter",
     author: "J.K. Rowling",
     price: 400,
     image: book6,
-    description: "A thrilling journey through time.",
+    description: "A magical journey into the wizarding world.",
     formats: ["Video Book", "Physical Book"],
   },
   {
-    id: "EpicAdventures",
+    id: "epic-adventures",
     name: "Epic Adventures",
     author: "Jane Austen",
     price: 325,
     image: book5,
-    description: "A thrilling journey through time.",
+    description: "A thrilling journey across time and destiny.",
     formats: ["Audio Book", "E-book"],
   },
   {
-    id: "TheAlchemist",
+    id: "the-alchemist",
     name: "The Alchemist",
     author: "Paulo Coelho",
     price: 300,
@@ -63,7 +63,7 @@ export const books = [
     formats: ["Audio Book", "Physical Book"],
   },
   {
-    id: "ToKillAMockingbird",
+    id: "to-kill-a-mockingbird",
     name: "To Kill a Mockingbird",
     author: "Harper Lee",
     price: 280,
@@ -72,7 +72,7 @@ export const books = [
     formats: ["E-book", "Physical Book"],
   },
   {
-    id: "TheGreatGatsby",
+    id: "the-great-gatsby",
     name: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
     price: 350,
