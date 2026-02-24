@@ -1,13 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import loginimg from "./istockphoto-1218656325-612x612.png";
 import { FormGroup, Label, Input } from "reactstrap";
-import axios from "axios";
 import { UserContext } from "../../Context";
 
 function Login() {
-  const baseUrl = "http://127.0.0.1:8000/api";
   const [formError, setFormError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [loginFormData, setLoginFormData] = useState({
@@ -15,6 +12,7 @@ function Login() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
 
@@ -31,46 +29,44 @@ function Login() {
     const adminEmail = "admin";
     const adminPassword = "admin123";
 
+    const dummyUserEmail = "user@gmail.com";
+    const dummyUserPassword = "User@123";
+
+    // ✅ Admin Login
     if (
       loginFormData.email === adminEmail &&
       loginFormData.password === adminPassword
     ) {
-      localStorage.setItem("admin_login", true);
+      localStorage.setItem("admin_login", "true");
       navigate("/admin/dashboard");
-    } else {
-      axios
-        .post(
-          `${baseUrl}/login/`,
-          {
-            email: loginFormData.email,
-            password: loginFormData.password,
-          },
-          { headers: { "Content-Type": "application/json" } }
-        )
-        .then((response) => {
-          if (response.data.bool === false) {
-            setFormError(true);
-            setErrorMsg(response.data.msg);
-          } else {
-            const userData = {
-              Cust_ID: response.data.user_id,
-              Email: loginFormData.email,
-              Fname: response.data.user,
-              login: true,
-            };
-            localStorage.setItem("customer_login", "true");
-            localStorage.setItem("customer_username", response.data.user);
-            localStorage.setItem("customer_id", response.data.user_id);
-            localStorage.setItem("user", JSON.stringify(userData));
-            setUser(userData);
-            navigate("/customer/dashboard");
-          }
-        })
-        .catch(() => {
-          setFormError(true);
-          setErrorMsg("An error occurred. Please try again.");
-        });
+      return;
     }
+
+    // ✅ Dummy Customer Login
+    if (
+      loginFormData.email === dummyUserEmail &&
+      loginFormData.password === dummyUserPassword
+    ) {
+      const userData = {
+        Cust_ID: 1,
+        Email: dummyUserEmail,
+        Fname: "Mit",
+        login: true,
+      };
+
+      localStorage.setItem("customer_login", "true");
+      localStorage.setItem("customer_username", "Mit");
+      localStorage.setItem("customer_id", "1");
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      setUser(userData);
+      navigate("/customer/dashboard");
+      return;
+    }
+
+    // ❌ Invalid Login
+    setFormError(true);
+    setErrorMsg("Invalid email or password.");
   };
 
   const buttonEnable =
@@ -83,9 +79,6 @@ function Login() {
     <div className="login-page">
       <div className="login-card">
 
-      
-
-        {/* RIGHT SIDE FORM */}
         <div className="login-right">
           <h2 className="login-title">Welcome Back</h2>
           <p className="login-subtitle">
@@ -145,8 +138,8 @@ function Login() {
               </div>
             </FormGroup>
           </form>
-        </div>
 
+        </div>
       </div>
     </div>
   );
