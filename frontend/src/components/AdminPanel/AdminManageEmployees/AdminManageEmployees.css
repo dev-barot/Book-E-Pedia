@@ -48,7 +48,7 @@
 .admin-view-book-type-table th {
     padding: 15px;
     text-align: left;
-    background: linear-gradient(135deg, #1f4e79, #2f6da3);
+    background: linear-gradient(135deg, #1f4e79, #2f6da3) !important;
     color: #ffffff;
     font-weight: 600;
 }
@@ -120,4 +120,74 @@
     padding: 25px;
     color: #556877;
     font-style: italic;
+}
+.add-employee-btn {
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border-radius: 30px;
+}
+
+/* Optional: make it look actually premium instead of stretched toast */
+.add-employee-btn:hover {
+    transform: translateY(-2px);
+}
+.admin-header-actions {
+    display: flex;
+    justify-content: center;
+}
+/* ===============================
+   ACTION BAR (FULL WIDTH)
+================================ */
+
+.admin-action-bar {
+    width: 100%;
+    border-radius: 40px;
+    margin: 20px 0 30px;
+    background: linear-gradient(135deg, #1f4e79, #0d2b45);
+
+}
+
+/* Make it intentionally full width */
+.action-bar-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+    border-radius: 40px;
+
+      /* FIX TEXT VISIBILITY */
+    font-weight: 600;
+}
+.add-btn-content {
+    color : white;
+    font-size: x-large;
+     font-weight: 600;
+     
+}
+.action-bar-btn .add-btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.action-bar-btn i {
+    color: #000000;
+    font-size: 1rem;
+}
+/* Optional: subtle elevation */
+.action-bar-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ===============================
+   CENTER TITLE
+================================ */
+
+.admin-header-titles.centered {
+    text-align: center;
+    margin-bottom: 30px;
 }

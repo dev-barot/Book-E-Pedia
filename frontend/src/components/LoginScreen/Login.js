@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import { FormGroup, Label, Input } from "reactstrap";
 import { UserContext } from "../../Context";
 
 function Login() {
@@ -76,70 +75,94 @@ function Login() {
     setShowPassword(!showPassword);
 
   return (
-    <div className="login-page">
-      <div className="login-card">
+    <div className="login-lux-page">
+      <div className="container-xxl py-5 d-flex justify-content-center align-items-center min-vh-100">
+        
+        <div className="login-glass-card p-4 p-md-5 w-100">
+          <div className="row align-items-center h-100">
+            
+            {/* Left Header Box */}
+            <div className="col-md-5 text-center text-md-start mb-5 mb-md-0 position-relative">
+              <span className="badge-lux mb-4 d-inline-block">Book-E-Pedia</span>
+              <h1 className="login-lux-title">Welcome Back</h1>
+              <p className="login-lux-subtitle pe-md-4">
+                Login to continue your reading journey and discover your next great book. We're excited to see you again!
+              </p>
+              {/* Subtle glass divider on desktop */}
+              <div className="login-divider d-none d-md-block"></div>
+            </div>
 
-        <div className="login-right">
-          <h2 className="login-title">Welcome Back</h2>
-          <p className="login-subtitle">
-            Login to continue your reading journey.
-          </p>
+            {/* Right Form Box */}
+            <div className="col-md-7 ps-md-5">
+              <form onSubmit={submitHandler} className="login-lux-form">
+                
+                <div className="mb-4">
+                  <label className="login-lux-label">Email Address</label>
+                  <div className="input-icon-wrapper">
+                    <i className="fa-solid fa-envelope input-lux-icon"></i>
+                    <input
+                      name="email"
+                      type="text"
+                      className="form-control-lux-auth"
+                      placeholder="Enter your email"
+                      value={loginFormData.email}
+                      onChange={inputHandler}
+                      required
+                    />
+                  </div>
+                </div>
 
-          <form onSubmit={submitHandler}>
-            <FormGroup>
-              <Label>Email</Label>
-              <Input
-                name="email"
-                type="text"
-                placeholder="Enter your email"
-                value={loginFormData.email}
-                onChange={inputHandler}
-                required
-              />
+                <div className="mb-4">
+                  <label className="login-lux-label">Password</label>
+                  <div className="input-icon-wrapper position-relative">
+                    <i className="fa-solid fa-lock input-lux-icon"></i>
+                    <input
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      className="form-control-lux-auth"
+                      placeholder="Enter your password"
+                      value={loginFormData.password}
+                      onChange={inputHandler}
+                      required
+                    />
+                    <span
+                      className="password-toggle-lux"
+                      onClick={togglePasswordVisibility}
+                    >
+                      <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                    </span>
+                  </div>
+                </div>
 
-              <Label>Password</Label>
+                {formError && (
+                  <div className="login-error-lux mb-3">
+                    <i className="fa-solid fa-circle-exclamation me-2"></i> {errorMsg}
+                  </div>
+                )}
 
-              <div className="password-wrapper">
-                <Input
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={loginFormData.password}
-                  onChange={inputHandler}
-                  required
-                />
-                <span
-                  className="toggle-text"
-                  onClick={togglePasswordVisibility}
+                <button
+                  type="submit"
+                  disabled={!buttonEnable}
+                  className="btn-login-lux w-100 mt-3"
                 >
-                  {showPassword ? "Hide" : "Show"}
-                </span>
-              </div>
+                  Sign In
+                </button>
 
-              {formError && (
-                <div className="error-message">{errorMsg}</div>
-              )}
+                <div className="login-lux-links mt-4 pt-4 d-flex justify-content-between align-items-center border-top">
+                  <span onClick={() => navigate("/customer/forget-password")} className="text-muted-lux cursor-pointer hover-lux">
+                    Forgot Password?
+                  </span>
+                  <span onClick={() => navigate("/register")} className="text-primary-lux fw-bold cursor-pointer hover-lux">
+                    Create Account
+                  </span>
+                </div>
 
-              <button
-                type="submit"
-                disabled={!buttonEnable}
-                className="login-btn"
-              >
-                Login
-              </button>
+              </form>
+            </div>
 
-              <div className="login-links">
-                <span onClick={() => navigate("/customer/forget-password")}>
-                  Forgot Password?
-                </span>
-                <span onClick={() => navigate("/register")}>
-                  Create Account
-                </span>
-              </div>
-            </FormGroup>
-          </form>
-
+          </div>
         </div>
+        
       </div>
     </div>
   );

@@ -1,18 +1,17 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Nav } from "react-bootstrap";
+import "./SingleProduct.css";
 
 function SingleProduct(props) {
   const { product } = props;
   const navigate = useNavigate();
 
-  const cartAddButtonHandler = () => {
-    let existingCart =
-      JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existingProduct = existingCart.find(
-      (item) => item.id === product.id
-    );
+  const cartAddButtonHandler = (e) => {
+    e.preventDefault(); 
+    e.stopPropagation();
+    
+    let existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingProduct = existingCart.find((item) => item.id === product.id);
 
     if (existingProduct) {
       existingProduct.quantity += 1;
@@ -31,54 +30,39 @@ function SingleProduct(props) {
   };
 
   return (
-    <div className="product">
-
-      <Nav.Link
-        as={Link}
-        to={`/product/${product.name}/${product.id}`}
-        className="product-link"
-      >
-        <div className="product-image">
-          <img
-            src={product.image}
-            alt={product.name}
-          />
+    <Link to={`/product/${product.name}/${product.id}`} className="product-bar-link">
+      <div className="product-bar-lux">
+        
+        {/* Left: Image */}
+        <div className="product-bar-image">
+          <img src={product.image} alt={product.name} />
         </div>
-      </Nav.Link>
 
-      <div className="product-details">
-
-        <Nav.Link
-          as={Link}
-          to={`/product/${product.name}/${product.id}`}
-          className="product-link"
-        >
-          <div className="product-header">
-            <h2 className="product-name">{product.name}</h2>
-            <p className="author-name">By {product.author}</p>
+        {/* Right: Content */}
+        <div className="product-bar-content">
+          
+          <div className="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <h3 className="product-bar-title">{product.name}</h3>
+              <p className="product-bar-author">By {product.author}</p>
+            </div>
           </div>
 
-          <p className="product-description">
-            {product.description}
+          <p className="product-bar-desc">
+            {product.description && product.description.substring(0, 150)}...
           </p>
-        </Nav.Link>
+          
+          <div className="product-bar-footer">
+            <span className="product-bar-price">Rs. {product.price}</span>
+            <button className="btn-add-cart-bar" onClick={cartAddButtonHandler}>
+              Add to Cart
+            </button>
+          </div>
 
-        <div className="product-footer">
-          <p className="product-price">
-            Rs. {product.price}
-          </p>
-
-          <button
-            type="button"
-            onClick={cartAddButtonHandler}
-            className="add-to-cart"
-          >
-            Add to Cart
-          </button>
         </div>
 
       </div>
-    </div>
+    </Link>
   );
 }
 

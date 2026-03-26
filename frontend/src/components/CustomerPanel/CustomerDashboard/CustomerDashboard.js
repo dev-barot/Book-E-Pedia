@@ -51,52 +51,53 @@ function CustomerDashboard() {
   };
 
   return (
-    <div className="cust-body">
+    <div className="cust-lux-body">
       <CustomerSidebar />
 
-      <div className="cust-main-content">
+      <div className="cust-lux-main">
 
         {/* Profile Summary Card */}
-        <div className="cust-profile-card">
+        <div className="cust-profile-glass mb-5">
           <div className="cust-profile-details">
-            <h1>Welcome, {customerName}</h1>
-            <p>Total Orders: {totalOrders}</p>
-            <Link to="/profile/edit" className="cust-profile-edit-btn">
+            <h1 className="cust-profile-title">Welcome, {customerName}</h1>
+            <p className="cust-profile-stat">Total Orders: <span className="fw-bold text-dark">{totalOrders}</span></p>
+            <Link to="/profile/edit" className="btn-cust-lux mt-3">
               Edit Profile
             </Link>
           </div>
 
-          <div className="cust-profile-avatar">
+          <div className="cust-profile-avatar-lux">
             <img src={p1} alt="Profile Avatar" />
           </div>
         </div>
 
         {/* Library Section */}
-        <div className="library-container">
-          <h2>My Library</h2>
+        <div className="library-lux-container">
+          <h2 className="library-lux-title mb-4">My Library</h2>
 
           {orderItems.length > 0 ? (
-            <div className="cust-library">
+            <div className="cust-library-grid">
               {orderItems.map((book) => (
-                <div key={book.id} className="cust-book-card">
+                <div key={book.id} className="cust-book-glass-card">
 
-                  <Link to={`/product-detail/${book.id}`}>
-                    <img
-                      src={book.image}
-                      alt="Book Cover"
-                      className="cust-book-image"
-                    />
-                  </Link>
+                  <div className="cust-book-img-box">
+                    <Link to={`/product-detail/${book.id}`}>
+                      <img
+                        src={book.image}
+                        alt="Book Cover"
+                      />
+                    </Link>
+                  </div>
 
-                  <div className="cust-book-details">
-                    <h3>{book.name}</h3>
+                  <div className="cust-book-lux-details">
+                    <h3 className="cust-book-lux-name">{book.name}</h3>
 
-                    <div className="cust-book-formats">
-
+                    <div className="cust-book-lux-formats">
                       {book.formats.includes("Audio Book") && (
                         <NavLink
                           to="#"
                           title="Audio Book"
+                          className="format-icon-lux"
                           onClick={(e) => {
                             e.preventDefault();
                             handleAudioClick(book);
@@ -110,6 +111,7 @@ function CustomerDashboard() {
                         <NavLink
                           to="#"
                           title="Video Book"
+                          className="format-icon-lux"
                           onClick={(e) => {
                             e.preventDefault();
                             handleVideoClick(book);
@@ -123,6 +125,7 @@ function CustomerDashboard() {
                         <NavLink
                           to="#"
                           title="E-Book"
+                          className="format-icon-lux"
                           onClick={(e) => {
                             e.preventDefault();
                             handleEBookClick(book);
@@ -131,7 +134,6 @@ function CustomerDashboard() {
                           <i className="fa fa-book-reader"></i>
                         </NavLink>
                       )}
-
                     </div>
                   </div>
 
@@ -139,9 +141,11 @@ function CustomerDashboard() {
               ))}
             </div>
           ) : (
-            <p className="cust-empty-library">
-              Your library is empty. Start exploring books now!
-            </p>
+            <div className="cust-empty-glass text-center">
+              <i className="fa-solid fa-book-open-reader empty-icon-lux mb-3"></i>
+              <p>Your library is empty. Start exploring books now!</p>
+              <Link to="/products" className="btn-cust-lux mt-2">Browse the Shop</Link>
+            </div>
           )}
         </div>
 

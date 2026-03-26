@@ -9,7 +9,7 @@
   width: 280px;
   height: 100vh;
   overflow-y: auto;
-
+  overflow-x: hidden;
   /* Light Blue Gradient */
   background: linear-gradient(to bottom, #2f6da3, #4f8ec9);
   box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
@@ -32,6 +32,7 @@
 /* BRAND */
 .brand-title,
 .navbar-brand h3 {
+  margin-top: 30px;
   font-size: 18px;
   font-weight: 700;
   color: white !important;
@@ -46,9 +47,11 @@
   display: flex;
   align-items: center;
   padding: 12px;
+  margin-left: 50px !important;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
+  background: rgba(255, 255, 255, 0.674);
+  color: rgb(3, 0, 0);
+  margin-top: 50px !important;
 }
 
 .profile-icon {
@@ -68,7 +71,7 @@
   color: white !important;
   text-decoration: none;
   font-weight: 500;
-
+  font-size: large;
   transition: all 0.3s ease;
   background: transparent !important;
 }
@@ -83,15 +86,21 @@
 /* HOVER */
 .nav-link-title:hover {
   background: rgba(255, 255, 255, 0.2) !important;
-  transform: translateX(5px);
+  transform: translateX(20px);
+  font-size: larger;
+  font-weight: 600;
+  padding-left: 20px;
 }
 
 /* ACTIVE FIX (NO WHITE) */
 .sidebar .nav-link-title.active {
   background: rgba(255, 255, 255, 0.25) !important;
   color: #ffffff !important;
+
+  transform: translateX(20px);
+  font-size: larger;
   font-weight: 600;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  padding-left: 20px;  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar .nav-link-title.active i {

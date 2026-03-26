@@ -1,42 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
-import AdminNavbar from '../AdminNavbar/AdminNavbar';
 import './AdminManageProducts.css';
-
+import AdminNavbar from '../AdminNavbar/AdminNavbar';
 function AdminViewProducts() {
-
-  const [products, setProducts] = useState([
-    {
-      Product_ID: 1,
-      Name: "Example Book",
-      Author: "John Doe",
-      Price: 19.99,
-      Stock: 25
-    },
-    {
-      Product_ID: 2,
-      Name: "Another Book",
-      Author: "Jane Smith",
-      Price: 29.99,
-      Stock: 10
-    }
-  ]);
-
   const handleEdit = (productId) => {
     alert(`Edit product with ID: ${productId}`);
+    // Add navigation or modal logic for editing
   };
 
   const handleDelete = (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      setProducts(products.filter(product => product.Product_ID !== productId));
+      alert(`Product with ID: ${productId} deleted.`);
+      // Add delete logic (e.g., API call)
     }
   };
 
   return (
     <div>
-      <AdminSidebar />
-      <AdminNavbar />
-
+          <AdminSidebar />
+          <AdminNavbar/>
       <div className="view-products-temp content" style={{ marginLeft: "500px" }}>
         <div className="admin-panel">
           <main className="main-content">
@@ -45,7 +27,6 @@ function AdminViewProducts() {
                 <div className="header">
                   <h1>Manage Products</h1>
                 </div>
-
                 <table>
                   <thead>
                     <tr>
@@ -57,47 +38,37 @@ function AdminViewProducts() {
                       <th>Actions</th>
                     </tr>
                   </thead>
-
                   <tbody>
-                    {products.length === 0 ? (
-                      <tr>
-                        <td colSpan="6">No products available</td>
-                      </tr>
-                    ) : (
-                      products.map((product) => (
-                        <tr key={product.Product_ID}>
-                          <td>{product.Product_ID}</td>
-                          <td>{product.Name}</td>
-                          <td>{product.Author}</td>
-                          <td>${product.Price}</td>
-                          <td>{product.Stock}</td>
-                          <td className="actions">
-                            <button
-                              className="edit"
-                              onClick={() => handleEdit(product.Product_ID)}
-                            >
-                              <i className="fas fa-edit"></i> Edit
-                            </button>
-
-                            <button
-                              className="delete"
-                              onClick={() => handleDelete(product.Product_ID)}
-                            >
-                              <i className="fas fa-trash-alt"></i> Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
+                    {/* Sample data - replace with dynamic data */}
+                    <tr>
+                      <td>1</td>
+                      <td>Example Book</td>
+                      <td>John Doe</td>
+                      <td>$19.99</td>
+                      <td>25</td>
+                      <td className="actions">
+                        <button
+                          className="edit"
+                          onClick={() => handleEdit(1)}
+                        >
+                          <i className="fas fa-edit"></i> Edit
+                        </button>
+                        <button
+                          className="delete"
+                          onClick={() => handleDelete(1)}
+                        >
+                          <i className="fas fa-trash-alt"></i> Delete
+                        </button>
+                      </td>
+                    </tr>
+                    {/* Map dynamic rows here */}
                   </tbody>
-
                 </table>
               </div>
             </section>
           </main>
         </div>
       </div>
-
       <a href="#" className="btn btn-lg btn-primary btn-lg-square back-to-top">
         <i className="bi bi-arrow-up"></i>
       </a>

@@ -1,8 +1,8 @@
 /* =====================================
-   REGISTRATION PAGE - BLUE THEME
+   REGISTRATION - LIGHT BLUE THEME
 ===================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -11,7 +11,9 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* BODY BACKGROUND */
+/* ===============================
+   PAGE BACKGROUND
+================================ */
 
 .reg-body {
   display: flex;
@@ -19,28 +21,33 @@
   align-items: center;
   min-height: 100vh;
   width: 100vw;
-  background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+  background: linear-gradient(to bottom, #c7e3f9, #e4f2fd);
   padding: 40px 20px;
 }
 
-/* CONTAINER */
+/* ===============================
+   CONTAINER
+================================ */
 
 .reg-container {
   max-width: 900px;
   width: 100%;
-  padding: 50px 40px;
+  padding: 40px 30px;
   border-radius: 25px;
   background: #f4f9ff;
-  box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
+  box-shadow: 0 25px 50px rgba(31, 78, 121, 0.15);
+  border: 1px solid rgba(31, 78, 121, 0.08);
 }
 
-/* TITLE */
+/* ===============================
+   TITLE
+================================ */
 
 .reg-container .reg-title {
   font-size: 30px;
-  font-weight: 600;
-  margin-bottom: 35px;
+  font-weight: 700;
   text-align: center;
+  margin-bottom: 30px;
   color: #1f4e79;
   position: relative;
 }
@@ -50,46 +57,52 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -12px;
+  bottom: -10px;
   height: 4px;
-  width: 70px;
+  width: 60px;
   border-radius: 10px;
   background: linear-gradient(135deg, #1f4e79, #2f6da3);
 }
 
-/* FORM GRID */
+/* ===============================
+   FORM GRID
+================================ */
 
 .reg-content form .reg-user-details {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
 form .reg-user-details .reg-input-box {
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   width: calc(50% - 15px);
 }
 
-/* LABELS */
+/* ===============================
+   LABELS
+================================ */
 
 form .reg-input-box span.reg-details {
   display: block;
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-weight: 600;
+  margin-bottom: 6px;
   color: #233647;
 }
 
-/* INPUT FIELDS */
+/* ===============================
+   INPUT FIELDS
+================================ */
 
 .reg-user-details .reg-input-box input,
 .reg-user-details .reg-input-box select {
-  height: 50px;
+  height: 48px;
   width: 100%;
   font-size: 15px;
-  border-radius: 12px;
+  border-radius: 14px;
   padding-left: 15px;
-  border: 1px solid #c7e3f9;
+  border: 1px solid #d0e6fa;
   background: #ffffff;
   transition: 0.3s ease;
 }
@@ -97,11 +110,13 @@ form .reg-input-box span.reg-details {
 .reg-user-details .reg-input-box input:focus,
 .reg-user-details .reg-input-box select:focus {
   outline: none;
-  border-color: #1f4e79;
-  box-shadow: 0 0 0 3px rgba(31, 78, 121, 0.15);
+  border-color: #2f6da3;
+  box-shadow: 0 0 0 3px rgba(47, 109, 163, 0.2);
 }
 
-/* GENDER + DOB */
+/* ===============================
+   GENDER & DOB
+================================ */
 
 form .gender-date-wrapper {
   display: flex;
@@ -114,44 +129,54 @@ form .gender-date-wrapper .reg-input-box {
   width: calc(50% - 15px);
 }
 
-/* ERROR */
+/* ===============================
+   ERROR STYLING
+================================ */
 
 .error-input {
-  border-color: #b71c1c !important;
+  border-color: #d32f2f !important;
 }
 
 .error-message {
-  color: #b71c1c;
+  color: #d32f2f;
   font-size: 14px;
   margin-top: 5px;
 }
 
-/* SUBMIT BUTTON */
+/* ===============================
+   SUBMIT BUTTON
+================================ */
 
-.reg-container form .reg-button input[type="submit"] {
-  height: 55px !important;
-  width: 100% !important;
-  border-radius: 40px !important;
-  border: none !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  background: linear-gradient(135deg, #1f4e79, #2f6da3) !important;
-  color: white !important;
-  box-shadow: 0 12px 30px rgba(31, 78, 121, 0.35) !important;
+.reg-button {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  margin: 40px auto 10px auto;
+  padding: 14px 0;
+  border: none;
+  border-radius: 50px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #1f4e79, #2f6da3);
+  box-shadow: 0 12px 30px rgba(31, 78, 121, 0.35);
+  transition: all 0.3s ease;
 }
 
-.reg-container form .reg-button input[type="submit"]:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 18px 40px rgba(31, 78, 121, 0.45) !important;
+.reg-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(31, 78, 121, 0.45);
 }
 
-.reg-container form .reg-button input[type="submit"]:active {
-  transform: scale(0.97) !important;
+.reg-button:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(31, 78, 121, 0.35);
 }
 
-/* RESPONSIVE */
+/* ===============================
+   RESPONSIVE
+================================ */
 
 @media (max-width: 768px) {
 
@@ -166,5 +191,4 @@ form .gender-date-wrapper .reg-input-box {
   form .gender-date-wrapper .reg-input-box {
     width: 100%;
   }
-
 }

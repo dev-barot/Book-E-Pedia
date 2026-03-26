@@ -1,148 +1,176 @@
 /* =====================================
-   CUSTOMER PROFILE EDIT - BLUE THEME
+   CUSTOMER PROFILE - LUXURY THEME
 ===================================== */
 
-.cust-profile-body {
-    display: flex;
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
+/* HEADER */
+.profile-header-lux {
+  padding: 30px 40px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(31, 56, 82, 0.05);
 }
 
-/* MAIN CONTAINER */
-
-.cust-profile-container {
-    background: #f4f9ff;
-    border-radius: 25px;
-    box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    margin-left: 350px;
-    margin-top: 60px;
-    margin-bottom: 40px;
-    padding: 40px;
+.profile-title-lux {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1A3B5C;
+  margin-bottom: 5px;
+  letter-spacing: -0.5px;
 }
 
-/* WELCOME MESSAGE */
-
-.welcome-message {
-    text-align: center;
-    margin-bottom: 40px;
+.profile-subtitle-lux {
+  font-size: 1.05rem;
+  color: #556877;
+  margin: 0;
 }
 
-.welcome-message h1 {
-    background: #eaf4ff;
-    border-radius: 20px;
-    padding: 20px;
-    color: #1f4e79;
-    font-size: 28px;
-    font-weight: 600;
+/* MAIN GLASS CARD */
+.profile-glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 30px rgba(31, 56, 82, 0.08);
+  padding: 40px;
 }
 
-/* FORM CONTAINER */
-
-.cust-profile-form-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+.profile-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+  padding-bottom: 20px;
 }
 
-/* FORM GROUP */
-
-.cust-profile-form-group {
-    flex: 1 1 calc(50% - 20px);
-    margin-bottom: 20px;
+.profile-section-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1A3B5C;
+  margin: 0;
 }
 
-.cust-profile-form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #233647;
-    font-weight: 600;
-    font-size: 16px;
+.profile-success-msg {
+  background: #d4edda;
+  color: #155724;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-/* INPUTS */
-
-.cust-profile-form-group input,
-.cust-profile-form-group select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #c7e3f9;
-    border-radius: 10px;
-    background-color: #ffffff;
-    font-size: 15px;
-    transition: 0.3s ease;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.cust-profile-form-group input:focus,
-.cust-profile-form-group select:focus {
-    outline: none;
-    border-color: #1f4e79;
-    box-shadow: 0 0 0 2px rgba(31, 78, 121, 0.2);
+/* BUTTONS */
+.btn-save-lux, .btn-edit-lux {
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  transition: all 0.3s;
 }
 
-/* SAVE BUTTON */
-
-.cust-profile-save-btn {
-    background: linear-gradient(135deg, #1f4e79, #2f6da3);
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-    width: 50%;
-    transition: 0.3s ease;
+.btn-save-lux {
+  background: #27ae60;
+  color: white;
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.2);
 }
 
-.cust-profile-save-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(31, 78, 121, 0.3);
+.btn-save-lux:hover:not(:disabled) {
+  background: #219653;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
 }
 
-/* PAYMENT METHODS */
-
-.cust-profile-payment-methods {
-    margin-top: 30px;
-    color: #1f4e79;
-    font-size: 20px;
+.btn-save-lux:disabled {
+  background: #a0b6c7;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-.cust-profile-payment-methods h3 {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #1f4e79;
+.btn-edit-lux {
+  background: linear-gradient(135deg, #1A3B5C, #2980b9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(26, 59, 92, 0.2);
 }
 
-.cust-profile-payment-methods img {
-    height: 130px;
-    border-radius: 20px;
-    margin: 15px;
-    width: 160px;
-    transition: 0.3s ease;
+.btn-edit-lux:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 59, 92, 0.3);
 }
 
-.cust-profile-payment-methods img:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 25px rgba(31, 78, 121, 0.25);
+/* FORM ELEMENTS */
+.profile-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-label-lux {
+  font-weight: 700;
+  color: #1A3B5C;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.input-icon-wrapper-lux {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-lux-icon {
+  position: absolute;
+  left: 15px;
+  color: #8c9eae;
+  font-size: 1rem;
+  z-index: 2;
+}
+
+.form-control-lux {
+  width: 100%;
+  height: 50px;
+  padding-left: 45px;
+  padding-right: 15px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+  color: #1A3B5C;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.form-control-lux:focus {
+  outline: none;
+  background: white;
+  border-color: #2980b9;
+  box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.1);
+}
+
+.input-readonly {
+  background: rgba(234, 244, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #556877;
+  cursor: not-allowed;
+}
+
+.input-readonly:focus {
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* RESPONSIVE */
-
-@media (max-width: 768px) {
-    .cust-profile-container {
-        width: 95%;
-        margin-left: 0;
-        padding: 20px;
-    }
-
-    .cust-profile-form-group {
-        flex: 1 1 100%;
-    }
-
-    .cust-profile-save-btn {
-        width: 100%;
-    }
+@media (max-width: 900px) {
+  .profile-card-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
 }

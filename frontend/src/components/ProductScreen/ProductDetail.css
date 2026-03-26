@@ -1,264 +1,202 @@
 /* =====================================
-   PRODUCT DETAIL - BLUE THEME
+   GLASSMORPHISM DETAILS (SCREENSHOT MATCH)
 ===================================== */
 
-.product-detail-body {
-  background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60px 30px;
+.product-detail-glass-bg {
+  /* Mimicking the smooth, blurred icy blue gradient from the screenshot */
+  background: linear-gradient(135deg, #a7cfee, #d7eefb);
   min-height: 100vh;
+  padding: 40px 0 80px 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-/* MAIN CARD */
-
-.product-detail-card {
-  max-width: 85%;
-  width: 100%;
-  background: #f4f9ff;
-  border-radius: 25px;
-  box-shadow: 0 20px 40px rgba(31, 78, 121, 0.15);
-  padding: 40px;
-  margin-bottom: 40px;
-}
-
-.product-detail-container {
-  display: flex;
-  gap: 40px;
-}
-
-/* CAROUSEL */
-
-.product-detail-carousel {
-  flex: 1;
-  max-width: 380px;
+/* THE SIGNATURE GLASS CARD */
+.glass-card-perfect {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 15px 35px rgba(31, 78, 121, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 40px rgba(31, 56, 82, 0.1);
+  padding: 50px;
+  max-width: 950px;
+  width: 100%;
 }
 
-.product-detail-image {
+/* Image Rectangle Shadowed Box */
+.glass-image-frame {
+  width: 100%;
+  max-width: 300px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: inset 0 8px 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.glass-image-frame img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-.product-detail-carousel-controls button {
-  background: transparent;
-  color: #1f4e79;
-  border: none;
-  font-size: 2.5rem;
-  cursor: pointer;
-  transition: 0.3s ease;
+.no-image-placeholder {
+  color: white;
+  background: rgba(0,0,0,0.2);
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.product-detail-carousel-controls button:hover {
-  transform: scale(1.2);
-}
-
-/* DETAILS */
-
-.product-details {
-  flex: 1;
+/* Info Box Typography */
+.glass-info-area {
   display: flex;
   flex-direction: column;
 }
 
-.product-details h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #1f4e79;
+.glass-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #1A3B5C; /* Dark Slate Blue from screenshot */
+  letter-spacing: 1px;
   margin-bottom: 20px;
 }
 
-.product-detail-info div {
-  font-size: 16px;
-  color: #445b6e;
-  margin-bottom: 8px;
+.glass-specs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 25px 0;
+  color: #2C3E50;
+  font-size: 1.05rem;
+  line-height: 2;
 }
 
-.product-detail-label {
-  font-weight: 600;
-  color: #233647;
+.glass-specs-list li {
+  margin-bottom: 5px;
 }
 
-.product-detail-description {
-  font-size: 1.1rem;
+.glass-specs-list strong {
+  font-weight: 800;
+  color: #000;
+  margin-right: 5px;
+}
+
+.glass-desc {
+  font-size: 1rem;
   color: #556877;
   line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Price & Button matching screenshot exactly */
+.glass-price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #e74c3c; /* Sharp vibrant orange matching screenshot */
   margin-bottom: 20px;
 }
 
-.product-detail-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1f4e79;
-  margin-bottom: 20px;
-}
-
-/* ADD TO CART */
-
-.product-detail-add-to-cart {
+.glass-btn-cart {
+  background: #2980b9; /* Bright UI Blue */
+  color: white;
+  border: none;
+  width: 100%;
   padding: 14px 20px;
-  background: linear-gradient(135deg, #1f4e79, #2f6da3);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+}
+
+.glass-btn-cart:hover {
+  background: #1f6391;
+}
+
+/* Bottom Format Pills */
+.formats-title {
+  font-weight: 800;
+  color: #2C3E50;
+  font-size: 1.15rem;
+}
+
+.format-pill {
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 0.95rem;
   color: white;
-  border: none;
-  border-radius: 35px;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 600;
-  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.product-detail-add-to-cart:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 25px rgba(31, 78, 121, 0.3);
+.pill-available {
+  background: #2ecc71; /* Vivid Green matching screenshot */
 }
 
-/* AVAILABILITY */
-
-.product-availability {
-  margin-top: 30px;
-  text-align: center;
+.pill-unavailable {
+  background: #bdc3c7; /* Light grey matching screenshot */
+  color: #4b4b4b;
 }
 
-.product-availability h3 {
-  font-size: 20px;
-  color: #1f4e79;
-  margin-bottom: 15px;
-}
-
-.availability-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.availability-button {
-  padding: 8px 18px;
+/* ======= FEEDBACK SECTION (Extra Functionality) ======= */
+.glass-feedback-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
-  font-size: 16px;
-  font-weight: 600;
-  border: none;
-}
-
-.availability-button.available {
-  background: #eaf4ff;
-  color: #1f4e79;
-  border: 1px solid #1f4e79;
-}
-
-.availability-button.unavailable {
-  background: #d0d7de;
-  color: #555;
-}
-
-/* FEEDBACK SECTION */
-
-.product-feedback-card {
-  max-width: 85%;
-  width: 100%;
-  background: #f4f9ff;
-  border-radius: 25px;
-  box-shadow: 0 15px 35px rgba(31, 78, 121, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 40px rgba(31, 56, 82, 0.08);
   padding: 40px;
-}
-
-.product-feedback-card h3 {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #1f4e79;
-  margin-bottom: 25px;
-  text-align: center;
-}
-
-/* FEEDBACK ITEM */
-
-.feedback-item {
-  background: #ffffff;
-  border-radius: 15px;
-  padding: 18px;
-  margin-bottom: 15px;
-  box-shadow: 0 8px 20px rgba(31, 78, 121, 0.1);
-}
-
-.feedback-description {
-  font-size: 16px;
-  color: #445b6e;
-  margin-bottom: 8px;
-}
-
-.feedback-meta {
-  font-size: 14px;
-  color: #778899;
-}
-
-/* FEEDBACK BUTTON */
-
-.feedback-action-button {
-  display: block;
-  margin: 15px auto;
-  padding: 10px 22px;
-  background: linear-gradient(135deg, #1f4e79, #2f6da3);
-  color: white;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.feedback-action-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(31, 78, 121, 0.25);
-}
-
-/* FEEDBACK FORM */
-
-.feedback-form {
-  margin-top: 20px;
-  background: #eaf4ff;
-  border-radius: 15px;
-  padding: 20px;
-}
-
-.feedback-form textarea {
+  max-width: 950px;
   width: 100%;
-  height: 120px;
-  padding: 10px;
-  border: 1px solid #c7e3f9;
-  border-radius: 10px;
-  background: #ffffff;
-  font-size: 15px;
 }
 
-.feedback-form-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 15px;
+.single-review {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
-.feedback-form-buttons button {
-  padding: 8px 18px;
-  border-radius: 25px;
+.review-text {
+  font-size: 1rem;
+  font-style: italic;
+  color: #445b6e;
+  margin-bottom: 10px;
+}
+
+.glass-btn-secondary {
+  background: transparent;
+  border: 2px solid #2980b9;
+  color: #2980b9;
+  padding: 8px 20px;
+  border-radius: 30px;
   font-weight: 600;
-  border: none;
-  cursor: pointer;
+  transition: all 0.3s;
+}
+.glass-btn-secondary:hover {
+  background: #2980b9; color: white;
 }
 
-.feedback-form-buttons button:first-child {
-  background: linear-gradient(135deg, #1f4e79, #2f6da3);
+.glass-textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  background: rgba(255,255,255,0.8);
+  resize: none;
+}
+
+.glass-btn-submit {
+  background: #2ecc71;
   color: white;
-}
-
-.feedback-form-buttons button:last-child {
-  background: #d0d7de;
-  color: #333;
-}
-
-.error-message {
-  color: #b71c1c;
-  text-align: center;
-  margin-bottom: 15px;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: 700;
 }

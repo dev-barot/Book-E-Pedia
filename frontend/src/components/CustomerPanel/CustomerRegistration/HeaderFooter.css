@@ -1,0 +1,154 @@
+/* Importing Google Fonts - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.reg-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 130vh;
+  width: 100vw;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background-image: url("./gradient-trendy-background_23-2150461016.avif");
+  background-size: cover;
+  overflow: hidden;
+}
+
+.reg-container {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 25px 15px;
+  border-radius: 12px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(50px) saturate(200%);
+  -webkit-backdrop-filter: blur(100px) saturate(200%);
+  background-color: rgba(255, 255, 255, 0.54);
+  border: 1px solid rgba(209, 213, 219, 0.3);
+  overflow-x: hidden;
+}
+
+.reg-container .reg-title {
+  font-size: 25px;
+  font-weight: 900;
+  position: relative;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.reg-container .reg-title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  height: 5px;
+  width: 35px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+
+.reg-content form .reg-user-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+form .reg-user-details .reg-input-box {
+  margin-bottom: 15px;
+  width: calc(50% - 10px);
+}
+
+form .reg-input-box span.reg-details {
+  display: block;
+  font-weight: 900;
+  margin-bottom: 5px;
+  font-size: larger;
+}
+
+.reg-user-details .reg-input-box input,
+.reg-user-details .reg-input-box select {
+  height: 45px;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  border-radius: 20px;
+  padding-left: 15px;
+  border: 1px solid rgb(0, 0, 0);
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.reg-user-details .reg-input-box input:focus,
+.reg-user-details .reg-input-box input:valid,
+.reg-user-details .reg-input-box select:focus {
+  border-color: #9b59b6;
+}
+
+/* Gender and DOB Wrapper */
+form .gender-date-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+form .gender-date-wrapper .reg-input-box {
+  width: calc(50% - 10px);
+}
+
+/* Error Styling */
+.error-input {
+  border-color: red !important;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Submit Button */
+/* ===== SUBMIT BUTTON ===== */
+/* ===== LONG ROUNDED SUBMIT BUTTON ===== */
+.reg-button {
+  display: block;
+  width: 100%;              /* makes it long */
+  max-width: 600px;         /* keeps it neat on big screens */
+  margin: 40px auto 10px auto;
+  padding: 14px 0;
+
+  border: none;
+  border-radius: 50px;      /* smooth rounded corners */
+
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+
+  color: #fff;
+  background: linear-gradient(135deg, #6a8cff, #9b59b6);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+
+  transition: all 0.3s ease;
+}
+
+/* hover effect */
+.reg-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, #5b7bff, #8e44ad);
+}
+
+/* click effect */
+.reg-button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}

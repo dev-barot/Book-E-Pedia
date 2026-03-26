@@ -1,82 +1,121 @@
 /* =====================================
-   CUSTOMER SIDEBAR - BLUE THEME
+   CUSTOMER SIDEBAR - LUXURY THEME
 ===================================== */
 
-.cust-sidebar {
-    width: 250px;
-    background: #f4f9ff;
-    color: #233647;
-    position: absolute;
-    margin-top: 60px;
-    margin-left: 30px;
-    height: 75vh;
-    padding: 25px;
-    border-radius: 20px;
-
-    border: 1px solid #c7e3f9;
-    box-shadow: 0 15px 35px rgba(31, 78, 121, 0.15);
+.cust-sidebar-glass {
+  width: 270px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 40px rgba(31, 56, 82, 0.08);
+  
+  /* LAYOUT FLOW */
+  margin: 40px 0 40px 30px;
+  height: calc(100vh - 80px);
+  position: sticky;
+  top: 40px;
+  
+  padding: 35px 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* TITLE */
-
-.cust-sidebar h2 {
-    text-align: center;
-    font-size: 1.6rem;
-    color: #1f4e79;
-    margin-bottom: 40px;
-    font-weight: 600;
+.sidebar-brand-lux {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #1A3B5C;
+  margin-bottom: 50px;
+  letter-spacing: -0.5px;
 }
 
 /* LIST */
-
-.cust-sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.cust-sidebar ul li {
-    margin: 20px 0;
+.sidebar-list-lux {
+  list-style: none;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* LINKS */
+.sidebar-link-lux {
+  text-decoration: none !important;
+  color: #556877 !important;
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
 
-.cust-sidebar ul li a {
-    text-decoration: none;
-    color: #233647;
-    font-size: 17px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 15px;
-    border-radius: 12px;
-    transition: all 0.3s ease;
+.sidebar-icon-lux {
+  width: 25px;
+  font-size: 1.1rem;
+  margin-right: 12px;
+  color: #8c9eae;
+  transition: color 0.3s;
 }
 
 /* HOVER */
-
-.cust-sidebar ul li a:hover {
-    background: #eaf4ff;
-    color: #1f4e79;
-    transform: translateX(6px);
+.sidebar-link-lux:hover {
+  background: rgba(255, 255, 255, 0.7);
+  color: #1A3B5C !important;
+  transform: translateX(5px);
 }
 
-/* ACTIVE LINK (optional if you add class="active") */
+.sidebar-link-lux:hover .sidebar-icon-lux {
+  color: #2980b9;
+}
 
-.cust-sidebar ul li a.active {
-    background: linear-gradient(135deg, #1f4e79, #2f6da3);
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 8px 20px rgba(31, 78, 121, 0.25);
+/* ACTIVE STATE */
+.active-lux {
+  background: #2980b9 !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(41, 128, 185, 0.3);
+}
+
+.active-lux .sidebar-icon-lux {
+  color: white !important;
+}
+
+.active-lux:hover {
+  transform: none; /* Stick the active link */
+}
+
+/* LOGOUT SPECIFIC */
+.logout-item-lux {
+  margin-top: auto; /* Pushes to bottom */
+}
+
+.logout-lux {
+  color: #e74c3c !important;
+}
+
+.logout-lux .sidebar-icon-lux {
+  color: #e74c3c !important;
+}
+
+.logout-lux:hover {
+  background: rgba(231, 76, 60, 0.1);
 }
 
 /* RESPONSIVE */
-
-@media (max-width: 768px) {
-    .cust-sidebar {
-        width: 100%;
-        margin-left: 0;
-        margin-top: 0;
-        border-radius: 0;
-        height: auto;
-    }
+@media (max-width: 900px) {
+  .cust-sidebar-glass {
+      width: 100%;
+      position: relative;
+      top: 0;
+      left: 0;
+      height: auto;
+      margin-bottom: 20px;
+      border-radius: 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  }
 }

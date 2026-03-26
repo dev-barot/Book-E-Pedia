@@ -1,160 +1,51 @@
-// import React, { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-// import "./Products.css";
-// import SingleProduct from "./SingleProduct";
-
-// const Products = () => {
-//   const [products, setProducts] = useState([]);
-//   const baseUrl = "http://127.0.0.1:8000/api";
-//   const [totalResult, setTotalResults] = useState(0); // Pagination
-
-//   useEffect(() => {
-//     fetchData(baseUrl + "/products/");
-//   }, []);
-
-//   function fetchData(baseurl) {
-//     fetch(baseurl)
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error(`HTTP error! Status: ${response.status}`);
-//         }
-//         return response.json();
-//       })
-//       .then((data) => {
-//         console.log("Products API Response (Raw):", JSON.stringify(data, null, 2)); // Log the raw response
-//         let productArray = [];
-        
-//         // Check if data is an array
-//         if (Array.isArray(data)) {
-//           productArray = data;
-//         } else if (data && data.data && Array.isArray(data.data)) {
-//           // Check if data has a 'data' key with an array
-//           productArray = data.data;
-//         } else {
-//           console.error("Unexpected API response format:", data);
-//           throw new Error("API response is not an array or does not contain a 'data' array");
-//         }
-
-//         // Filter active products, accepting both boolean true and string "1"
-//         const activeProducts = productArray.filter(
-//           (product) => product.IsActive === true || product.IsActive === "1"
-//         );
-//         console.log("Active Products after filtering:", activeProducts);
-//         setProducts(activeProducts);
-//         setTotalResults(activeProducts.length);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching products:", error);
-//         setProducts([]); // Ensure products is an empty array on error
-//         setTotalResults(0);
-//       });
-//   }
-
-//   function changeUrl(baseurl) {
-//     fetchData(baseurl);
-//   }
-
-//   var links = []; // Creating links for pagination
-//   var limit = 1; // How many products to show per page
-//   var totalLinks = Math.ceil(totalResult / limit);
-
-//   for (let i = 1; i <= totalLinks; i++) {
-//     links.push(
-//       <li className="page-item" key={i}>
-//         <Link
-//           onClick={() => changeUrl(baseUrl + `/products/?page=${i}`)}
-//           to={`/products/?page=${i}`}
-//           className="page-link"
-//         >
-//           {i}
-//         </Link>
-//       </li>
-//     );
-//   }
-
-//   return (
-//     <div className="product-container">
-//       <h1>Shop Our Book Collection</h1>
-//       <div className="product-list">
-//         {products.length > 0 ? (
-//           products.map((product, index) => (
-//             <SingleProduct key={index} product={product} />
-//           ))
-//         ) : (
-//           <p>No active products available.</p>
-//         )}
-//       </div>
-//       <ul className="pagination">{links}</ul>
-//     </div>
-//   );
-// };
-
-// export default Products;
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Products.css";
 import SingleProduct from "./SingleProduct";
 
+import img1 from "./alchemist.jpeg";
+import img2 from "./harry.jpeg";
+import img3 from "./gatsby.jpeg";
+import img4 from "./epic.jpeg";
+import img5 from "./download(3).jpeg";
+import img6 from "./download(1).jpeg";
+import img7 from "./download (2).jpeg";
+import img8 from "./4f971bfe-2ea6-4ff7-8c5a-7eba039fa15c.jpg";
+
 const Products = () => {
   const [products, setProducts] = useState([]);
-  const baseUrl = "http://127.0.0.1:8000/api";
-  const [totalResult, setTotalResults] = useState(0); // Pagination
+  const [totalResult, setTotalResults] = useState(8);
+
+  const dummyProducts = [
+    { id: 1, name: "The Alchemist", author: "Paulo Coelho", price: 399, image: img1, description: "A magical story of Santiago's journey and fulfilling his personal legend." },
+    { id: 2, name: "Harry Potter", author: "J.K. Rowling", price: 499, image: img2, description: "The boy who lived. A spectacular journey into the wizarding world." },
+    { id: 3, name: "The Great Gatsby", author: "F. Scott Fitzgerald", price: 299, image: img3, description: "A story of the Jazz Age, extravagance, and the American dream." },
+    { id: 4, name: "Epic Journey", author: "Alan Walker", price: 199, image: img4, description: "An epic tale of adventure across forgotten realms." },
+    { id: 5, name: "The Untold Mystery", author: "Jane Doe", price: 599, image: img5, description: "Tales from the mystic mountains filled with secrets." },
+    { id: 6, name: "Shadows of the Past", author: "John Smith", price: 450, image: img6, description: "Stories and legends that were never meant to be told." },
+    { id: 7, name: "Nightfall", author: "Bruce Wayne", price: 899, image: img7, description: "A thrilling noir detective story set in a dystopian city." },
+    { id: 8, name: "Wandering Soul", author: "Oliver Twist", price: 349, image: img8, description: "Finding the path of enlightenment in the depth of shadows." }
+  ];
 
   useEffect(() => {
-    fetchData(`${baseUrl}/products/`);
+    // Injecting static data since backend is offline
+    setProducts(dummyProducts);
   }, []);
 
-  function fetchData(baseurl) {
-    fetch(baseurl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Products API Response (Raw):", JSON.stringify(data, null, 2)); // Log the raw response
-        let productArray = [];
-
-        // Check if data is an array
-        if (Array.isArray(data)) {
-          productArray = data;
-        } else if (data && data.data && Array.isArray(data.data)) {
-          // Check if data has a 'data' key with an array
-          productArray = data.data;
-        } else {
-          console.error("Unexpected API response format:", data);
-          throw new Error("API response is not an array or does not contain a 'data' array");
-        }
-
-        const activeProducts = productArray.filter(
-           (product) => product.IsActive === true || product.IsActive === "1"
-        );
-        console.log("Active Products after filtering:", activeProducts);
-        setProducts(activeProducts);
-        setTotalResults(activeProducts.length);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-        setProducts([]); // Ensure products is an empty array on error
-        setTotalResults(0);
-      });
+  function changeUrl(dummyString) {
+    // Pagination placeholder
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function changeUrl(baseurl) {
-    fetchData(baseurl);
-  }
-
-  var links = []; // Creating links for pagination
-  var limit = 1; // How many products to show per page
+  var links = [];
+  var limit = 8; // Beautiful layout holds 8 per page
   var totalLinks = Math.ceil(totalResult / limit);
 
   for (let i = 1; i <= totalLinks; i++) {
     links.push(
       <li className="page-item" key={i}>
         <Link
-          onClick={() => changeUrl(`${baseUrl}/products/?page=${i}`)}
+          onClick={() => changeUrl()}
           to={`/products/?page=${i}`}
           className="page-link"
         >
@@ -165,18 +56,38 @@ const Products = () => {
   }
 
   return (
-    <div className="product-container">
-      <h1>Shop Our Book Collection</h1>
-      <div className="product-list">
-        {products.length > 0 ? (
-          products.map((product, index) => (
-            <SingleProduct key={index} product={product} />
-          ))
-        ) : (
-          <p>No active products available.</p>
+    <div className="shop-lux-page">
+      <div className="container-fluid px-4 px-lg-5 py-5">
+        
+        <div className="text-center mb-5">
+          <span className="badge-lux mb-3">Premium Collection</span>
+          <h1 className="shop-title">
+            Shop Our <span className="text-gradient">Library</span>
+          </h1>
+          <p className="shop-subtitle mx-auto">
+            Discover a vast curated selection of premium books. From timeless classics to modern discoveries, find your next great read.
+          </p>
+        </div>
+
+        <div className="shop-lux-list">
+          {products.length > 0 ? (
+            products.map((product, index) => (
+              <SingleProduct key={index} product={product} />
+            ))
+          ) : (
+            <div className="text-center w-100">
+              <h4 className="text-muted">Loading masterpiece collection...</h4>
+            </div>
+          )}
+        </div>
+
+        {totalLinks > 1 && (
+          <ul className="pagination-lux mt-5">
+            {links}
+          </ul>
         )}
+
       </div>
-      <ul className="pagination">{links}</ul>
     </div>
   );
 };

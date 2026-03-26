@@ -1,69 +1,85 @@
-import React from 'react'
-import CustomerSidebar from '../CustomerSidebar/CustomerSidebar'
-import './CustomerHelpSupport.css'
+import React from 'react';
+import CustomerSidebar from '../CustomerSidebar/CustomerSidebar';
+import './CustomerHelpSupport.css';
 import help from './hs.jpg';
 
 const helpsupport = [
   {
+    icon: "fa-book-open",
     question: "What types of books do you offer?",
-    answer:
-      "We at Book-E-Pedia provide a wide range of books to cater to every reader's preference. Our collection includes e-books, audiobooks, videos, and physical books, ensuring accessibility and convenience for all. Whether you're into fiction, non-fiction, or specialized genres, we have something for everyone!",
+    answer: "We at Book-E-Pedia provide a wide range of books to cater to every reader's preference. Our collection includes e-books, audiobooks, videos, and physical books. Whether you're into fiction, non-fiction, or specialized genres, we have something for everyone!",
   },
   {
+    icon: "fa-cart-shopping",
     question: "How do I purchase a book?",
-    answer:
-      "Purchasing a book on our platform is simple and convenient. Just browse through our collection, select the books you like, and add them to your cart. Once you're ready, proceed to checkout, complete the payment process, and your books will be on your way!",
+    answer: "Purchasing a book is simple. Browse through our collection, select the books you like, and add them to your cart. Proceed to checkout, complete the payment process, and your books will be ready!",
   },
   {
+    icon: "fa-tablet-screen-button",
     question: "How do I access e-books?",
-    answer:
-      "Once you purchase an e-book, it will be available in your account for instant access. You can read it directly on our platform using any device with an internet connection. Enjoy the convenience of accessing your e-books anytime, anywhere!",
+    answer: "Once purchased, your e-book will be instantly available in your account. Read it directly on our platform using any device with an internet connection. Enjoy the convenience of accessing your library anytime, anywhere!",
   },
   {
+    icon: "fa-headphones",
     question: "Can I listen to audiobooks online?",
-    answer:
-      "Yes, you can listen to audiobooks online directly from our platform. Once you purchase an audiobook, it becomes available for streaming in your account. Enjoy seamless access anytime, anywhere, without the need for downloads!",
+    answer: "Yes, you can stream audiobooks directly from our platform. Once purchased, they become available in your library. Enjoy seamless access without the need for additional downloads!",
   },
   {
+    icon: "fa-truck-fast",
     question: "Can I track my order after purchasing?",
-    answer:
-      'Yes, you can easily track your order through your account. Simply go to the "Order History" section, select your order, and view the current status and estimated delivery time.',
+    answer: "Yes! Simply navigate to the 'Ordered Books' section in your dashboard. You can view the current shipment status, tracking history, and estimated delivery dates.",
   },
 ];
 
 function CustomerHelpSupport() {
   return (
-    <div className='cust-hs-body'>
+    <div className='cust-lux-body'>
       <CustomerSidebar />
-    <div className="cust-hs-container">
-      <header className='cust-hs-header'>
-        <div className="cust-hs-logo">
-          {/* Replace with your logo image */}
-          <img src={help} alt="Company Logo" style={{ height: '200px', width: '200px',borderRadius:'40px' }} />
-        </div>    
-        <h1>How can we help you?</h1><br/><br/>      
-        </header>
+      
+      <div className="cust-lux-main">
+        
+        <div className="hs-header-lux mb-5">
+          <div className="hs-header-text">
+            <h1 className="hs-title-lux">Help & Support</h1>
+            <p className="hs-subtitle-lux">Got questions? We're here to guide you through your Book-E-Pedia experience.</p>
+          </div>
+          <div className="hs-header-img-box">
+            <img src={help} alt="Support Team" className="hs-header-img" />
+          </div>
+        </div>
 
-        <main>
+        <div className="hs-grid-lux">
+          {helpsupport.map((support, index) => (
+            <div className="hs-glass-card" key={index}>
+              <div className="hs-card-inner">
+                
+                {/* Front of Card */}
+                <div className="hs-card-front">
+                  <div className="hs-icon-circle">
+                    <i className={`fas ${support.icon}`}></i>
+                  </div>
+                  <h3 className="hs-question-lux">{support.question}</h3>
+                  <div className="flip-hint-lux">
+                    <i className="fas fa-undo"></i> Hover for Answer
+                  </div>
+                </div>
 
-      <div className="cust-hs-grid">
-        {helpsupport.map((support, index) => (
-          <div className="cust-hs-card" key={index}>
-            <div className="cust-hs-card-inner">
-              <div className="cust-hs-cat-card-front">
-                <h3>{support.question}</h3>
-              </div>
-              <div className="cust-hs-cat-card-back" style={{ fontSize: '8px' }}>
-                <p>{support.answer}</p>
+                {/* Back of Card */}
+                <div className="hs-card-back">
+                  <div className="hs-answer-box">
+                    <h4 className="hs-answer-title"><i className="fas fa-lightbulb text-warning me-2"></i> Answer</h4>
+                    <p className="hs-answer-text">{support.answer}</p>
+                  </div>
+                </div>
+
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
       </div>
-      </main>
     </div>
-    </div>
-  )
+  );
 }
 
-export default CustomerHelpSupport
+export default CustomerHelpSupport;

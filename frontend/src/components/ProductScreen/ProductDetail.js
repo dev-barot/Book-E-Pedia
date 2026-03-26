@@ -1,26 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./ProductDetail.css";
 import { Nav } from "react-bootstrap";
 
-import bookImg from "./p1.jpeg";
+import img1 from "./alchemist.jpeg";
+import img2 from "./harry.jpeg";
+import img3 from "./gatsby.jpeg";
+import img4 from "./epic.jpeg";
+import img5 from "./download(3).jpeg";
+import img6 from "./download(1).jpeg";
+import img7 from "./download (2).jpeg";
+import img8 from "./4f971bfe-2ea6-4ff7-8c5a-7eba039fa15c.jpg";
 
 function ProductDetail() {
+  const { id } = useParams();
 
-  // ✅ Dummy Product Data
+  const dummyProducts = [
+    { id: 1, name: "The Alchemist", author: "Paulo Coelho", price: 399, image: img1, description: "A magical story of Santiago's journey and fulfilling his personal legend." },
+    { id: 2, name: "Harry Potter", author: "J.K. Rowling", price: 499, image: img2, description: "The boy who lived. A spectacular journey into the wizarding world." },
+    { id: 3, name: "The Great Gatsby", author: "F. Scott Fitzgerald", price: 299, image: img3, description: "A story of the Jazz Age, extravagance, and the American dream." },
+    { id: 4, name: "Epic Journey", author: "Alan Walker", price: 199, image: img4, description: "An epic tale of adventure across forgotten realms." },
+    { id: 5, name: "The Untold Mystery", author: "Jane Doe", price: 599, image: img5, description: "Tales from the mystic mountains filled with secrets." },
+    { id: 6, name: "Shadows of the Past", author: "John Smith", price: 450, image: img6, description: "Stories and legends that were never meant to be told." },
+    { id: 7, name: "Nightfall", author: "Bruce Wayne", price: 899, image: img7, description: "A thrilling noir detective story set in a dystopian city." },
+    { id: 8, name: "Wandering Soul", author: "Oliver Twist", price: 349, image: img8, description: "Finding the path of enlightenment in the depth of shadows." }
+  ];
+
+  const foundProduct = dummyProducts.find(p => p.id === parseInt(id)) || dummyProducts[0];
+
   const productData = {
-    Product_ID: 1,
-    Product_Name: "The Untold Journey",
-    Author: "John Doe",
-    Publisher: "Book-E-Pedia",
+    Product_ID: foundProduct.id,
+    Product_Name: foundProduct.name,
+    Author: foundProduct.author,
+    Publisher: "Book-E-Pedia Limited",
     Language: "English",
     Number_of_Pages: 320,
-    Time_Duration: "5h 20m",
-    Product_Description:
-      "An exciting journey into mystery and adventure that keeps you hooked till the last page.",
-    Product_Price: 399,
-    Cover_Photo: bookImg,
-    Back_Photo: bookImg,
+    Time_Duration: "N/A",
+    Product_Description: foundProduct.description,
+    Product_Price: foundProduct.price,
+    Cover_Photo: foundProduct.image,
   };
 
   const [feedbacks, setFeedbacks] = useState([]);
@@ -28,45 +46,30 @@ function ProductDetail() {
   const [showForm, setShowForm] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
-  // ✅ Load feedback from localStorage
   useEffect(() => {
-    const storedFeedback =
-      JSON.parse(localStorage.getItem("feedbacks")) || [];
+    const storedFeedback = JSON.parse(localStorage.getItem(`feedbacks_${productData.Product_ID}`)) || [];
     setFeedbacks(storedFeedback);
-  }, []);
+  }, [productData.Product_ID]);
 
   const handleAddFeedback = () => {
-    if (!newFeedback.trim()) {
-      alert("Please enter a review.");
-      return;
-    }
-
+    if (!newFeedback.trim()) return alert("Please enter a review.");
     const newEntry = {
       id: Date.now(),
       Description: newFeedback,
-      customer_name: "Demo User",
+      customer_name: "Anonymous User",
       Feedback_DateTime: new Date().toISOString(),
     };
-
     const updatedFeedback = [newEntry, ...feedbacks];
-
-    localStorage.setItem(
-      "feedbacks",
-      JSON.stringify(updatedFeedback)
-    );
-
+    localStorage.setItem(`feedbacks_${productData.Product_ID}`, JSON.stringify(updatedFeedback));
     setFeedbacks(updatedFeedback);
     setNewFeedback("");
     setShowForm(false);
   };
 
-  const cartAddButtonHandler = () => {
-    const existingCart =
-      JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existingIndex = existingCart.findIndex(
-      (item) => item.id === productData.Product_ID
-    );
+  const cartAddButtonHandler = (e) => {
+    e.preventDefault();
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingIndex = existingCart.findIndex((item) => item.id == productData.Product_ID);
 
     if (existingIndex !== -1) {
       existingCart[existingIndex].quantity += 1;
@@ -79,172 +82,122 @@ function ProductDetail() {
         quantity: 1,
       });
     }
-
     localStorage.setItem("cart", JSON.stringify(existingCart));
-    alert("Added to cart successfully 🛒");
+    alert(`${productData.Product_Name} added to your cart! 🛒`);
   };
-
-  const productImgs = [
-    { image: productData.Cover_Photo, key: "cover" },
-    { image: productData.Back_Photo, key: "back" },
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const nextImage = () =>
-    setCurrentIndex((prev) => (prev + 1) % productImgs.length);
-
-  const prevImage = () =>
-    setCurrentIndex(
-      (prev) => (prev - 1 + productImgs.length) % productImgs.length
-    );
 
   const availability = {
-    ebook: true,
-    physical: true,
-    audiobook: true,
-    videobook: false,
+    "E-Book": true,
+    "Physical Book": true,
+    "Audio book": false,
+    "Video Book": false,
   };
 
-  const displayedFeedback = showAll
-    ? feedbacks
-    : feedbacks.slice(0, 3);
+  const displayedFeedback = showAll ? feedbacks : feedbacks.slice(0, 3);
 
   return (
-    <div className="product-detail-body">
-
-      <div className="product-detail-card">
-        <div className="product-detail-container">
-
-          <div className="product-detail-carousel">
-            <div className="product-detail-carousel-images">
-              <img
-                src={productImgs[currentIndex].image}
-                alt="Product"
-                className="product-detail-image"
-              />
-
-              {productImgs.length > 1 && (
-                <div className="product-detail-carousel-controls">
-                  <button onClick={prevImage}>❮</button>
-                  <button onClick={nextImage}>❯</button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="product-details">
-            <h2>{productData.Product_Name}</h2>
-
-            <div className="product-detail-info">
-              <div><b>Author:</b> {productData.Author}</div>
-              <div><b>Publisher:</b> {productData.Publisher}</div>
-              <div><b>Language:</b> {productData.Language}</div>
-              <div><b>Pages:</b> {productData.Number_of_Pages}</div>
-              <div><b>Duration:</b> {productData.Time_Duration}</div>
+    <div className="product-detail-glass-bg">
+      <div className="container-xxl py-5 d-flex justify-content-center flex-column align-items-center">
+        
+        {/* Main Glass Card exactly matching the user's screenshot */}
+        <div className="glass-card-perfect">
+          <div className="glass-card-top row w-100 m-0">
+            
+            {/* Left: Image Box */}
+            <div className="col-md-5 p-0 d-flex justify-content-center align-items-start">
+              <div className="glass-image-frame">
+                {productData.Cover_Photo ? (
+                  <img src={productData.Cover_Photo} alt={productData.Product_Name} />
+                ) : (
+                  <div className="no-image-placeholder">No images available.</div>
+                )}
+              </div>
             </div>
 
-            <div className="product-detail-description">
-              {productData.Product_Description}
-            </div>
+            {/* Right: Info Box */}
+            <div className="col-md-7 p-0 ps-md-4 glass-info-area">
+              <h1 className="glass-title">{productData.Product_Name.toUpperCase()}</h1>
+              
+              <ul className="glass-specs-list">
+                <li><strong>Author:</strong> {productData.Author}</li>
+                <li><strong>Publisher:</strong> {productData.Publisher}</li>
+                <li><strong>Language:</strong> {productData.Language}</li>
+                <li><strong>Pages:</strong> {productData.Number_of_Pages}</li>
+                <li><strong>Duration:</strong> {productData.Time_Duration}</li>
+              </ul>
 
-            <div className="product-detail-price">
-              Price: Rs. {productData.Product_Price}
-            </div>
+              <p className="glass-desc">{productData.Product_Description}</p>
+              
+              <h4 className="glass-price">Price: Rs. {productData.Product_Price.toFixed(2)}</h4>
 
-            <Nav.Link as={Link} to="/cart">
-              <button
-                onClick={cartAddButtonHandler}
-                className="product-detail-add-to-cart"
-              >
+              <button className="glass-btn-cart" onClick={cartAddButtonHandler}>
                 Add to Cart
               </button>
-            </Nav.Link>
-          </div>
-        </div>
-
-        <div className="product-availability">
-          <h3>Available Formats</h3>
-          <div className="availability-buttons">
-            {Object.entries(availability).map(([key, value]) => (
-              <button
-                key={key}
-                className={`availability-button ${
-                  value ? "available" : "unavailable"
-                }`}
-                disabled={!value}
-              >
-                {key.toUpperCase()}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="product-feedback-card">
-        <h3>Customer Reviews</h3>
-
-        {displayedFeedback.length > 0 ? (
-          displayedFeedback.map((feedback) => (
-            <div key={feedback.id} className="feedback-item">
-              <p>{feedback.Description}</p>
-              <small>
-                By {feedback.customer_name} on{" "}
-                {new Date(
-                  feedback.Feedback_DateTime
-                ).toLocaleDateString()}
-              </small>
             </div>
-          ))
-        ) : (
-          <p>No reviews yet.</p>
-        )}
+          </div>
 
-        {feedbacks.length > 3 && !showAll && (
-          <button
-            onClick={() => setShowAll(true)}
-            className="feedback-action-button"
-          >
-            Show All Reviews
-          </button>
-        )}
+          <div className="glass-card-bottom mt-5">
+            <h5 className="formats-title text-center mb-3">Available Formats</h5>
+            <div className="formats-pill-container d-flex justify-content-center flex-wrap gap-2">
+              {Object.entries(availability).map(([key, value]) => (
+                <div key={key} className={`format-pill ${value ? "pill-available" : "pill-unavailable"}`}>
+                  {key}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-        {showAll && (
-          <button
-            onClick={() => setShowAll(false)}
-            className="feedback-action-button"
-          >
-            Show Less
-          </button>
-        )}
+        {/* FEEDBACK SECTION */}
+        <div className="glass-feedback-card mt-5">
+          <h3 className="text-center mb-4" style={{color: '#1A3B5C'}}>Customer Reviews</h3>
+          <div className="text-center mb-4">
+            <button onClick={() => setShowForm(!showForm)} className="glass-btn-secondary px-4">
+              {showForm ? 'Cancel Review' : 'Write a Review'}
+            </button>
+          </div>
 
-        <button
-          onClick={() => setShowForm(true)}
-          className="feedback-action-button"
-        >
-          Add New Review
-        </button>
-
-        {showForm && (
-          <div className="feedback-form">
-            <textarea
-              value={newFeedback}
-              onChange={(e) => setNewFeedback(e.target.value)}
-              placeholder="Write your review..."
-              maxLength={250}
-            />
-            <div className="feedback-form-buttons">
-              <button onClick={handleAddFeedback}>
+          {showForm && (
+            <div className="glass-form-box mb-4 p-4">
+              <textarea
+                value={newFeedback}
+                onChange={(e) => setNewFeedback(e.target.value)}
+                placeholder="Share your thoughts about this masterpiece..."
+                maxLength={300}
+                className="glass-textarea mb-3"
+                rows="4"
+              />
+              <button onClick={handleAddFeedback} className="glass-btn-submit px-4">
                 Submit Review
               </button>
-              <button onClick={() => setShowForm(false)}>
-                Cancel
+            </div>
+          )}
+
+          <div className="reviews-list">
+            {displayedFeedback.length > 0 ? (
+              displayedFeedback.map((feedback) => (
+                <div key={feedback.id} className="single-review mb-3">
+                  <p className="review-text">"{feedback.Description}"</p>
+                  <small className="review-meta">
+                    <strong>{feedback.customer_name}</strong> - {new Date(feedback.Feedback_DateTime).toLocaleDateString()}
+                  </small>
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-muted">No reviews yet. Be the first!</p>
+            )}
+          </div>
+
+          {feedbacks.length > 3 && (
+            <div className="text-center mt-4">
+              <button onClick={() => setShowAll(!showAll)} className="glass-btn-text">
+                {showAll ? "Show Less" : `Load All ${feedbacks.length} Reviews`}
               </button>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
+      </div>
     </div>
   );
 }

@@ -1,255 +1,288 @@
+/* =====================================
+   ABOUT US - LUXURY THEME (#D3E8F9)
+===================================== */
 
-
- 
-  /*banner*/
-  /* WHOLE ABOUT PAGE BACKGROUND */
-body {
-  background-color: #dbeffc;
+.about-lux-page {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #1f3b4d;
+  background-color: #D3E8F9; /* Keeping D3E8F9 as the absolute base */
+  min-height: 100vh;
+  padding: 40px 0 80px 0;
 }
-.about-page {
-  background-color: #dbeffc;
+
+/* =====================================
+   ASYMMETRICAL HERO CARD (FROM SCREENSHOT)
+===================================== */
+.about-hero-card {
+  background: #fdfdfd;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(31, 56, 82, 0.08); /* Soft expansive shadow */
+  overflow: hidden;
+  position: relative;
+  max-width: 1100px;
 }
 
-  
-  .about-us-intro {
-    text-align: center;
-    padding: 20px;
-    background-color: #526588;
-color:transparent;
-    font-size: xx-large;
-    font-weight: 900;
-  }
-  
-  .about-us {
-    padding: 40px 20px;
-    max-width: 80%;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
-  }
-  
-  .about-us-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-  }
-  
-  .about-us-info {
-    flex: 1 1 45%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .about-us-image img {
-    width: 100%;
-    border-radius: 8px;
-  }
-  .about-us-image{
-    object-position: right;
-    margin-left: 5%;
-  }
-  
-  .about-us-categories {
-    list-style: none;
-    padding: 0;
-    margin-left: 5%;
-    color: #4C68A1;
-  }
-  
-  .about-us-categories li {
-    font-size: 1.1em;
-    margin-bottom: 5px;
-    color: #4C68A1;
-  }
-  
-  .about-us-description {
-    flex: 1 1 50%;
-    text-align: left;
-  }
-  
-  .about-us-description h2 {
-    font-size: 2.5em;
-    color: #4C68A1;
-  }
-  
-  .about-us-description p {
-    font-size: 1.1em;
-    margin: 20px 0;
-    line-height: 1.6;
-    color:black;
-    text-align: left;
-  }
-  
-  .about-us-contact-btn {
-    padding: 10px 20px;
-    background-color: #4C68A1;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-  }
-  
-  .about-us-contact-btn:hover {
-    background-color: #3a507f;
-  }
-  /*banner*/
-  
-  /* 4pillars */
-  
-  .card-container {
-      margin: 50px auto;
-      display: grid;
-      grid-template-columns: auto auto;
-      grid-template-rows: auto  auto;
-      gap: 30px;
-      background: transparent;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 20px;
-      border-radius: 10px;
-      padding: 20px;
-      padding-bottom: 100px;
-    }
-    .cardcontainer-title{
-      text-align:center; 
-      font-size:xx-large;  
-      width:80%;
-      border-radius: 50px;
-      border:1px solid black;
-      background-color: #ffffff;
-      color:rgb(0, 0, 0);   
-      opacity: 1;
-      margin: 20px 0px 20px 0px;
-      font-family: "Bruno Ace SC", serif;
-      font-weight:900;
-      font-style: normal; 
-      display:block;  
-      margin-left: auto;
-      margin-right: auto;
-      grid-column: 1 / -1;
-    }
-    .types-card {
-      margin:20px;
-      background-color: #ffffff;
-      border-radius: 8px;
-      border:1px solid #000000;
-      overflow: hidden;
-      box-shadow: 10px 18px 32px 0 #000000;
-      backdrop-filter: blur( 10.5px );
-      -webkit-backdrop-filter: blur( 16.5px );;
-    }
-    .types-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .card-content {
-      padding: 20px;
-    }
-    .card-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .card-description {
-      font-size: 1rem;
-      color: #6c757d;
-      margin-bottom: 15px;
-    }
-    .card-actions {
-      display: flex;
-      gap: 10px;
-    }
-    .card-container .button {
-      text-decoration: none;
-      font-size: 0.9rem;
-      color: #ffffff;
-      background-color: #007bff;
-      padding: 8px 15px;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .card-container .button:hover {
-      background-color: #0056b3;
-    }
-    
-    /* 4pillars*/
-    /* FAQ */
-    .faq-container {
-      max-width: 60%;
-      margin: 50px auto;
-      background-color: transparent;
-      border-radius: 8px;
-      box-shadow: 8px 10px 2px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-    
-    .faq-header {
-      text-align: center;
-      padding: 20px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: white;
-      background-color: #000000;
-      border-bottom: 1px solid #ddd;
-    }
-    
-    .faq-item {
-      border-bottom: 2px solid #ddd;
-    }
-    
-    .faq-question {
-      cursor: pointer;
-      padding: 15px 20px;
-      background-color: #d3d3d3;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .faq-question:hover {
-      background-color: #d3d3d3b6;
-      color: #000000;
-    }
-    
-    .faq-answer {
-      padding: 15px 20px;
-      padding-left: 5%;
-      background-color: #ffffff;
-      display: none;
-    }
-    
-    .faq-question span {
-      font-size: 1.2rem;
-      transition: transform 0.3s;
-    }
-    
-    .faq-question span.rotate {
-      transform: rotate(45deg);
-    }
-    
-    .faq-answer {
-      padding: 15px 20px;
-      padding-left: 5%;
-      background-color: #ffffff;
-      display: none;
-    }
-    
-    .faq-answer {
-      display: block;
-    }
-    
-    .faq-question {
-      cursor: pointer;
-      padding: 15px 20px;
-      background-color: #d3d3d3;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    /* FAQ */
+.about-hero-left {
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-hero-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #1A3B5C; /* Dark Navy exactly like screenshot */
+  margin-bottom: 25px;
+  letter-spacing: -0.5px;
+}
+
+.about-hero-desc {
+  font-size: 1.05rem;
+  color: #556877;
+  line-height: 1.7;
+  text-align: justify;
+  margin-bottom: 20px;
+}
+
+/* HERO PILLS */
+.about-hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.hero-pill {
+  background: #90caf9; /* Soft light baby-blue matching screenshot */
+  color: #1A3B5C; /* Dark text */
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.3s;
+}
+
+.hero-pill:hover {
+  transform: translateY(-3px);
+  background: #64b5f6;
+}
+
+/* EXPLORE BUTTON */
+.btn-hero-explore {
+  display: inline-block;
+  background: white;
+  color: #2980b9;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 15px 35px;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(41, 128, 185, 0.15); /* Soft glowing shadow */
+  text-decoration: none;
+  align-self: flex-start;
+  transition: all 0.3s;
+}
+
+.btn-hero-explore:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(41, 128, 185, 0.25);
+  color: #1A3B5C;
+}
+
+/* RIGHT SECTION: IMAGE & LOGO */
+.about-hero-right {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.hero-image-clip {
+  width: 100%;
+  height: 380px;
+  overflow: hidden;
+  border-bottom-left-radius: 40px; /* Crucial curve matching screenshot */
+}
+
+.hero-image-clip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* STORY TEXT BELOW IMAGE */
+.hero-badge {
+  background: #d6e9f9;
+  color: #1A4B84;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.hero-story-desc {
+  font-size: 1.15rem;
+  color: #556877;
+  line-height: 1.6;
+}
+
+
+/* =====================================
+   SECTIONS TYPOGRAPHY
+===================================== */
+.section-title-lux {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1A4B84;
+}
+
+.section-subtitle-lux {
+  font-size: 1.25rem;
+  color: #4b6b8a;
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+/* 4 PILLARS CARDS */
+.glass-feature-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(31, 56, 82, 0.08);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+}
+
+.glass-feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(31, 56, 82, 0.15);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.feature-img-box {
+  width: 100%;
+  height: 180px;
+  background: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.feature-img-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s;
+}
+
+.glass-feature-card:hover .feature-img-box img {
+  transform: scale(1.05);
+}
+
+.feature-content-lux {
+  padding: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-title-lux {
+  font-weight: 800;
+  color: #1A4B84;
+  margin-bottom: 15px;
+  font-size: 1.35rem;
+}
+
+.feature-desc-lux {
+  font-size: 1rem;
+  color: #556877;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* FAQ SECTION */
+.faq-lux-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-lux-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.faq-lux-item {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+  box-shadow: 0 5px 15px rgba(31, 56, 82, 0.05);
+}
+
+.faq-lux-item.active {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(26, 75, 132, 0.3);
+  box-shadow: 0 10px 25px rgba(31, 56, 82, 0.1);
+}
+
+.faq-lux-question {
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: #1A4B84;
+  transition: background 0.3s;
+}
+
+.faq-lux-question:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.faq-lux-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(26, 75, 132, 0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #1A4B84;
+  transition: all 0.3s;
+}
+
+.faq-lux-item.active .faq-lux-icon {
+  background: #1A4B84;
+  color: white;
+  transform: rotate(180deg);
+}
+
+.faq-lux-answer {
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out;
+}
+
+.faq-lux-answer p {
+  padding: 0 25px 25px 25px;
+  color: #4b6b8a;
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+.btn-hero-explore {
+  margin-left: 120px;
+  color : black ;
+  border: 1px solid black ;
+}

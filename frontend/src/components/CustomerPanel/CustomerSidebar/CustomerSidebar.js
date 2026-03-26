@@ -1,45 +1,47 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Nav } from "react-bootstrap";
+import { Link, useLocation } from "react-router-dom";
 import "./CustomerSidebar.css";
 
 function CustomerSidebar() {
+  const location = useLocation();
+
+  const isActive = (path) => {
+    return location.pathname === path ? "active-lux" : "";
+  };
 
   return (
-    <div className="cust-sidebar">
-      <h2><b>Dashboard</b></h2>
+    <div className="cust-sidebar-glass">
+      <h2 className="sidebar-brand-lux"><span>Dashboard</span></h2>
 
-      <ul>
+      <ul className="sidebar-list-lux">
         <li>
-          <Nav.Link as={Link} to="/customer/dashboard">
-            <b><i className="fas fa-tachometer-alt"></i> Dashboard</b>
-          </Nav.Link>
+          <Link to="/customer/dashboard" className={`sidebar-link-lux ${isActive('/customer/dashboard')}`}>
+            <i className="fas fa-tachometer-alt sidebar-icon-lux"></i> <span>My Dashboard</span>
+          </Link>
         </li>
 
         <li>
-          <Nav.Link as={Link} to="/customer/orders">
-            <b><i className="fa fa-book"></i> Ordered Books</b>
-          </Nav.Link>
+          <Link to="/customer/orders" className={`sidebar-link-lux ${isActive('/customer/orders')}`}>
+            <i className="fa fa-book sidebar-icon-lux"></i> <span>Ordered Books</span>
+          </Link>
         </li>
 
         <li>
-          <Nav.Link as={Link} to="/customer/profile">
-            <b><i className="fa fa-cog"></i> Profile Settings</b>
-          </Nav.Link>
+          <Link to="/customer/profile" className={`sidebar-link-lux ${isActive('/customer/profile')}`}>
+            <i className="fa fa-cog sidebar-icon-lux"></i> <span>Profile Settings</span>
+          </Link>
         </li>
 
         <li>
-          <Nav.Link as={Link} to="/customer/help-support">
-            <b><i className="fa fa-question-circle"></i> Help & Support</b>
-          </Nav.Link>
+          <Link to="/customer/help-support" className={`sidebar-link-lux ${isActive('/customer/help-support')}`}>
+            <i className="fa fa-question-circle sidebar-icon-lux"></i> <span>Help & Support</span>
+          </Link>
         </li>
 
-        <li>
-          <Nav.Link as={Link} to="/customer/logout">
-            <b>
-              <i className="fa fa-sign-out-alt" style={{ color: "crimson" }}></i> Logout
-            </b>
-          </Nav.Link>
+        <li className="logout-item-lux">
+          <Link to="/customer/logout" className="sidebar-link-lux logout-lux">
+            <i className="fa fa-sign-out-alt sidebar-icon-lux"></i> <span>Logout</span>
+          </Link>
         </li>
       </ul>
     </div>

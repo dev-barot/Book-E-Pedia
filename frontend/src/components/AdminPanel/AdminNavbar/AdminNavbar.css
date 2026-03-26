@@ -15,7 +15,8 @@
   top: 10px;
   height: 60px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.75) !important;
+  background: #CBE5FA !important;
+  background: #000000 !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 10px 25px rgba(31, 78, 121, 0.15);
@@ -29,7 +30,7 @@
   height: 60px;
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0px 20px;
 }
 
 /* Sidebar Toggler */
@@ -125,7 +126,7 @@
 
 /* Sticky Width Fix */
 .sticky-top.px-4.py-0.admin-main-navbar {
-  width: 97%;
+  width: 100%;
 }
 
 /* Responsive */

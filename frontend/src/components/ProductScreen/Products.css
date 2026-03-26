@@ -1,161 +1,93 @@
 /* =====================================
-   PRODUCT LIST - BLUE THEME
+   LUXURY SHOP PAGE (#D3E8F9 THEME)
 ===================================== */
 
-.product-container {
-  background: linear-gradient(to bottom, #d6e9f9, #c7e3f9);
-  padding: 60px 40px;
+.shop-lux-page {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #1f3b4d;
+  background-color: #D3E8F9; /* Match Category and Home Base */
+  min-height: 100vh;
+  padding: 40px 0 80px 0;
 }
 
-/* TITLE */
-
-.product-container h1 {
-  text-align: center;
-  color: #1f4e79;
-  margin-bottom: 50px;
-  font-weight: 700;
-  font-size: 42px;
-  padding: 20px;
-  border-radius: 40px;
-  background: #f4f9ff;
-  box-shadow: 0 15px 30px rgba(31, 78, 121, 0.15);
-}
-
-/* PRODUCT LIST */
-
-.product-list {
-  display: flex;
-  flex-direction: column;
-  gap: 35px;
-  max-width: 85%;
-  margin: 0 auto;
-}
-
-/* PRODUCT CARD */
-
-.product {
-  display: flex;
-  align-items: center;
-  padding: 25px;
-  border-radius: 20px;
-  background: #f4f9ff;
-  box-shadow: 0 15px 35px rgba(31, 78, 121, 0.15);
-  transition: 0.3s ease;
-}
-
-.product:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 45px rgba(31, 78, 121, 0.25);
-}
-
-.product-link {
-  text-decoration: none;
-}
-
-/* IMAGE */
-
-.product-image {
-  flex: 0 0 200px;
-  margin-right: 35px;
-}
-
-.product-image img {
-  width: 100%;
-  height: 280px;
-  object-fit: cover;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(31, 78, 121, 0.2);
-}
-
-/* DETAILS */
-
-.product-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-name {
-  font-size: 2rem !important;
-  font-weight: 700;
-  color: #1f4e79;
-  margin: 0;
-}
-
-.product-name:hover {
-  color: #2f6da3;
-}
-
-.author-name {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #556877;
-  margin: 8px 0;
-}
-
-.product-description {
-  font-size: 1.1rem;
-  color: #445b6e;
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-/* FOOTER */
-
-.product-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.product-price {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #1f4e79;
-}
-
-/* BUTTON */
-
-.add-to-cart {
-  padding: 12px 22px;
-  background: linear-gradient(135deg, #1f4e79, #2f6da3);
-  color: white;
-  border: none;
+/* HEADINGS */
+.badge-lux {
+  display: inline-block;
+  background: rgba(26, 75, 132, 0.1);
+  color: #1A4B84;
+  padding: 10px 20px;
   border-radius: 30px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 600;
-  transition: 0.3s ease;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.add-to-cart:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(31, 78, 121, 0.3);
+.shop-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1.2;
+  color: #1A4B84;
+  letter-spacing: -1px;
+}
+
+.shop-subtitle {
+  font-size: 1.15rem;
+  color: #4b6b8a;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #1A4B84, #00acc1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* FLUID LIST */
+.shop-lux-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 /* PAGINATION */
-
-.pagination {
+.pagination-lux {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  list-style: none;
+  padding: 0;
+  gap: 12px;
 }
 
-.page-item {
-  margin: 0 6px;
-}
-
-.page-link {
-  padding: 10px 15px;
-  background: #eaf4ff;
-  color: #1f4e79;
-  border-radius: 50%;
-  font-weight: 600;
+.pagination-lux .page-item .page-link {
   border: none;
-  transition: 0.3s ease;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  color: #1A4B84;
+  width: 45px; height: 45px;
+  border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+  box-shadow: 0 5px 15px rgba(26, 75, 132, 0.05);
 }
 
-.page-link:hover {
-  background: linear-gradient(135deg, #1f4e79, #2f6da3);
+.pagination-lux .page-item a:hover,
+.pagination-lux .page-item button:hover {
+  background: white;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(26, 75, 132, 0.1);
+}
+
+.pagination-lux .page-item.active .page-link {
+  background: linear-gradient(135deg, #1A4B84, #0d3159);
   color: white;
+  box-shadow: 0 10px 25px rgba(26, 75, 132, 0.3);
 }

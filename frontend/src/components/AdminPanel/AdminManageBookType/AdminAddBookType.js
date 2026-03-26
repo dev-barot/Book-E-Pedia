@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
@@ -8,6 +9,26 @@ function AdminAddBookType({ onAddBookType }) {
   const location = useLocation();
   const navigate = useNavigate();
   const bookToEdit = location.state?.book;
+
+  // Handle Book_ID generation logic
+  const [nextBookId, setNextBookId] = useState(() => {
+    const storedId = parseInt(localStorage.getItem('nextBookId'), 10);
+    return isNaN(storedId) ? 1 : storedId;
+  });
+
+  const generateBookId = () => {
+    setNextBookId(prevId => {
+      const newId = prevId + 1;
+      localStorage.setItem('nextBookId', newId);
+      return newId;
+    });
+  };
+
+  useEffect(() => {
+    if (!bookToEdit && !localStorage.getItem('nextBookId')) {
+      localStorage.setItem('nextBookId', "1");
+    }
+  }, [bookToEdit]);
 
   const [formData, setFormData] = useState({
     Book_Name: bookToEdit ? bookToEdit.Book_Name : '',
@@ -22,11 +43,6 @@ function AdminAddBookType({ onAddBookType }) {
   });
 
   const [errors, setErrors] = useState({});
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-  const handleSidebarToggle = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -36,40 +52,89 @@ function AdminAddBookType({ onAddBookType }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const getCsrfToken = async () => {
+    const response = await fetch('http://127.0.0.1:8000/get-csrf-token/');
+    const data = await response.json();
+    return data.csrfToken;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let formErrors = {};
-
+  
     // Basic Validation
     if (!formData.Book_Name) {
       formErrors.Book_Name = 'Please enter Book Name';
     }
-
+  
+    // Check for file types
     if (formData.Audio_Book === '1' && !formData.Audio_File) {
       formErrors.Audio_File = 'Audio file is required';
     }
-
     if (formData.Video_Book === '1' && !formData.Video_File) {
       formErrors.Video_File = 'Video file is required';
     }
-
     if (formData.E_Book === '1' && !formData.E_Book_File) {
       formErrors.E_Book_File = 'E-book file is required';
     }
-
+  
     setErrors(formErrors);
-
+  
     if (Object.keys(formErrors).length === 0) {
-      console.log("Book Type Data (Frontend Only):", formData);
-
-      // Optional: call parent handler if exists
-      if (onAddBookType) {
-        onAddBookType(formData);
+      const formDataToSend = new FormData();
+      formDataToSend.append('Book_Name', formData.Book_Name);
+      formDataToSend.append('Physical_Book', formData.Physical_Book);
+      formDataToSend.append('Audio_Book', formData.Audio_Book);
+      formDataToSend.append('E_Book', formData.E_Book);
+      formDataToSend.append('Video_Book', formData.Video_Book);
+      formDataToSend.append('IsActive', formData.IsActive);
+      if (formData.Audio_File) formDataToSend.append('Audio_File', formData.Audio_File);
+      if (formData.Video_File) formDataToSend.append('Video_File', formData.Video_File);
+      if (formData.E_Book_File) formDataToSend.append('E_Book_File', formData.E_Book_File);
+  
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/booktypes/', {
+          method: 'POST',
+          body: formDataToSend,
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'), // Ensure CSRF token is included
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Book type created:', data);
+          navigate('/admin/manage-booktype');
+        } else {
+          const errorData = await response.json();
+          console.error('Failed to create book type:', errorData);
+        }
+      } catch (error) {
+        console.error('Error submitting book type:', error);
       }
-
-      // Redirect after submission
-      navigate('/admin/manage-booktype');
     }
+  };
+  
+  // Helper function to get CSRF token from cookies
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const handleSidebarToggle = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
   return (
@@ -84,12 +149,8 @@ function AdminAddBookType({ onAddBookType }) {
 
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
         <div className="admin-add-book-type-container admin-add-product-container">
-          <h1 className="admin-add-book-type-title admin-add-product-title">
-            Add New Book Type
-          </h1>
-
+          <h1 className="admin-add-book-type-title admin-add-product-title">Add New Book Type</h1>
           <form onSubmit={handleSubmit} className="admin-add-book-type-form admin-add-product-form">
-            
             <div className="form-group admin-add-product-description">
               <label htmlFor="Book_Name">Book Name</label>
               <input
@@ -99,6 +160,7 @@ function AdminAddBookType({ onAddBookType }) {
                 value={formData.Book_Name}
                 onChange={handleChange}
                 className="form-control"
+                
               />
               {errors.Book_Name && <p className="error">*{errors.Book_Name}</p>}
             </div>
@@ -117,7 +179,6 @@ function AdminAddBookType({ onAddBookType }) {
               </select>
             </div>
 
-            {/* Audio */}
             <div className="form-group admin-add-product-field">
               <label htmlFor="Audio_Book">Audio Book</label>
               <select
@@ -130,7 +191,6 @@ function AdminAddBookType({ onAddBookType }) {
                 <option value="0">No</option>
                 <option value="1">Yes</option>
               </select>
-
               {formData.Audio_Book === '1' && (
                 <>
                   <label htmlFor="Audio_File">Upload Audio File</label>
@@ -146,7 +206,6 @@ function AdminAddBookType({ onAddBookType }) {
               )}
             </div>
 
-            {/* Video */}
             <div className="form-group admin-add-product-field">
               <label htmlFor="Video_Book">Video Book</label>
               <select
@@ -159,7 +218,6 @@ function AdminAddBookType({ onAddBookType }) {
                 <option value="0">No</option>
                 <option value="1">Yes</option>
               </select>
-
               {formData.Video_Book === '1' && (
                 <>
                   <label htmlFor="Video_File">Upload Video File</label>
@@ -175,7 +233,6 @@ function AdminAddBookType({ onAddBookType }) {
               )}
             </div>
 
-            {/* E-Book */}
             <div className="form-group admin-add-product-field">
               <label htmlFor="E_Book">E-Book</label>
               <select
@@ -188,7 +245,6 @@ function AdminAddBookType({ onAddBookType }) {
                 <option value="0">No</option>
                 <option value="1">Yes</option>
               </select>
-
               {formData.E_Book === '1' && (
                 <>
                   <label htmlFor="E_Book_File">Upload E-Book File</label>
@@ -218,10 +274,7 @@ function AdminAddBookType({ onAddBookType }) {
               </select>
             </div>
 
-            <button type="submit" className="btn btn-primary admin-add-product-submit-btn">
-              Add Book Type
-            </button>
-
+            <button type="submit" className="btn btn-primary admin-add-product-submit-btn">Add Book Type</button>
           </form>
         </div>
       </div>
@@ -229,4 +282,4 @@ function AdminAddBookType({ onAddBookType }) {
   );
 }
 
-export default AdminAddBookType;
+export default AdminAddBookType
