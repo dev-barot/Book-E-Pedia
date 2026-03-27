@@ -2,6 +2,7 @@
 # FRONTEND (React)
 # =========================
 frontend/node_modules/
+node_modules/
 frontend/build/
 frontend/.env
 
@@ -14,6 +15,8 @@ backend/__pycache__/
 backend/db.sqlite3
 backend/*.log
 backend/.env
+backend/*/migrations/*
+!backend/*/migrations/__init__.py
 
 # Python compiled files
 *.pyc

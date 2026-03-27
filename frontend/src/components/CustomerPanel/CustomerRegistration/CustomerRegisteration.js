@@ -84,32 +84,47 @@ function CustomerRegisteration() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+const submitHandler = async (event) => {
+  event.preventDefault();
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    // ✅ Simulate registration success
-    setSuccessMsg("Registration successful! Redirecting to login...");
-    setErrorMsg({});
-
-    // Clear form
-    setRegisterFormData({
-      fname: "",
-      lname: "",
-      email: "",
-      number: "",
-      pwd: "",
-      pwd_confirm: "",
-      gen: "",
-      date: "",
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/register/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(registerFormData),
     });
 
-    // Redirect after 2 seconds
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
-  };
+    const data = await response.json();
+
+    if (data.bool) {
+      setSuccessMsg("Registration successful! Redirecting to login...");
+      setErrorMsg({});
+
+      setRegisterFormData({
+        fname: "",
+        lname: "",
+        email: "",
+        number: "",
+        pwd: "",
+        pwd_confirm: "",
+        gen: "",
+        date: "",
+      });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } else {
+      setErrorMsg({ general: data.msg });
+    }
+  } catch (error) {
+    setErrorMsg({ general: "Server error. Try again." });
+  }
+};
 
   return (
     <div className="reg-body">

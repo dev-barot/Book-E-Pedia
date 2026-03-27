@@ -22,51 +22,57 @@ function Login() {
     });
   };
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+const submitHandler = async (event) => {
+  event.preventDefault();
 
-    const adminEmail = "admin";
-    const adminPassword = "admin123";
+  const adminEmail = "admin";
+  const adminPassword = "admin123";
 
-    const dummyUserEmail = "user@gmail.com";
-    const dummyUserPassword = "User@123";
+  // Admin login stays local
+  if (
+    loginFormData.email === adminEmail &&
+    loginFormData.password === adminPassword
+  ) {
+    localStorage.setItem("admin_login", "true");
+    navigate("/admin/dashboard");
+    return;
+  }
 
-    // ✅ Admin Login
-    if (
-      loginFormData.email === adminEmail &&
-      loginFormData.password === adminPassword
-    ) {
-      localStorage.setItem("admin_login", "true");
-      navigate("/admin/dashboard");
-      return;
-    }
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginFormData),
+    });
 
-    // ✅ Dummy Customer Login
-    if (
-      loginFormData.email === dummyUserEmail &&
-      loginFormData.password === dummyUserPassword
-    ) {
+    const data = await response.json();
+
+    if (data.bool) {
       const userData = {
-        Cust_ID: 1,
-        Email: dummyUserEmail,
-        Fname: "Mit",
+        Cust_ID: data.user_id,
+        Email: loginFormData.email,
+        Fname: data.user,
         login: true,
       };
 
       localStorage.setItem("customer_login", "true");
-      localStorage.setItem("customer_username", "Mit");
-      localStorage.setItem("customer_id", "1");
+      localStorage.setItem("customer_username", data.user);
+      localStorage.setItem("customer_id", data.user_id);
       localStorage.setItem("user", JSON.stringify(userData));
 
       setUser(userData);
       navigate("/customer/dashboard");
-      return;
+    } else {
+      setFormError(true);
+      setErrorMsg(data.msg || "Invalid email or password");
     }
-
-    // ❌ Invalid Login
+  } catch (error) {
     setFormError(true);
-    setErrorMsg("Invalid email or password.");
-  };
+    setErrorMsg("Server error. Try again.");
+  }
+};
 
   const buttonEnable =
     loginFormData.email !== "" && loginFormData.password !== "";

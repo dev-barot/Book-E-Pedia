@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { UserContext } from './Context';
 
 const checkCustomer = localStorage.getItem('customer_login');
