@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./CustomerCart.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { books } from "../../ProductScreen/books";
 
 const CustomerCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+
+  // Similar books = books NOT already in the cart (max 4)
+  const similarBooks = books
+    .filter((book) => !cartItems.some((item) => item.id === book.id))
+    .slice(0, 4);
 
   // Load cart from localStorage
   useEffect(() => {
@@ -16,124 +22,165 @@ const CustomerCart = () => {
   // Update Quantity
   const updateQuantity = (productId, quantity) => {
     if (quantity < 1) return;
-
     const updatedCart = cartItems.map((item) =>
       item.id === productId ? { ...item, quantity } : item
     );
-
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCartItems(updatedCart);
   };
 
   // Remove Item
   const cartRemoveButtonHandler = (productId) => {
-    const updatedCart = cartItems.filter(
-      (item) => item.id !== productId
-    );
-
+    const updatedCart = cartItems.filter((item) => item.id !== productId);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCartItems(updatedCart);
   };
 
-  // Simulated Checkout
+  // Add similar book to cart
+  const addToCart = (book) => {
+    const existing = cartItems.find((item) => item.id === book.id);
+    let updatedCart;
+    if (existing) {
+      updatedCart = cartItems.map((item) =>
+        item.id === book.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      updatedCart = [...cartItems, { ...book, quantity: 1 }];
+    }
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setCartItems(updatedCart);
+  };
+
+  const subtotal = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  // Checkout
   const handleProceedToPayment = () => {
     if (isProcessing) return;
-
     setIsProcessing(true);
-
     setTimeout(() => {
       alert("Order placed successfully! 🎉");
-
       localStorage.removeItem("cart");
       setCartItems([]);
-
       navigate("/");
       setIsProcessing(false);
     }, 1500);
   };
 
   return (
-    <div className="cart-body">
-      <div className="cart-container">
-        <h1>Shopping Cart</h1>
+    <div className="cart-page">
 
-        <div className="cart-products">
+      {/* Page Header */}
+      <div className="cart-page-header">
+        <h1 className="cart-page-title">Cart</h1>
+        <nav className="cart-breadcrumb">
+          <Link to="/">Home</Link>
+          <span> / </span>
+          <span>Cart</span>
+        </nav>
+      </div>
+
+      {/* Main Two-Column Layout */}
+      <div className="cart-layout">
+
+        {/* LEFT — Cart Items */}
+        <div className="cart-items-panel">
           {cartItems.length > 0 ? (
-            cartItems.map((item) => (
-              <div key={item.id} className="cart-product">
-
-                <div className="cart-product-details">
-                  <img src={item.image} alt={item.name} />
-                  <span className="cart-product-name">
-                    {item.name} <br /> Rs. {item.price}
-                  </span>
+            cartItems.map((item, index) => (
+              <div
+                key={item.id}
+                className={`cart-item-row ${index < cartItems.length - 1 ? "cart-item-divider" : ""}`}
+              >
+                <img src={item.image} alt={item.name} className="cart-item-img" />
+                <div className="cart-item-details">
+                  <p className="cart-item-name">{item.name}</p>
+                  <p className="cart-item-author">{item.author}</p>
+                  <p className="cart-item-price">Rs. {item.price}.00</p>
                 </div>
-
-                <div className="cart-quantity">
+                <div className="cart-item-controls">
+                  <div className="cart-qty-box">
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>−</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                  </div>
                   <button
-                    onClick={() =>
-                      updateQuantity(item.id, item.quantity - 1)
-                    }
+                    className="cart-delete-btn"
+                    onClick={() => cartRemoveButtonHandler(item.id)}
+                    title="Remove"
                   >
-                    -
-                  </button>
-
-                  <input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      updateQuantity(item.id, parseInt(e.target.value))
-                    }
-                    min="1"
-                  />
-
-                  <button
-                    onClick={() =>
-                      updateQuantity(item.id, item.quantity + 1)
-                    }
-                  >
-                    +
+                    🗑
                   </button>
                 </div>
-
-                <span className="cart-total-amount">
-                  Rs. {(item.price * item.quantity).toFixed(2)}
-                </span>
-
-                <button
-                  onClick={() => cartRemoveButtonHandler(item.id)}
-                  className="cart-remove-button"
-                >
-                  Remove
-                </button>
-
               </div>
             ))
           ) : (
-            <p>No items in the cart.</p>
+            <div className="cart-empty">
+              <p>Your cart is empty.</p>
+              <Link to="/products" className="browse-link-btn">Browse Books</Link>
+            </div>
+          )}
+
+          {/* Continue Shopping */}
+          {cartItems.length > 0 && (
+            <div className="cart-continue">
+              <Link to="/products">‹ Continue Shopping</Link>
+            </div>
           )}
         </div>
 
-        <div className="cart-total">
-          Total: Rs.{" "}
-          {cartItems
-            .reduce((total, item) => total + item.price * item.quantity, 0)
-            .toFixed(2)}
-        </div>
-
-        {cartItems.length > 0 && (
-          <div className="cart-make-payment">
-            <button
-              onClick={handleProceedToPayment}
-              className="cart-confirm-payment-btn"
-              disabled={isProcessing}
-            >
-              {isProcessing ? "Processing..." : "Proceed to Checkout"}
-            </button>
+        {/* RIGHT — Order Summary */}
+        <div className="cart-summary-panel">
+          <h2 className="summary-title">Order Summary</h2>
+          <div className="summary-row">
+            <span>Subtotal</span>
+            <span>Rs. {subtotal.toFixed(2)}</span>
           </div>
-        )}
-
+          <div className="summary-divider" />
+          <div className="summary-row summary-total">
+            <span>Total</span>
+            <span>Rs. {subtotal.toFixed(2)}</span>
+          </div>
+          <button
+            className="summary-checkout-btn"
+            onClick={handleProceedToPayment}
+            disabled={isProcessing || cartItems.length === 0}
+          >
+            {isProcessing ? "Processing..." : "Proceed to Checkout"}
+          </button>
+        </div>
       </div>
+
+      {/* Similar Books */}
+      {similarBooks.length > 0 && (
+        <div className="similar-books-section">
+          <h2 className="similar-books-title">📚 You Might Also Like</h2>
+          <div className="similar-books-grid">
+            {similarBooks.map((book) => (
+              <div
+                key={book.id}
+                className="similar-book-card"
+                onClick={() => navigate(`/product/${book.id}/${book.id}`)}
+              >
+                <img src={book.image} alt={book.name} className="similar-book-img" />
+                <div className="similar-book-info">
+                  <p className="similar-book-name">{book.name}</p>
+                  <p className="similar-book-author">{book.author}</p>
+                  <p className="similar-book-price">Rs. {book.price}</p>
+                  <button
+                    className="similar-add-btn"
+                    onClick={(e) => { e.stopPropagation(); addToCart(book); }}
+                  >
+                    + Add to Cart
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
