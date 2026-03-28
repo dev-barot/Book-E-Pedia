@@ -40,3 +40,23 @@ class TBL_Customer_Details(models.Model):
         managed = False
 
 
+# Category Details Model
+def category_pic_path(instance, filename):
+    return f"Category_Images/{instance.Category_Name}/{filename}"
+
+
+class TBL_Category_Details(models.Model):
+    IS_ACTIVE_CHOICES = [('1', 'Active'), ('0', 'Inactive')]
+
+    Category_ID = models.AutoField(primary_key=True)
+    Category_Name = models.CharField(max_length=25, unique=True)
+    Category_Photo = models.ImageField(upload_to=category_pic_path)
+    Category_Description = models.CharField(max_length=250)
+    IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
+
+    def __str__(self):
+        return self.Category_Name
+
+    class Meta:
+        managed = False
+        db_table = 'bookapp_tbl_category_details'

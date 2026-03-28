@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Home.css";
 
@@ -32,7 +32,22 @@ import bookShelf from "./Realistic_Digital_Bookshelf_With_Colorful_Books_And_Sig
 
 function Home() {
   const navigate = useNavigate();
+  
+  const [featuredCategories, setFeaturedCategories] = useState([]);
+  useEffect(() => {
+  fetch("http://127.0.0.1:8000/api/category/")
+    .then((res) => res.json())
+    .then((data) => {
+      const activeCategories = (data.data || []).filter(
+        (cat) => cat.IsActive === "1"
+      );
 
+      setFeaturedCategories(activeCategories.slice(0, 10));
+    })
+    .catch((err) => {
+      console.error("Error fetching categories:", err);
+    });
+}, []);
   // Add to cart with login check
   const addToCart = (book) => {
     const isLoggedIn = localStorage.getItem('userToken');
@@ -77,18 +92,7 @@ function Home() {
     }
   };
 
-  const categories = [
-    { img: entertainmentBook, text: "Entertainment" },
-    { img: technologyBook, text: "Technology" },
-    { img: adventureBook, text: "Adventure" },
-    { img: horrorBook, text: "Horror" },
-    { img: comicBook, text: "Comics" },
-    { img: scienceBook, text: "Science" },
-    { img: fictionBook, text: "Fiction" },
-    { img: sportsBook, text: "Sports" },
-    { img: motivationalBook, text: "Self Help" },
-    { img: mythologyBook, text: "Mythology" },
-  ];
+
 
   const dummyBooks = [
     { id: 1, img: bestbook1, title: "Walk into the Shadow", author: "Olivia Wilson", price: 250 },
@@ -143,12 +147,19 @@ function Home() {
           
           <div className="categories-slider-wrapper">
             <div className="categories-track">
-              {categories.map((cat, i) => (
-                <div className="category-glass-card" key={i} onClick={() => navigate("/categories")}>
+              {featuredCategories.map((cat, i) => (
+                <div
+                  className="category-glass-card"
+                  key={cat.Category_ID || i}
+                  onClick={() => navigate("/categories")}
+                >
                   <div className="cat-icon-wrapper">
-                    <img src={cat.img} alt={cat.text} />
+                    <img
+                      src={`http://127.0.0.1:8000${cat.Category_Photo}`}
+                      alt={cat.Category_Name}
+                    />
                   </div>
-                  <h5>{cat.text}</h5>
+                  <h5>{cat.Category_Name}</h5>
                 </div>
               ))}
             </div>

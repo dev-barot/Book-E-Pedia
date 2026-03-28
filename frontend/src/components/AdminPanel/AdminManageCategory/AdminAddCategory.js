@@ -66,7 +66,7 @@ function AdminAddCategory() {
       const url = categoryToEdit 
         ? `http://127.0.0.1:8000/api/category/${categoryToEdit.Category_ID}/` // Added /api/
         : 'http://127.0.0.1:8000/api/category/'; // Added /api/
-      const method = categoryToEdit ? 'PUT' : 'POST';
+      const method = 'POST';
 
       const response = await fetch(url, {
         method: method,

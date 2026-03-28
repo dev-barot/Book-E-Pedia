@@ -71,6 +71,7 @@ const CustomerCart = () => {
 
   return (
     <div className="cart-page">
+      <div className="cart-inner">
 
       {/* Page Header */}
       <div className="cart-page-header">
@@ -152,35 +153,51 @@ const CustomerCart = () => {
         </div>
       </div>
 
-      {/* Similar Books */}
-      {similarBooks.length > 0 && (
-        <div className="similar-books-section">
-          <h2 className="similar-books-title">📚 You Might Also Like</h2>
-          <div className="similar-books-grid">
-            {similarBooks.map((book) => (
-              <div
-                key={book.id}
-                className="similar-book-card"
-                onClick={() => navigate(`/product/${book.id}/${book.id}`)}
-              >
-                <img src={book.image} alt={book.name} className="similar-book-img" />
-                <div className="similar-book-info">
-                  <p className="similar-book-name">{book.name}</p>
-                  <p className="similar-book-author">{book.author}</p>
-                  <p className="similar-book-price">Rs. {book.price}</p>
-                  <button
-                    className="similar-add-btn"
-                    onClick={(e) => { e.stopPropagation(); addToCart(book); }}
-                  >
-                    + Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Bottom row: Similar Books + Quote */}
+      <div className="cart-bottom-row">
 
+        {/* Similar Books */}
+        {similarBooks.length > 0 && (
+          <div className="similar-books-section">
+            <h2 className="similar-books-title">📚 You Might Also Like</h2>
+            <div className="similar-books-grid">
+              {similarBooks.map((book) => (
+                <div
+                  key={book.id}
+                  className="similar-book-card"
+                  onClick={() => navigate(`/product/${book.id}/${book.id}`)}
+                >
+                  <img src={book.image} alt={book.name} className="similar-book-img" />
+                  <div className="similar-book-info">
+                    <p className="similar-book-name">{book.name}</p>
+                    <p className="similar-book-author">{book.author}</p>
+                    <p className="similar-book-price">Rs. {book.price}</p>
+                    <button
+                      className="similar-add-btn"
+                      onClick={(e) => { e.stopPropagation(); addToCart(book); }}
+                    >
+                      + Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Quote box */}
+        <div className="cart-quote-box">
+          <span className="cart-quote-mark">"</span>
+          <p className="cart-quote-text">
+            A reader lives a thousand lives before he dies.<br />
+            The man who never reads lives only one.
+          </p>
+          <p className="cart-quote-author">— George R.R. Martin</p>
+        </div>
+
+      </div>
+
+      </div>
     </div>
   );
 };

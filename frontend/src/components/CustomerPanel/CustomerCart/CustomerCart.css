@@ -7,8 +7,13 @@
 .cart-page {
   min-height: 100vh;
   background: linear-gradient(160deg, #ddeeff 0%, #eaf4ff 60%, #f0f8ff 100%);
-  padding: 40px 60px 80px;
   font-family: 'Inter', sans-serif;
+}
+
+.cart-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
   box-sizing: border-box;
 }
 
@@ -287,31 +292,39 @@
 }
 
 /* ============================================
-   SIMILAR / YOU MIGHT ALSO LIKE
+   BOTTOM ROW — Similar Books + Quote
 ============================================ */
 
+.cart-bottom-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  margin-top: 40px;
+}
+
 .similar-books-section {
-  margin-top: 50px;
+  flex: 1;
+  min-width: 0;
 }
 
 .similar-books-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #1a2e44;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .similar-books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 18px;
 }
 
 .similar-book-card {
   background: #ffffff;
   border: 1px solid #dbeaf7;
   border-radius: 16px;
-  padding: 16px;
+  padding: 14px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -327,10 +340,10 @@
 
 .similar-book-img {
   width: 100%;
-  height: 160px;
+  height: 150px;
   object-fit: cover;
   border-radius: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .similar-book-info {
@@ -339,33 +352,33 @@
 }
 
 .similar-book-name {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #1a2e44;
   margin: 0 0 4px;
 }
 
 .similar-book-author {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: #4a90c4;
   margin: 0 0 6px;
 }
 
 .similar-book-price {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #1a2e44;
-  margin: 0 0 12px;
+  margin: 0 0 10px;
 }
 
 .similar-add-btn {
   width: 100%;
-  padding: 8px 0;
+  padding: 7px 0;
   background: linear-gradient(135deg, #1f4e79, #2f6da3);
   color: white;
   border: none;
   border-radius: 22px;
-  font-size: 0.82rem;
+  font-size: 0.80rem;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s ease;
@@ -377,10 +390,53 @@
   box-shadow: 0 6px 16px rgba(31, 78, 121, 0.22);
 }
 
+/* ── Quote box ── */
+
+.cart-quote-box {
+  position: relative;
+  flex-shrink: 0;
+  width: 280px;
+  align-self: flex-end;
+  background: linear-gradient(135deg, #1f4e79, #2d6da3);
+  border-radius: 18px;
+  padding: 26px 26px 20px;
+  color: white;
+  text-align: right;
+  box-shadow: 0 10px 30px rgba(31, 78, 121, 0.25);
+  overflow: hidden;
+}
+
+.cart-quote-mark {
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  font-size: 7rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.12);
+  font-family: Georgia, serif;
+  pointer-events: none;
+}
+
+.cart-quote-text {
+  font-size: 0.97rem;
+  font-style: italic;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 14px;
+}
+
+.cart-quote-author {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 768px) {
-  .cart-page {
+  .cart-inner {
     padding: 24px 18px 60px;
   }
 
@@ -391,5 +447,14 @@
   .cart-summary-panel {
     width: 100%;
     position: static;
+  }
+
+  .cart-bottom-row {
+    flex-direction: column;
+  }
+
+  .cart-quote-box {
+    width: 100%;
+    align-self: auto;
   }
 }
