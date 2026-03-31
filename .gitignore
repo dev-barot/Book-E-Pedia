@@ -6,6 +6,8 @@ node_modules/
 frontend/build/
 frontend/.env
 
+#backend/bookepedia_backend/media/
+media/
 # =========================
 # BACKEND (Django/Python)
 # =========================
@@ -41,3 +43,4 @@ Thumbs.db
 *.log
 *.sqlite3
 *.swp
+*.zip
