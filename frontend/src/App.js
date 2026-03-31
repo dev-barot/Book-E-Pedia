@@ -149,7 +149,7 @@ function App() {
           <Route exact path="/products/Technology" element={<Technology />} />
 
           <Route exact path='/products' element={<Products />} />
-          <Route exact path='/product/:product_slug/:Product_ID' element={<ProductDetail />} />
+          <Route exact path='/product/:name/:id' element={<ProductDetail />} />
           <Route exact path='/audio-book' element={<AudioBook />} />
           <Route exact path='/video-book' element={<VideoBook />} />
           <Route exact path='/e-book' element={<E_Book />} />

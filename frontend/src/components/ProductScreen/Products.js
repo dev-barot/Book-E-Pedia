@@ -28,8 +28,22 @@ const Products = () => {
   ];
 
   useEffect(() => {
-    // Injecting static data since backend is offline
-    setProducts(dummyProducts);
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/products/");
+        const data = await res.json();
+
+        console.log("Products API:", data);
+
+        setProducts(data.data || []);
+        setTotalResults((data.data || []).length);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setProducts([]);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   function changeUrl(dummyString) {
@@ -71,8 +85,18 @@ const Products = () => {
 
         <div className="shop-lux-list">
           {products.length > 0 ? (
-            products.map((product, index) => (
-              <SingleProduct key={index} product={product} />
+            products.map((product) => (
+              <SingleProduct
+                key={product.id}
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  image: product.cover_photo ? `http://127.0.0.1:8000${product.cover_photo}` : img1, // fallback image
+                  author: product.author,
+                  description: product.description
+                }}
+              />
             ))
           ) : (
             <div className="text-center w-100">

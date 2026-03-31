@@ -15,31 +15,7 @@ import img8 from "./4f971bfe-2ea6-4ff7-8c5a-7eba039fa15c.jpg";
 function ProductDetail() {
   const { id } = useParams();
 
-  const dummyProducts = [
-    { id: 1, name: "The Alchemist", author: "Paulo Coelho", price: 399, image: img1, description: "A magical story of Santiago's journey and fulfilling his personal legend." },
-    { id: 2, name: "Harry Potter", author: "J.K. Rowling", price: 499, image: img2, description: "The boy who lived. A spectacular journey into the wizarding world." },
-    { id: 3, name: "The Great Gatsby", author: "F. Scott Fitzgerald", price: 299, image: img3, description: "A story of the Jazz Age, extravagance, and the American dream." },
-    { id: 4, name: "Epic Journey", author: "Alan Walker", price: 199, image: img4, description: "An epic tale of adventure across forgotten realms." },
-    { id: 5, name: "The Untold Mystery", author: "Jane Doe", price: 599, image: img5, description: "Tales from the mystic mountains filled with secrets." },
-    { id: 6, name: "Shadows of the Past", author: "John Smith", price: 450, image: img6, description: "Stories and legends that were never meant to be told." },
-    { id: 7, name: "Nightfall", author: "Bruce Wayne", price: 899, image: img7, description: "A thrilling noir detective story set in a dystopian city." },
-    { id: 8, name: "Wandering Soul", author: "Oliver Twist", price: 349, image: img8, description: "Finding the path of enlightenment in the depth of shadows." }
-  ];
-
-  const foundProduct = dummyProducts.find(p => p.id === parseInt(id)) || dummyProducts[0];
-
-  const productData = {
-    Product_ID: foundProduct.id,
-    Product_Name: foundProduct.name,
-    Author: foundProduct.author,
-    Publisher: "Book-E-Pedia Limited",
-    Language: "English",
-    Number_of_Pages: 320,
-    Time_Duration: "N/A",
-    Product_Description: foundProduct.description,
-    Product_Price: foundProduct.price,
-    Cover_Photo: foundProduct.image,
-  };
+  const [productData, setProductData] = useState(null);
 
   const [feedbacks, setFeedbacks] = useState([]);
   const [newFeedback, setNewFeedback] = useState("");
@@ -47,9 +23,36 @@ function ProductDetail() {
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    const storedFeedback = JSON.parse(localStorage.getItem(`feedbacks_${productData.Product_ID}`)) || [];
-    setFeedbacks(storedFeedback);
-  }, [productData.Product_ID]);
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/products/");
+        const data = await res.json();
+
+        const found = data.data.find(p => p.id === parseInt(id));
+
+        if (found) {
+          setProductData({
+            id: found.id,
+            name: found.name,
+            author: found.author,
+            publisher: found.publisher,
+            language: found.language,
+            pages: found.pages,
+            duration: found.duration,
+            description: found.description,
+            price: found.price,
+            Cover_Photo: found.cover_photo
+              ? `http://127.0.0.1:8000${found.cover_photo}`
+              : null
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   const handleAddFeedback = () => {
     if (!newFeedback.trim()) return alert("Please enter a review.");
@@ -60,7 +63,7 @@ function ProductDetail() {
       Feedback_DateTime: new Date().toISOString(),
     };
     const updatedFeedback = [newEntry, ...feedbacks];
-    localStorage.setItem(`feedbacks_${productData.Product_ID}`, JSON.stringify(updatedFeedback));
+    localStorage.setItem(`feedbacks_${productData.id}`, JSON.stringify(updatedFeedback));
     setFeedbacks(updatedFeedback);
     setNewFeedback("");
     setShowForm(false);
@@ -69,15 +72,15 @@ function ProductDetail() {
   const cartAddButtonHandler = (e) => {
     e.preventDefault();
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingIndex = existingCart.findIndex((item) => item.id == productData.Product_ID);
+    const existingIndex = existingCart.findIndex((item) => item.id == productData.id);
 
     if (existingIndex !== -1) {
       existingCart[existingIndex].quantity += 1;
     } else {
       existingCart.push({
         id: productData.Product_ID,
-        name: productData.Product_Name,
-        price: productData.Product_Price,
+        name: productData.name,
+        price: productData.price,
         image: productData.Cover_Photo,
         quantity: 1,
       });
@@ -94,6 +97,9 @@ function ProductDetail() {
   };
 
   const displayedFeedback = showAll ? feedbacks : feedbacks.slice(0, 3);
+  if (!productData) {
+  return <h3 style={{ textAlign: "center" }}>Loading...</h3>;
+}
 
   return (
     <div className="product-detail-glass-bg">
@@ -116,10 +122,10 @@ function ProductDetail() {
 
             {/* Right: Info Box */}
             <div className="col-md-7 p-0 ps-md-4 glass-info-area">
-              <h1 className="glass-title">{productData.Product_Name.toUpperCase()}</h1>
+              <h1 className="glass-title">{productData.name.toUpperCase()}</h1>
               
               <ul className="glass-specs-list">
-                <li><strong>Author:</strong> {productData.Author}</li>
+                <li><strong>Author:</strong> {productData.author}</li>
                 <li><strong>Publisher:</strong> {productData.Publisher}</li>
                 <li><strong>Language:</strong> {productData.Language}</li>
                 <li><strong>Pages:</strong> {productData.Number_of_Pages}</li>
@@ -128,7 +134,7 @@ function ProductDetail() {
 
               <p className="glass-desc">{productData.Product_Description}</p>
               
-              <h4 className="glass-price">Price: Rs. {productData.Product_Price.toFixed(2)}</h4>
+              <h4 className="glass-price">Price: Rs. {Number(productData.price).toFixed(2)}</h4>
 
               <button className="glass-btn-cart" onClick={cartAddButtonHandler}>
                 Add to Cart
