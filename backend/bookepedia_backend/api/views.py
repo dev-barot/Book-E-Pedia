@@ -3,11 +3,100 @@ import logging
 from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+<<<<<<< HEAD
 from .models import TBL_Customer_Details, TBL_Category_Details
 
+=======
+from .models import TBL_Customer_Details, TBL_Category_Details, TBL_BookType, TBL_Product_Details, TBL_Employee_Details
+>>>>>>> 120fc44 (feat: implemented API endpoints for category, book type, employee and product CRUD operations)
 
 logger = logging.getLogger(__name__)
 
+
+@csrf_exempt
+def get_products(request):
+    # ======================
+    # GET ALL PRODUCTS
+    # ======================
+    if request.method == "GET":
+        products = TBL_Product_Details.objects.filter(IsActive='1')
+
+        data = []
+        for product in products:
+            data.append({
+                "id": product.Product_ID,
+                "name": product.Product_Name,
+                "author": product.Author,
+                "publisher": product.Publisher,
+                "language": getattr(product, "Language", ""),
+                "pages": getattr(product, "Number_of_Pages", 0),
+                "duration": str(getattr(product, "Time_Duration", 0)),
+                "price": str(product.Product_Price),
+                "stock": product.Stock,
+                "description": product.Product_Description,
+                "cover_photo": product.Cover_Photo.url if product.Cover_Photo else "",
+                "back_photo": product.Back_Photo.url if hasattr(product, "Back_Photo") and product.Back_Photo else "",
+                "category_id": product.Category_ID.Category_ID,
+                "category_name": product.Category_ID.Category_Name,
+                "book_id": product.Book_ID.Book_ID,
+                "book_name": product.Book_ID.Book_Name,
+                "emp_id": getattr(product, "Emp_ID_id", None),
+                "is_active": product.IsActive
+            })
+
+        return JsonResponse({"data": data})
+
+    # ======================
+    # ADD PRODUCT
+    # ======================
+    elif request.method == "POST":
+        try:
+            category = TBL_Category_Details.objects.get(
+                Category_ID=request.POST.get("Category_ID")
+            )
+
+            book_type = TBL_BookType.objects.get(
+                Book_ID=request.POST.get("Book_ID")
+            )
+
+            employee = TBL_Employee_Details.objects.get(
+                Emp_ID=request.POST.get("Emp_ID")
+            )
+
+            product = TBL_Product_Details.objects.create(
+                Product_Name=request.POST.get("Product_Name"),
+                Category_ID=category,
+                Book_ID=book_type,
+                Emp_ID=employee,
+                Product_Description=request.POST.get("Product_Description"),
+                Author=request.POST.get("Author"),
+                Publisher=request.POST.get("Publisher"),
+                Language=request.POST.get("Language"),
+                Number_of_Pages=request.POST.get("Number_of_Pages") or 0,
+                Time_Duration=request.POST.get("Time_Duration") or 0,
+                Product_Price=request.POST.get("Product_Price"),
+                Stock=request.POST.get("Stock"),
+                Cover_Photo=request.FILES.get("Cover_Image"),
+                Back_Photo=request.FILES.get("Back_Image"),
+                IsActive=request.POST.get("IsActive", "1")
+            )
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Product added successfully",
+                "id": product.Product_ID
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "bool": False,
+        "msg": "Method not allowed"
+    }, status=405)
 
 # =========================
 # Registration API
@@ -155,7 +244,7 @@ def get_categories(request):
         try:
             from .models import TBL_Category_Details
 
-            categories = TBL_Category_Details.objects.all()
+            categories = TBL_Category_Details.objects.filter(IsActive='1')
 
             data = []
             for category in categories:
@@ -273,3 +362,344 @@ def category_detail(request, id):
         return JsonResponse({"msg": "Category deleted successfully"})
 
     return JsonResponse({"msg": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def get_book_types(request):
+    if request.method == "GET":
+        books = TBL_BookType.objects.all().values()
+
+        data = []
+        for book in books:
+            data.append({
+                "id": book["Book_ID"],
+                "name": book["Book_Name"],
+                "physical": book["Physical_Book"],
+                "audio": book["Audio_Book"],
+                "ebook": book["E_Book"],
+                "video": book["Video_Book"],
+                "is_active": book["IsActive"]
+            })
+
+        return JsonResponse({"data": data}, safe=False)
+
+@csrf_exempt
+def add_book_type(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            book = TBL_BookType.objects.create(
+                Book_Name=data.get("name"),
+                Physical_Book=data.get("physical", "0"),
+                Audio_Book=data.get("audio", "0"),
+                E_Book=data.get("ebook", "0"),
+                Video_Book=data.get("video", "0"),
+                IsActive='1'
+            )
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Book type added successfully",
+                "id": book.Book_ID
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            })
+
+@csrf_exempt
+def update_book_type(request, id):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+
+            book = TBL_BookType.objects.get(Book_ID=id)
+
+            book.Book_Name = data.get("name", book.Book_Name)
+            book.Physical_Book = data.get("physical", book.Physical_Book)
+            book.Audio_Book = data.get("audio", book.Audio_Book)
+            book.E_Book = data.get("ebook", book.E_Book)
+            book.Video_Book = data.get("video", book.Video_Book)
+
+            book.save()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Book type updated successfully"
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            })
+
+@csrf_exempt
+def delete_book_type(request, id):
+    if request.method == "DELETE":
+        try:
+            book = TBL_BookType.objects.get(Book_ID=id)
+            book.delete()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Book type deleted successfully"
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            })
+
+
+
+@csrf_exempt
+def add_product(request):
+    if request.method == "POST":
+        try:
+            category = TBL_Category_Details.objects.get(
+                Category_ID=request.POST.get("category_id")
+            )
+
+            book = TBL_BookType.objects.get(
+                Book_ID=request.POST.get("book_id")
+            )
+
+            product = TBL_Product_Details.objects.create(
+                Category_ID=category,
+                Book_ID=book,
+                Product_Name=request.POST.get("name"),
+                Author=request.POST.get("author"),
+                Publisher=request.POST.get("publisher"),
+                Product_Price=request.POST.get("price"),
+                Language=request.POST.get("language"),
+                Number_of_Pages=request.POST.get("pages"),
+                Time_Duration=request.POST.get("duration"),
+                Back_Photo=request.FILES.get("back_photo"),
+                Stock=request.POST.get("stock"),
+                Product_Description=request.POST.get("description"),
+                Cover_Photo=request.FILES.get("image"),
+                IsActive=request.POST.get("is_active", "1")
+            )
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Product added successfully",
+                "id": product.Product_ID
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+            
+@csrf_exempt
+def delete_product(request, id):
+    if request.method == "DELETE":
+        try:
+            product = TBL_Product_Details.objects.get(Product_ID=id)
+
+            # SOFT DELETE
+            product.IsActive = '0'
+            product.save()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Product deactivated successfully"
+            })
+
+        except TBL_Product_Details.DoesNotExist:
+            return JsonResponse({
+                "bool": False,
+                "msg": "Product not found"
+            }, status=404)
+
+        except Exception as e:
+            print("DELETE ERROR:", str(e))
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "bool": False,
+        "msg": "Method not allowed"
+    }, status=405)
+
+# @csrf_exempt
+# def update_product(request, id):
+#     if request.method in ["PUT", "POST"]:
+#         try:
+#             product = TBL_Product_Details.objects.get(
+#                 Product_ID=id
+#             )
+
+#             category_id = request.POST.get("category_id")
+#             book_id = request.POST.get("book_id")
+
+#             if category_id:
+#                 product.Category_ID = TBL_Category_Details.objects.get(
+#                     Category_ID=category_id
+#                 )
+
+#             if book_id:
+#                 product.Book_ID = TBL_BookType.objects.get(
+#                     Book_ID=book_id
+#                 )
+
+#             product.Product_Name = request.POST.get(
+#                 "name",
+#                 product.Product_Name
+#             )
+
+#             product.Author = request.POST.get(
+#                 "author",
+#                 product.Author
+#             )
+
+#             product.Publisher = request.POST.get(
+#                 "publisher",
+#                 product.Publisher
+#             )
+
+#             product.Product_Price = request.POST.get(
+#                 "price",
+#                 product.Product_Price
+#             )
+
+#             product.Stock = request.POST.get(
+#                 "stock",
+#                 product.Stock
+#             )
+
+#             product.Product_Description = request.POST.get(
+#                 "description",
+#                 product.Product_Description
+#             )
+#             product.Language = request.POST.get(
+#                 "language",
+#                 product.Language
+#             )
+
+#             product.Number_of_Pages = request.POST.get(
+#                 "pages",
+#                 product.Number_of_Pages
+#             )
+
+#             product.Time_Duration = request.POST.get(
+#                 "duration",
+#                 product.Time_Duration
+#             )
+
+#             if "back_photo" in request.FILES:
+#                 product.Back_Photo = request.FILES["back_photo"]
+
+#             if "image" in request.FILES:
+#                 product.Cover_Photo = request.FILES["image"]
+
+#             product.save()
+
+#             return JsonResponse({
+#                 "bool": True,
+#                 "msg": "Product updated successfully"
+#             })
+
+#         except Exception as e:
+#             return JsonResponse({
+#                 "bool": False,
+#                 "msg": str(e)
+#             }, status=500)
+
+@csrf_exempt
+def update_product(request, id):
+    if request.method in ["PUT", "POST"]:
+        try:
+            product = TBL_Product_Details.objects.get(Product_ID=id)
+
+            # VERY IMPORTANT LINE
+            data = request.POST if request.POST else request.FILES
+
+            product.Product_Name = request.POST.get("Product_Name", product.Product_Name)
+
+            if request.POST.get("Category_ID"):
+                product.Category_ID = TBL_Category_Details.objects.get(
+                    Category_ID=request.POST.get("Category_ID")
+                )
+
+            if request.POST.get("Book_ID"):
+                product.Book_ID = TBL_BookType.objects.get(
+                    Book_ID=request.POST.get("Book_ID")
+                )
+
+            if request.POST.get("Emp_ID"):
+                product.Emp_ID = TBL_Employee_Details.objects.get(
+                    Emp_ID=request.POST.get("Emp_ID")
+                )
+
+            product.Product_Description = request.POST.get("Product_Description", product.Product_Description)
+            product.Author = request.POST.get("Author", product.Author)
+            product.Publisher = request.POST.get("Publisher", product.Publisher)
+            product.Language = request.POST.get("Language", product.Language)
+
+            if request.POST.get("Number_of_Pages"):
+                product.Number_of_Pages = request.POST.get("Number_of_Pages")
+
+            if request.POST.get("Time_Duration"):
+                product.Time_Duration = request.POST.get("Time_Duration")
+
+            product.Product_Price = request.POST.get("Product_Price", product.Product_Price)
+            product.Stock = request.POST.get("Stock", product.Stock)
+
+            if "Cover_Image" in request.FILES:
+                product.Cover_Photo = request.FILES["Cover_Image"]
+
+            if "Back_Image" in request.FILES:
+                product.Back_Photo = request.FILES["Back_Image"]
+
+            product.IsActive = request.POST.get("IsActive", product.IsActive)
+
+            product.save()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Product updated successfully"
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "bool": False,
+        "msg": "Method not allowed"
+    }, status=405)
+
+@csrf_exempt
+def get_employees(request):
+    if request.method == "GET":
+        employees = TBL_Employee_Details.objects.filter(IsActive='1')
+
+        data = [
+            {
+                "id": emp.Emp_ID,
+                "fname": emp.Fname,
+                "lname": emp.Lname,
+                "designation": emp.Designation,
+                "email":emp.email,
+                "phone":emp.Phone_Number
+            }
+            for emp in employees
+        ]
+
+        return JsonResponse({"data": data}, safe=False)
+
+    return JsonResponse(
+        {"bool": False, "msg": "Method not allowed"},
+        status=405
+    )
