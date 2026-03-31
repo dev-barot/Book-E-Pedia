@@ -45,28 +45,30 @@ function AdminAddProducts() {
         setCategories([]);
         setBookTypes([]);
         setEmployees([]);
+        console.log("Categories:", categories);
+        console.log("Book Types:", bookTypes);
+        console.log("Employees:", employees);
       }
     };
-    if (!productToEdit) fetchData();
+    fetchData();
   }, [productToEdit]);
 
   const [formData, setFormData] = useState({
-    Product_ID: productToEdit?.Product_ID || "",
-    Product_Name: productToEdit?.Product_Name || "",
-    Category_ID: productToEdit?.Category_ID || "",
-    Book_ID: productToEdit?.Book_ID || "",
-    Emp_ID: productToEdit?.Emp_ID || "", // Ensure initial value
-    Product_Description: productToEdit?.Product_Description || "",
-    Author: productToEdit?.Author || "",
-    Publisher: productToEdit?.Publisher || "",
-    Language: productToEdit?.Language || "",
-    Number_of_Pages: productToEdit?.Number_of_Pages || "",
-    Time_Duration: productToEdit?.Time_Duration || "",
-    Product_Price: productToEdit?.Product_Price || "",
-    Stock: productToEdit?.Stock || "",
+    Product_Name: productToEdit?.name || "",
+    Category_ID: productToEdit?.category_id || "",
+    Book_ID: productToEdit?.book_id || "",
+    Emp_ID: productToEdit?.emp_id || "",
+    Product_Description: productToEdit?.description || "",
+    Author: productToEdit?.author || "",
+    Publisher: productToEdit?.publisher || "",
+    Language: productToEdit?.language || "",
+    Number_of_Pages: productToEdit?.pages || "",
+    Time_Duration: productToEdit?.duration || "",
+    Product_Price: productToEdit?.price || "",
+    Stock: productToEdit?.stock || "",
     Cover_Image: null,
     Back_Image: null,
-    IsActive: productToEdit?.IsActive !== undefined ? productToEdit.IsActive.toString() : "1", // Default to "1" as string
+    IsActive: productToEdit?.is_active ? "1" : "0"
   });
 
   const [errors, setErrors] = useState({});
@@ -115,14 +117,26 @@ const handleChange = (e) => {
       newErrors.Stock = "Stock must be at least 1.";
     }
   
-    if (formData.Book_ID && bookTypes.find(bt => bt.Book_ID === formData.Book_ID)?.Physical_Book === "1" || bookTypes.find(bt => bt.Book_ID === formData.Book_ID)?.E_Book === "1") {
+    const selectedBook = bookTypes.find(bt => String(bt.id) === String(formData.Book_ID));
+
+    if (
+      selectedBook &&
+      (selectedBook.physical === "1" ||
+        selectedBook.ebook === "1")
+    ) {
       if (!formData.Number_of_Pages || Number(formData.Number_of_Pages) <= 0) {
         newErrors.Number_of_Pages = "Enter a valid number of pages.";
       }
     }
-  
-    if (formData.Book_ID && (bookTypes.find(bt => bt.Book_ID === formData.Book_ID)?.Audio_Book === "1" || bookTypes.find(bt => bt.Book_ID === formData.Book_ID)?.Video_Book === "1")) {
-      if (!formData.Time_Duration.trim()) newErrors.Time_Duration = "Duration is required.";
+
+    if (
+      selectedBook &&
+      (selectedBook.audio === "1" ||
+        selectedBook.video === "1")
+    ) {
+      if (!formData.Time_Duration.trim()) {
+        newErrors.Time_Duration = "Duration is required.";
+      }
     }
   
     if (!formData.Cover_Image && !productToEdit) newErrors.Cover_Image = "Cover photo is required.";
@@ -152,11 +166,14 @@ const handleChange = (e) => {
     }
 
     try {
-      const url = productToEdit
-        ? `http://127.0.0.1:8000/api/products/${productToEdit.Product_ID}/`
-        : "http://127.0.0.1:8000/api/products/";
-      const method = productToEdit ? "PUT" : "POST";
-  
+      const productId = productToEdit?.id;
+
+      const url = productId
+        ? `http://127.0.0.1:8000/api/products/${productId}/`
+        : `http://127.0.0.1:8000/api/products/`;
+
+      const method = productId ? "POST" : "POST";
+
       const response = await fetch(url, {
         method: method,
         body: formDataToSend,
@@ -213,14 +230,16 @@ const handleChange = (e) => {
               <div className="admin-add-product-field">
                 <label htmlFor="Category_ID">Category</label>
                 <select
-                  id="Category_ID"
                   name="Category_ID"
                   value={formData.Category_ID}
                   onChange={handleChange}
                 >
                   <option value="">-- Select Category --</option>
                   {categories.map((cat) => (
-                    <option key={cat.Category_ID} value={cat.Category_ID}>
+                    <option
+                      key={`cat-${cat.Category_ID}`}
+                      value={cat.Category_ID}
+                    >
                       {cat.Category_Name}
                     </option>
                   ))}
@@ -230,19 +249,17 @@ const handleChange = (e) => {
               <div className="admin-add-product-field">
                 <label htmlFor="Book_ID">Book Type</label>
                 <select
-                  id="Book_ID"
-                  name="Book_ID" // Changed from Book_Name to Book_ID
+                  name="Book_ID"
                   value={formData.Book_ID}
                   onChange={handleChange}
                 >
                   <option value="">-- Select Book Type --</option>
                   {bookTypes.map((book) => (
-                    <option key={book.Book_ID} value={book.Book_ID}>
-                      {`${book.Physical_Book === "1" ? "Physical Book: " : ""}`}
-                      {`${book.Audio_Book === "1" ? "Audio Book: " : ""}`}
-                      {`${book.E_Book === "1" ? "E-Book: " : ""}`}
-                      {`${book.Video_Book === "1" ? "Video Book: " : ""}`}
-                      {book.Book_Name || `Book ID ${book.Book_ID}`} {/* Fallback to Book_ID if no Book_Name */}
+                    <option
+                      key={`book-${book.id}`}
+                      value={book.id}
+                    >
+                      {book.name}
                     </option>
                   ))}
                 </select>
@@ -250,17 +267,15 @@ const handleChange = (e) => {
               </div>
               <div className="admin-add-product-field">
                 <label htmlFor="Emp_ID">Employee</label>
-                <select
-                  id="Emp_ID"
+               <select
                   name="Emp_ID"
                   value={formData.Emp_ID}
                   onChange={handleChange}
-                  required // Enforce selection
                 >
                   <option value="">-- Select Employee --</option>
                   {employees.map((emp) => (
-                    <option key={emp.Emp_ID} value={emp.Emp_ID}>
-                      {`${emp.Fname} ${emp.Lname}`}
+                    <option key={emp.id} value={emp.id}>
+                      {emp.id} - {emp.fname} {emp.lname}
                     </option>
                   ))}
                 </select>

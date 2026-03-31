@@ -349,10 +349,15 @@ function AdminManageProducts() {
   const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/products/${productId}/`, {
-          method: "DELETE",
-        });
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/delete-product/${productId}/`,
+          {
+            method: "DELETE",
+          }
+        );
+
         if (!response.ok) throw new Error("Failed to delete product");
+
         fetchProducts(); // Refresh list
       } catch (error) {
         console.error("Error deleting product:", error);
@@ -440,47 +445,100 @@ function AdminManageProducts() {
                 </tr>
               ) : (
                 productList.map((product) => (
-                  <tr key={product.Product_ID}>
+                  <tr key={product.id}>
                     <td>
-                      {product.Cover_Photo ? (
-                        <div style={{ width: '50px', height: '65px', borderRadius: '6px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
+                      {product.cover_photo ? (
+                        <div
+                          style={{
+                            width: "50px",
+                            height: "65px",
+                            borderRadius: "6px",
+                            overflow: "hidden",
+                            boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+                          }}
+                        >
                           <img
-                            src={`http://127.0.0.1:8000${product.Cover_Photo}`}
+                            src={`http://127.0.0.1:8000${product.cover_photo}`}
                             alt="Cover"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover"
+                            }}
                           />
                         </div>
                       ) : (
-                        <div style={{ width: '50px', height: '65px', borderRadius: '6px', background: 'rgba(31,78,121,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(31,78,121,0.3)' }}>
+                        <div
+                          style={{
+                            width: "50px",
+                            height: "65px",
+                            borderRadius: "6px",
+                            background: "rgba(31,78,121,0.1)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
                           <i className="fa-solid fa-image"></i>
                         </div>
                       )}
                     </td>
+
                     <td>
-                      <div className="name-cell">{product.Product_Name}</div>
-                      <div className="desc-cell" style={{ fontSize: '0.8rem' }}>#{product.Product_ID} &bull; {product.Language || "Unknown Lang"}</div>
+                      <div className="name-cell">{product.name}</div>
+                      <div className="desc-cell" style={{ fontSize: "0.8rem" }}>
+                        #{product.id} • {product.language}
+                      </div>
                     </td>
-                    <td><span className="status-badge neutral">{product.Category_Name || product.category?.Category_Name || "N/A"}</span></td>
-                    <td style={{ fontSize: '0.85rem' }}>{getBookTypes(product.Book_Type_Details || {})}</td>
+
                     <td>
-                      <div style={{ fontWeight: '600', fontSize: '0.9rem' }}>{product.Author || "N/A"}</div>
-                      <div style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>{product.Publisher || "N/A"}</div>
-                    </td>
-                    <td style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                      <div>{product.Number_of_Pages ? `${product.Number_of_Pages} Pages` : ""}</div>
-                      <div>{product.Time_Duration ? `${product.Time_Duration}` : ""}</div>
-                    </td>
-                    <td style={{ fontWeight: '700', color: 'var(--color-primary-dark)' }}>₹{product.Product_Price}</td>
-                    <td>
-                      <span className={`status-badge ${parseInt(product.Stock) > 10 ? 'optimal' : (parseInt(product.Stock) > 0 ? 'neutral' : 'critical')}`}>
-                        {product.Stock}
+                      <span className="status-badge neutral">
+                        {product.category_name}
                       </span>
                     </td>
+
+                    <td>{product.book_name}</td>
+
+                    <td>
+                      <div>{product.author}</div>
+                      <div style={{ fontSize: "0.8rem" }}>
+                        {product.publisher}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div>{product.pages} Pages</div>
+                      <div>{product.duration}</div>
+                    </td>
+
+                    <td>₹{product.price}</td>
+
+                    <td>
+                      <span
+                        className={`status-badge ${
+                          product.stock > 10
+                            ? "optimal"
+                            : product.stock > 0
+                            ? "neutral"
+                            : "critical"
+                        }`}
+                      >
+                        {product.stock}
+                      </span>
+                    </td>
+
                     <td className="actions-cell">
-                      <button className="icon-btn-lux edit" onClick={() => handleEdit(product)} title="Edit">
+                      <button
+                        className="icon-btn-lux edit"
+                        onClick={() => handleEdit(product)}
+                      >
                         <i className="fa-solid fa-pen"></i>
                       </button>
-                      <button className="icon-btn-lux delete" onClick={() => handleDelete(product.Product_ID)} title="Delete">
+
+                      <button
+                        className="icon-btn-lux delete"
+                        onClick={() => handleDelete(product.id)}
+                      >
                         <i className="fa-solid fa-trash-can"></i>
                       </button>
                     </td>
