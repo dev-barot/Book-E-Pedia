@@ -3,13 +3,13 @@ import logging
 from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-<<<<<<< HEAD
-from .models import TBL_Customer_Details, TBL_Category_Details
-
-=======
-from .models import TBL_Customer_Details, TBL_Category_Details, TBL_BookType, TBL_Product_Details, TBL_Employee_Details
->>>>>>> 120fc44 (feat: implemented API endpoints for category, book type, employee and product CRUD operations)
-
+from .models import (
+    TBL_Customer_Details,
+    TBL_Category_Details,
+    TBL_BookType,
+    TBL_Product_Details,
+    TBL_Employee_Details
+)
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +19,7 @@ def get_products(request):
     # GET ALL PRODUCTS
     # ======================
     if request.method == "GET":
-        products = TBL_Product_Details.objects.filter(IsActive='1')
+        products = TBL_Product_Details.objects.filter(IsActive=True)
 
         data = []
         for product in products:
@@ -78,7 +78,7 @@ def get_products(request):
                 Stock=request.POST.get("Stock"),
                 Cover_Photo=request.FILES.get("Cover_Image"),
                 Back_Photo=request.FILES.get("Back_Image"),
-                IsActive=request.POST.get("IsActive", "1")
+                IsActive=request.POST.get("IsActive", TRUE)
             )
 
             return JsonResponse({
