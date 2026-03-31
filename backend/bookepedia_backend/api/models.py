@@ -40,10 +40,43 @@ class TBL_Customer_Details(models.Model):
         managed = False
 
 
-# Category Details Model
+
+# ================= EMPLOYEE =================
+def employee_profile_pic_path(instance, filename):
+    return f"Employee_Images/{instance.Fname}_{instance.Lname}/{filename}"
+
+class TBL_Employee_Details(models.Model):
+    EMP_TYPE_CHOICES = [('1', 'Admin'), ('0', 'Staff')]
+    GENDER_CHOICES = [('M', 'Male'), ('F', 'Female')]
+    IS_ACTIVE_CHOICES = [('1', 'Active'), ('0', 'Inactive')]
+
+    Emp_ID = models.IntegerField(primary_key=True)
+    Emp_Type = models.CharField(max_length=1, choices=EMP_TYPE_CHOICES, default='0')
+    Fname = models.CharField(max_length=20)
+    Lname = models.CharField(max_length=25)
+    Gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    DOB = models.DateField()
+    email = models.EmailField(unique=True, validators=[EmailValidator(message="Invalid email format")])
+    Password = models.CharField(max_length=15)
+    Phone_Number = models.BigIntegerField(unique=True)
+    Address = models.CharField(max_length=250)
+    Salary = models.DecimalField(max_digits=9, decimal_places=2)
+    Designation = models.CharField(max_length=25)
+
+    Emp_Photo = models.ImageField(upload_to=employee_profile_pic_path, null=True, blank=True)
+    IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
+
+    def __str__(self):
+        return f"{self.Fname} {self.Lname}"
+
+    class Meta:
+        db_table = 'bookapp_tbl_employee_details'
+        ordering = ['Emp_ID']
+
+
+# ================= CATEGORY =================
 def category_pic_path(instance, filename):
     return f"Category_Images/{instance.Category_Name}/{filename}"
-
 
 class TBL_Category_Details(models.Model):
     IS_ACTIVE_CHOICES = [('1', 'Active'), ('0', 'Inactive')]
@@ -60,3 +93,76 @@ class TBL_Category_Details(models.Model):
     class Meta:
         managed = False
         db_table = 'bookapp_tbl_category_details'
+
+
+# ================= BOOK TYPE =================
+class TBL_BookType(models.Model):
+    IS_ACTIVE_CHOICES = [('1', 'Active'), ('0', 'Inactive')]
+
+    Book_ID = models.AutoField(primary_key=True)
+    Book_Name = models.CharField(max_length=250)
+
+    Physical_Book = models.CharField(max_length=1, default='0')
+    Audio_Book = models.CharField(max_length=1, default='0')
+    E_Book = models.CharField(max_length=1, default='0')
+    Video_Book = models.CharField(max_length=1, default='0')
+
+    IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
+
+    def __str__(self):
+        return self.Book_Name
+
+    class Meta:
+        db_table = 'bookapp_tbl_booktype'
+        ordering = ['Book_ID']
+
+
+# ================= PRODUCT =================
+def product_photo_path(instance, filename):
+    return f"Product_Images/{instance.Product_Name}/{filename}"
+
+class TBL_Product_Details(models.Model):
+    Product_ID = models.AutoField(primary_key=True)
+
+    Category_ID = models.ForeignKey(
+        TBL_Category_Details,
+        on_delete=models.CASCADE,
+        db_column='Category_ID_id'
+    )
+
+    Book_ID = models.ForeignKey(
+        TBL_BookType,
+        on_delete=models.CASCADE,
+        db_column='Book_ID_id'
+    )
+
+    Emp_ID = models.ForeignKey(
+        TBL_Employee_Details,
+        on_delete=models.CASCADE,
+        db_column='Emp_ID_id'
+    )
+
+    Product_Name = models.CharField(max_length=255)
+    Author = models.CharField(max_length=255)
+    Publisher = models.CharField(max_length=255)
+
+    Language = models.CharField(max_length=50, null=True, blank=True)
+    Number_of_Pages = models.IntegerField(null=True, blank=True)
+    Time_Duration = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
+    Product_Price = models.DecimalField(max_digits=10, decimal_places=2)
+    Stock = models.IntegerField(default=0)
+
+    Product_Description = models.TextField()
+
+    Cover_Photo = models.ImageField(upload_to=product_photo_path, null=True, blank=True)
+    Back_Photo = models.ImageField(upload_to=product_photo_path, null=True, blank=True)
+
+    IsActive = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.Product_Name
+
+    class Meta:
+        db_table = 'bookapp_tbl_product'
+        ordering = ['Product_ID']
