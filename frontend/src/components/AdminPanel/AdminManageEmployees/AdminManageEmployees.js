@@ -113,22 +113,24 @@ function AdminManageEmployees() {
                 </tr>
               ) : (
                 employeeList.map((employee) => (
-                  <tr key={employee.Emp_ID}>
+                  <tr key={employee.id}>
                     <td>
-                      <div className="id-cell">#{employee.Emp_ID}</div>
-                      <div className="name-cell" style={{ marginTop: '4px' }}>{employee.Fname} {employee.Lname}</div>
+                      <div className="id-cell">#{employee.id}</div>
+                      <div className="name-cell" style={{ marginTop: '4px' }}>
+                        {employee.fname} {employee.lname}
+                      </div>
                     </td>
                     <td>
                       <div style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <i className="fa-regular fa-envelope" style={{ color: 'var(--color-text-muted)' }}></i> {employee.email}
                       </div>
                       <div style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <i className="fa-solid fa-phone"></i> {employee.Phone_Number}
+                        <i className="fa-solid fa-phone"></i> {employee.phone}
                       </div>
                     </td>
                     <td>
                       <span className="status-badge neutral" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.3)' }}>
-                        {employee.Designation}
+                        {employee.designation}
                       </span>
                     </td>
                     <td className="actions-cell">
@@ -141,7 +143,7 @@ function AdminManageEmployees() {
                       </button>
                       <button
                         className="icon-btn-lux delete"
-                        onClick={() => handleDelete(employee.Emp_ID)}
+                        onClick={() => handleDelete(employee.id)}
                         title="Remove Employee"
                       >
                         <i className="fa-solid fa-trash-can"></i>
