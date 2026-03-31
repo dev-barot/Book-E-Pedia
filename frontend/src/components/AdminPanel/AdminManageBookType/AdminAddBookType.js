@@ -9,6 +9,14 @@ function AdminAddBookType({ onAddBookType }) {
   const location = useLocation();
   const navigate = useNavigate();
   const bookToEdit = location.state?.book;
+  const [formData, setFormData] = useState({
+  Book_Name: bookToEdit?.name || "",
+  Physical_Book: bookToEdit?.physical || "0",
+  Audio_Book: bookToEdit?.audio || "0",
+  E_Book: bookToEdit?.ebook || "0",
+  Video_Book: bookToEdit?.video || "0",
+  IsActive: bookToEdit?.is_active || "1",
+});
 
   // Handle Book_ID generation logic
   const [nextBookId, setNextBookId] = useState(() => {
@@ -30,17 +38,6 @@ function AdminAddBookType({ onAddBookType }) {
     }
   }, [bookToEdit]);
 
-  const [formData, setFormData] = useState({
-    Book_Name: bookToEdit ? bookToEdit.Book_Name : '',
-    Physical_Book: '0',
-    Audio_Book: '0',
-    E_Book: '0',
-    Video_Book: '0',
-    Audio_File: null,
-    Video_File: null,
-    E_Book_File: null,
-    IsActive: '1',
-  });
 
   const [errors, setErrors] = useState({});
 
@@ -58,62 +55,40 @@ function AdminAddBookType({ onAddBookType }) {
     return data.csrfToken;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let formErrors = {};
-  
-    // Basic Validation
-    if (!formData.Book_Name) {
-      formErrors.Book_Name = 'Please enter Book Name';
-    }
-  
-    // Check for file types
-    if (formData.Audio_Book === '1' && !formData.Audio_File) {
-      formErrors.Audio_File = 'Audio file is required';
-    }
-    if (formData.Video_Book === '1' && !formData.Video_File) {
-      formErrors.Video_File = 'Video file is required';
-    }
-    if (formData.E_Book === '1' && !formData.E_Book_File) {
-      formErrors.E_Book_File = 'E-book file is required';
-    }
-  
-    setErrors(formErrors);
-  
-    if (Object.keys(formErrors).length === 0) {
-      const formDataToSend = new FormData();
-      formDataToSend.append('Book_Name', formData.Book_Name);
-      formDataToSend.append('Physical_Book', formData.Physical_Book);
-      formDataToSend.append('Audio_Book', formData.Audio_Book);
-      formDataToSend.append('E_Book', formData.E_Book);
-      formDataToSend.append('Video_Book', formData.Video_Book);
-      formDataToSend.append('IsActive', formData.IsActive);
-      if (formData.Audio_File) formDataToSend.append('Audio_File', formData.Audio_File);
-      if (formData.Video_File) formDataToSend.append('Video_File', formData.Video_File);
-      if (formData.E_Book_File) formDataToSend.append('E_Book_File', formData.E_Book_File);
-  
-      try {
-        const response = await fetch('http://127.0.0.1:8000/api/booktypes/', {
-          method: 'POST',
-          body: formDataToSend,
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken'), // Ensure CSRF token is included
-          },
-        });
-  
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Book type created:', data);
-          navigate('/admin/manage-booktype');
-        } else {
-          const errorData = await response.json();
-          console.error('Failed to create book type:', errorData);
-        }
-      } catch (error) {
-        console.error('Error submitting book type:', error);
-      }
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    name: formData.Book_Name,
+    physical: formData.Physical_Book,
+    audio: formData.Audio_Book,
+    ebook: formData.E_Book,
+    video: formData.Video_Book,
   };
+
+  try {
+    const url = bookToEdit
+      ? `http://127.0.0.1:8000/api/book-types/${bookToEdit.id}/`
+      : "http://127.0.0.1:8000/api/add-book-type/";
+
+    const method = bookToEdit ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    navigate("/admin/manage-booktype");
+  } catch (error) {
+    console.error("Error submitting:", error);
+  }
+};
   
   // Helper function to get CSRF token from cookies
   function getCookie(name) {
