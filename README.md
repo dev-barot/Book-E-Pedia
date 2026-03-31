@@ -1,4 +1,4 @@
-# Book-E-Pedia 📚
+<!-- # Book-E-Pedia 📚
 
 A full-stack online bookstore built as a Software Engineering project. You can browse books, add them to cart, place orders, and manage everything through separate panels for customers, employees, and admins.
 
@@ -176,4 +176,213 @@ This is a group Software Engineering project. Built with a lot of debugging, cha
 
 ## License
 
-This project is for educational purposes only.
+This project is for educational purposes only. -->
+
+# Book-E-Pedia 📚
+
+A full-stack online bookstore built using React and Django. This project focuses on implementing a complete CRUD-based system with role-based management and a dynamic frontend powered by backend APIs.
+
+---
+
+## What is this?
+
+Book-E-Pedia is an e-commerce-style web application for managing and browsing books. The system is built to demonstrate real-world software engineering concepts including:
+
+* Backend API design (Django)
+* Frontend integration (React)
+* Database modeling and relationships
+* Role-based data management
+* CRUD operations with soft delete logic
+
+---
+
+## Current System Status 🚀
+
+The project has a **working core system** with dynamic data flow between frontend and backend.
+
+### ✅ Implemented Modules
+
+* Category Management
+* Book Type Management
+* Employee Management
+* Product Management
+* Dynamic Product Listing (Customer Side)
+* Product Detail Page
+* Cart Functionality (LocalStorage-based)
+
+---
+
+## Features
+
+### 🛍️ Customer Side
+
+* View categories dynamically from backend
+* Browse products (books) fetched via API
+* View detailed product page
+* Add to cart (stored in local storage)
+* Clean UI with modern card-based layout
+
+---
+
+### 🧑‍💼 Admin Panel
+
+* Manage Categories (Add / Edit / Soft Delete)
+* Manage Book Types (formats like Physical, Audio, etc.)
+* Manage Employees
+* Manage Products with:
+
+  * Category relation
+  * Book Type relation
+  * Employee relation
+  * Image upload (cover + back)
+* Soft Delete system (`IsActive` flag)
+
+---
+
+### ⚙️ Backend (Django APIs)
+
+* REST-style endpoints for:
+
+  * `/api/category/`
+  * `/api/book-types/`
+  * `/api/employees/`
+  * `/api/products/`
+* Image upload handling (MEDIA folder)
+* Relational database structure
+* Clean separation via `api/urls.py`
+
+---
+
+## Important Notes ⚠️
+
+* Media files (images) are **not committed** to GitHub
+* Some image paths may return 404 if not re-uploaded locally
+* Some legacy endpoints (dashboard, orders, feedback) are **not implemented yet**
+* Soft delete is used instead of hard delete
+
+---
+
+## Tech Stack
+
+| Layer           | Technology       |
+| --------------- | ---------------- |
+| Frontend        | React            |
+| Routing         | React Router     |
+| Styling         | Custom CSS       |
+| Backend         | Django           |
+| Database        | SQLite (default) |
+| Version Control | Git + GitHub     |
+
+---
+
+## Project Structure
+
+```
+Book-E-Pedia/
+├── frontend/
+│   └── src/
+│       ├── components/
+│       │   ├── HomeScreen/
+│       │   ├── ProductScreen/
+│       │   ├── CategoryScreen/
+│       │   ├── AdminPanel/
+│       │   └── ...
+│       ├── App.js
+│       └── Context.js
+│
+└── backend/
+    └── bookepedia_backend/
+        ├── api/
+        │   ├── models.py
+        │   ├── views.py
+        │   ├── urls.py
+        │   └── migrations/
+        └── bookepedia_backend/
+            ├── settings.py
+            └── urls.py
+```
+
+---
+
+## Setup Guide
+
+### Prerequisites
+
+* Node.js (v18+)
+* Python (v3.10+)
+* Git
+
+---
+
+### Frontend Setup
+
+```bash
+git clone https://github.com/dev-barot/Book-E-Pedia.git
+cd Book-E-Pedia/frontend
+
+npm install
+npm start
+```
+
+Frontend runs at:
+`http://localhost:3000`
+
+---
+
+### Backend Setup
+
+```bash
+cd Book-E-Pedia/backend/bookepedia_backend
+
+python -m venv venv
+venv\Scripts\activate
+
+pip install -r requirements.txt
+
+python manage.py migrate
+python manage.py runserver
+```
+
+Backend runs at:
+`http://localhost:8000`
+
+---
+
+## API Structure
+
+All APIs are routed through:
+
+```
+/api/
+```
+
+Example:
+
+* `/api/category/`
+* `/api/products/`
+* `/api/book-types/`
+* `/api/employees/`
+
+---
+
+## Future Improvements
+
+* Order management system
+* Payment integration
+* Authentication & authorization system
+* Dashboard analytics
+* Image fallback handling
+* Pagination & filtering
+
+---
+
+## Team
+
+Built as part of a Software Engineering project.
+A mix of debugging, refactoring, and surviving Git conflicts.
+
+---
+
+## License
+
+Educational use only.
