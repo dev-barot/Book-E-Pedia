@@ -12,7 +12,8 @@ from .models import (
 )
 logger = logging.getLogger(__name__)
 
-
+def to_bool(value):
+    return str(value).lower() in ["true","1","yes"]
 @csrf_exempt
 def get_products(request):
     # ======================
@@ -78,7 +79,7 @@ def get_products(request):
                 Stock=request.POST.get("Stock"),
                 Cover_Photo=request.FILES.get("Cover_Image"),
                 Back_Photo=request.FILES.get("Back_Image"),
-                IsActive=request.POST.get("IsActive", TRUE)
+                IsActive=to_bool(request.POST.get("IsActive", True))
             )
 
             return JsonResponse({
@@ -482,7 +483,7 @@ def add_product(request):
                 Stock=request.POST.get("stock"),
                 Product_Description=request.POST.get("description"),
                 Cover_Photo=request.FILES.get("image"),
-                IsActive=request.POST.get("is_active", "1")
+                IsActive=to_bool(request.POST.get("IsActive", True))
             )
 
             return JsonResponse({
@@ -504,7 +505,7 @@ def delete_product(request, id):
             product = TBL_Product_Details.objects.get(Product_ID=id)
 
             # SOFT DELETE
-            product.IsActive = '0'
+            product.IsActive = False
             product.save()
 
             return JsonResponse({
@@ -660,7 +661,8 @@ def update_product(request, id):
             if "Back_Image" in request.FILES:
                 product.Back_Photo = request.FILES["Back_Image"]
 
-            product.IsActive = request.POST.get("IsActive", product.IsActive)
+            if request.POST.get("IsActive") is not None:
+                product.IsActive = to_bool(request.POST.get("IsActive"))
 
             product.save()
 
