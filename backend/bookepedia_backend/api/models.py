@@ -166,3 +166,132 @@ class TBL_Product_Details(models.Model):
     class Meta:
         db_table = 'bookapp_tbl_product'
         ordering = ['Product_ID']
+
+class TBL_Cart_Details(models.Model):
+    Cart_ID = models.AutoField(primary_key=True)
+
+    Cust_ID = models.ForeignKey(
+        TBL_Customer_Details,
+        on_delete=models.CASCADE,
+        db_column='Cust_ID_id'
+    )
+
+    Product_ID = models.ForeignKey(
+        TBL_Product_Details,
+        on_delete=models.CASCADE,
+        db_column='Product_ID_id'
+    )
+
+    Product_Quantity = models.IntegerField()
+    Total_Amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        if self.Product_ID:
+            self.Total_Amount = self.Product_ID.Product_Price * self.Product_Quantity
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'bookapp_tbl_cart_details'  
+        managed = False
+
+class TBL_MasterOrder_Details(models.Model):
+    ORDER_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    ]
+
+    MasterOrder_ID = models.AutoField(primary_key=True)
+
+    Cust_ID = models.ForeignKey(
+        TBL_Customer_Details,
+        on_delete=models.CASCADE,
+        db_column='Cust_ID_id'
+    )
+
+    Emp_ID = models.ForeignKey(
+        TBL_Employee_Details,
+        on_delete=models.CASCADE,
+        db_column='Emp_ID_id'
+    )
+
+    Order_DateTime = models.DateTimeField(auto_now_add=True)
+
+    T_Quantity = models.IntegerField(default=0)
+    T_Amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    Order_Status = models.CharField(
+        max_length=20,
+        choices=ORDER_STATUS_CHOICES,
+        default='Pending'
+    )
+
+    class Meta:
+        db_table = 'bookapp_tbl_masterorder_details'
+        managed = False
+
+    def __str__(self):
+        return f"Order {self.MasterOrder_ID} - Customer {self.Cust_ID_id}"
+
+class TBL_Order_Details(models.Model):
+    Order_ID = models.AutoField(primary_key=True)
+
+    MasterOrder_ID = models.ForeignKey(
+        TBL_MasterOrder_Details,
+        on_delete=models.CASCADE,
+        db_column='MasterOrder_ID_id'
+    )
+
+    Product_ID = models.ForeignKey(
+        TBL_Product_Details,
+        on_delete=models.CASCADE,
+        db_column='Product_ID_id'
+    )
+
+    Product_Quantity = models.IntegerField()
+    Product_Price = models.DecimalField(max_digits=10, decimal_places=2)
+    T_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    Confirmation = models.CharField(max_length=1, default='1')
+    def save(self, *args, **kwargs):
+        if self.Product_ID:
+            self.Product_Price = self.Product_ID.Product_Price
+            self.T_amount = self.Product_Price * self.Product_Quantity
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'bookapp_tbl_order_details'
+        managed = False
+
+    def __str__(self):
+        return f"OrderDetail {self.Order_ID}"
+
+class TBL_Payment(models.Model):
+    PAYMENT_STATUS_CHOICES = [
+        ('0', 'Pending'),
+        ('1', 'Paid'),
+        ('2', 'Failed'),
+    ]
+
+    Transaction_ID = models.AutoField(primary_key=True)
+
+    MasterOrder_ID = models.ForeignKey(
+        TBL_MasterOrder_Details,
+        on_delete=models.CASCADE,
+        db_column='MasterOrder_ID_id'
+    )
+
+    Payment_Date = models.DateTimeField(auto_now_add=True)
+    Payment_Mode = models.CharField(max_length=50)
+    Payment_Status = models.CharField(
+        max_length=1,
+        choices=PAYMENT_STATUS_CHOICES,
+        default='0'
+    )
+
+    class Meta:
+        db_table = 'bookapp_tbl_payment'
+        managed = False
+
+    def __str__(self):
+        return f"Payment {self.Transaction_ID}"

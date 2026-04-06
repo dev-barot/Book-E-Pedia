@@ -8,7 +8,11 @@ from .models import (
     TBL_Category_Details,
     TBL_BookType,
     TBL_Product_Details,
-    TBL_Employee_Details
+    TBL_Employee_Details,
+    TBL_Cart_Details,
+    TBL_Payment,
+    TBL_Order_Details,
+    TBL_MasterOrder_Details
 )
 logger = logging.getLogger(__name__)
 
@@ -531,89 +535,6 @@ def delete_product(request, id):
         "msg": "Method not allowed"
     }, status=405)
 
-# @csrf_exempt
-# def update_product(request, id):
-#     if request.method in ["PUT", "POST"]:
-#         try:
-#             product = TBL_Product_Details.objects.get(
-#                 Product_ID=id
-#             )
-
-#             category_id = request.POST.get("category_id")
-#             book_id = request.POST.get("book_id")
-
-#             if category_id:
-#                 product.Category_ID = TBL_Category_Details.objects.get(
-#                     Category_ID=category_id
-#                 )
-
-#             if book_id:
-#                 product.Book_ID = TBL_BookType.objects.get(
-#                     Book_ID=book_id
-#                 )
-
-#             product.Product_Name = request.POST.get(
-#                 "name",
-#                 product.Product_Name
-#             )
-
-#             product.Author = request.POST.get(
-#                 "author",
-#                 product.Author
-#             )
-
-#             product.Publisher = request.POST.get(
-#                 "publisher",
-#                 product.Publisher
-#             )
-
-#             product.Product_Price = request.POST.get(
-#                 "price",
-#                 product.Product_Price
-#             )
-
-#             product.Stock = request.POST.get(
-#                 "stock",
-#                 product.Stock
-#             )
-
-#             product.Product_Description = request.POST.get(
-#                 "description",
-#                 product.Product_Description
-#             )
-#             product.Language = request.POST.get(
-#                 "language",
-#                 product.Language
-#             )
-
-#             product.Number_of_Pages = request.POST.get(
-#                 "pages",
-#                 product.Number_of_Pages
-#             )
-
-#             product.Time_Duration = request.POST.get(
-#                 "duration",
-#                 product.Time_Duration
-#             )
-
-#             if "back_photo" in request.FILES:
-#                 product.Back_Photo = request.FILES["back_photo"]
-
-#             if "image" in request.FILES:
-#                 product.Cover_Photo = request.FILES["image"]
-
-#             product.save()
-
-#             return JsonResponse({
-#                 "bool": True,
-#                 "msg": "Product updated successfully"
-#             })
-
-#         except Exception as e:
-#             return JsonResponse({
-#                 "bool": False,
-#                 "msg": str(e)
-#             }, status=500)
 
 @csrf_exempt
 def update_product(request, id):
@@ -621,7 +542,6 @@ def update_product(request, id):
         try:
             product = TBL_Product_Details.objects.get(Product_ID=id)
 
-            # VERY IMPORTANT LINE
             data = request.POST if request.POST else request.FILES
 
             product.Product_Name = request.POST.get("Product_Name", product.Product_Name)
@@ -682,6 +602,7 @@ def update_product(request, id):
         "msg": "Method not allowed"
     }, status=405)
 
+
 @csrf_exempt
 def get_employees(request):
     if request.method == "GET":
@@ -705,3 +626,295 @@ def get_employees(request):
         {"bool": False, "msg": "Method not allowed"},
         status=405
     )
+
+@csrf_exempt
+def add_to_cart(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            cust_id = data.get("cust_id")
+            product_id = data.get("product_id")
+            quantity = int(data.get("quantity", 1))
+
+            if not cust_id or not product_id:
+                return JsonResponse({
+                    "bool": False,
+                    "msg": "cust_id and product_id required"
+                })
+
+            customer = TBL_Customer_Details.objects.get(Cust_ID=cust_id)
+            product = TBL_Product_Details.objects.get(Product_ID=product_id)
+
+            # 🔥 CHECK IF ALREADY EXISTS
+            cart_item = TBL_Cart_Details.objects.filter(
+                Cust_ID=customer,
+                Product_ID=product
+            ).first()
+
+            if cart_item:
+                cart_item.Product_Quantity += quantity
+                cart_item.save()
+                msg = "Cart updated"
+            else:
+                cart_item = TBL_Cart_Details.objects.create(
+                    Cust_ID=customer,
+                    Product_ID=product,
+                    Product_Quantity=quantity,
+                    Total_Amount=product.Product_Price * quantity
+                )
+                msg = "Added to cart"
+
+            return JsonResponse({
+                "bool": True,
+                "msg": msg,
+                "cart_id": cart_item.Cart_ID,
+                "quantity": cart_item.Product_Quantity,
+                "total": str(cart_item.Total_Amount)
+            })
+
+        except TBL_Product_Details.DoesNotExist:
+            return JsonResponse({"bool": False, "msg": "Product not found"})
+
+        except TBL_Customer_Details.DoesNotExist:
+            return JsonResponse({"bool": False, "msg": "Customer not found"})
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "bool": False,
+        "msg": "Method not allowed"
+    }, status=405)
+
+@csrf_exempt
+def get_cart(request, cust_id):
+    if request.method == "GET":
+        try:
+            cart_items = TBL_Cart_Details.objects.filter(Cust_ID=cust_id)
+
+            data = []
+            for item in cart_items:
+                data.append({
+                    "cart_id": item.Cart_ID,
+                    "product_id": item.Product_ID.Product_ID,
+                    "product_name": item.Product_ID.Product_Name,
+                    "price": str(item.Product_ID.Product_Price),
+                    "quantity": item.Product_Quantity,
+                    "total": str(item.Total_Amount),
+                    "image": request.build_absolute_uri(item.Product_ID.Cover_Photo.url) if item.Product_ID.Cover_Photo else ""
+                })
+
+            return JsonResponse({
+                "bool": True,
+                "data": data
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+@csrf_exempt
+def remove_from_cart(request, cart_id):
+    if request.method == "DELETE":
+        try:
+            cart_item = TBL_Cart_Details.objects.get(Cart_ID=cart_id)
+            cart_item.delete()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Item removed from cart"
+            })
+
+        except TBL_Cart_Details.DoesNotExist:
+            return JsonResponse({
+                "bool": False,
+                "msg": "Cart item not found"
+            }, status=404)
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "bool": False,
+        "msg": "Method not allowed"
+    }, status=405)
+
+@csrf_exempt
+def update_cart_quantity(request, cart_id):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+            quantity = int(data.get("quantity"))
+
+            if quantity <= 0:
+                return JsonResponse({
+                    "bool": False,
+                    "msg": "Quantity must be greater than 0"
+                })
+
+            cart_item = TBL_Cart_Details.objects.get(Cart_ID=cart_id)
+            cart_item.Product_Quantity = quantity
+            cart_item.save()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Quantity updated",
+                "quantity": cart_item.Product_Quantity,
+                "total": str(cart_item.Total_Amount)
+            })
+
+        except TBL_Cart_Details.DoesNotExist:
+            return JsonResponse({
+                "bool": False,
+                "msg": "Cart item not found"
+            }, status=404)
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+    return JsonResponse({
+        "bool": False,
+        "msg": "Method not allowed"
+    }, status=405)
+
+@csrf_exempt
+def create_order(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            cust_id = data.get("cust_id")
+            emp_id = data.get("emp_id", 1)
+
+            if not cust_id:
+                return JsonResponse({"bool": False, "msg": "cust_id required"})
+
+            customer = TBL_Customer_Details.objects.get(Cust_ID=cust_id)
+            employee = TBL_Employee_Details.objects.get(Emp_ID=emp_id)
+
+            cart_items = TBL_Cart_Details.objects.filter(Cust_ID=customer)
+
+            if not cart_items.exists():
+                return JsonResponse({"bool": False, "msg": "Cart is empty"})
+
+            total_amount = 0
+            total_quantity = 0
+
+            master_order = TBL_MasterOrder_Details.objects.create(
+                Cust_ID=customer,
+                Emp_ID=employee,
+                T_Quantity=0,
+                T_Amount=0,
+                Order_Status="Pending"
+            )
+
+            for item in cart_items:
+                product = item.Product_ID
+                qty = item.Product_Quantity
+                price = product.Product_Price
+                amount = price * qty
+
+                TBL_Order_Details.objects.create(
+                    MasterOrder_ID=master_order,
+                    Product_ID=product,
+                    Product_Quantity=qty,
+                    Product_Price=price,
+                    T_amount=amount,
+                    Confirmation='1'
+                )
+
+                total_amount += amount
+                total_quantity += qty
+
+            master_order.T_Amount = total_amount
+            master_order.T_Quantity = total_quantity
+            master_order.save()
+
+            cart_items.delete()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Order created successfully",
+                "order_id": master_order.MasterOrder_ID,
+                "total_amount": str(total_amount)
+            })
+
+        except TBL_Customer_Details.DoesNotExist:
+            return JsonResponse({"bool": False, "msg": "Customer not found"})
+
+        except Exception as e:
+            return JsonResponse({"bool": False, "msg": str(e)}, status=500)
+
+    return JsonResponse({"bool": False, "msg": "Invalid request"}, status=405)
+
+@csrf_exempt
+def create_payment(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            order_id = data.get("order_id")
+
+            order = TBL_MasterOrder_Details.objects.get(MasterOrder_ID=order_id)
+
+            payment = TBL_Payment.objects.create(
+                MasterOrder_ID=order,
+                Payment_Mode="Razorpay-Test",
+                Payment_Status='1'  # Direct success (test mode)
+            )
+
+            # ✅ Mark order as completed
+            order.Order_Status = "Completed"
+            order.save()
+
+            return JsonResponse({
+                "bool": True,
+                "msg": "Payment successful",
+                "payment_id": payment.Payment_ID
+            })
+
+        except TBL_MasterOrder_Details.DoesNotExist:
+            return JsonResponse({"bool": False, "msg": "Order not found"})
+
+        except Exception as e:
+            return JsonResponse({"bool": False, "msg": str(e)}, status=500)
+
+    return JsonResponse({"bool": False, "msg": "Invalid request"}, status=405)
+
+@csrf_exempt
+def get_order_details(request, order_id):
+    if request.method == "GET":
+        try:
+            order = TBL_MasterOrder_Details.objects.get(MasterOrder_ID=order_id)
+            items = TBL_Order_Details.objects.filter(MasterOrder_ID=order)
+
+            data = []
+
+            for item in items:
+                data.append({
+                    "product_name": item.Product_ID.Product_Name,
+                    "price": str(item.Product_Price),
+                    "quantity": item.Product_Quantity,
+                    "total": str(item.T_amount)
+                })
+
+            return JsonResponse({
+                "bool": True,
+                "order_id": order.MasterOrder_ID,
+                "status": order.Order_Status,
+                "total_amount": str(order.T_Amount),
+                "items": data
+            })
+
+        except Exception as e:
+            return JsonResponse({"bool": False, "msg": str(e)}, status=500)

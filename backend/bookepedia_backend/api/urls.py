@@ -14,7 +14,15 @@ from .views import (
     add_product,
     update_product,
     delete_product,
-    get_employees
+    get_employees,
+    add_to_cart, 
+    get_cart,
+    remove_from_cart,
+    update_cart_quantity,
+    create_order,
+    create_payment,
+    get_order_details
+
 )
 
 urlpatterns = [
@@ -33,5 +41,13 @@ urlpatterns = [
     path("products/<int:id>/", update_product),
     path("delete-product/<int:id>/", delete_product),
     path('employees/', get_employees, name='employees'),
+    path('cart/add/', add_to_cart),
+    path('cart/<int:cust_id>/', get_cart),
+    path('cart/remove/<int:cart_id>/', remove_from_cart),
+    path('cart/update/<int:cart_id>/', update_cart_quantity),
+    path('order/create/', create_order),
+    path('payment/create/', create_payment),
+    path('order/<int:order_id>/', get_order_details),
 ]
+
 
