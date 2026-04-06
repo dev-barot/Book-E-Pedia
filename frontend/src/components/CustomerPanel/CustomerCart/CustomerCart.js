@@ -14,28 +14,78 @@ const CustomerCart = () => {
     .slice(0, 4);
 
   // Load cart from localStorage
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(storedCart);
-  }, []);
+    useEffect(() => {
+      const fetchCart = async () => {
+        try {
+          const res = await fetch("http://127.0.0.1:8000/api/cart/1/");
+          const data = await res.json();
+
+          if (data.bool) {
+            const formatted = data.data.map((item) => ({
+              id: item.cart_id,
+              name: item.product_name,
+              price: parseFloat(item.price),
+              quantity: item.quantity,
+              total: parseFloat(item.total),
+              image: item.image
+            }));
+
+            setCartItems(formatted);
+          }
+        } catch (err) {
+          console.error("Cart fetch error:", err);
+        }
+      };
+
+      fetchCart();
+    }, []);
 
   // Update Quantity
-  const updateQuantity = (productId, quantity) => {
-    if (quantity < 1) return;
-    const updatedCart = cartItems.map((item) =>
-      item.id === productId ? { ...item, quantity } : item
-    );
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    setCartItems(updatedCart);
-  };
+    const updateQuantity = async (cartId, quantity) => {
+      if (quantity < 1) return;
+
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/api/cart/update/${cartId}/`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ quantity }),
+        });
+
+        const data = await res.json();
+
+        if (data.bool) {
+          setCartItems((prev) =>
+            prev.map((item) =>
+              item.id === cartId
+                ? { ...item, quantity: data.quantity, total: parseFloat(data.total) }
+                : item
+            )
+          );
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
   // Remove Item
-  const cartRemoveButtonHandler = (productId) => {
-    const updatedCart = cartItems.filter((item) => item.id !== productId);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    setCartItems(updatedCart);
-  };
+  const cartRemoveButtonHandler = async (cartId) => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/cart/remove/${cartId}/`,
+        { method: "DELETE" }
+      );
 
+      const data = await res.json();
+
+      if (data.bool) {
+        setCartItems((prev) => prev.filter((item) => item.id !== cartId));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
   // Add similar book to cart
   const addToCart = (book) => {
     const existing = cartItems.find((item) => item.id === book.id);

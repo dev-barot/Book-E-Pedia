@@ -69,24 +69,32 @@ function ProductDetail() {
     setShowForm(false);
   };
 
-  const cartAddButtonHandler = (e) => {
+  const cartAddButtonHandler = async (e) => {
     e.preventDefault();
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingIndex = existingCart.findIndex((item) => item.id == productData.id);
 
-    if (existingIndex !== -1) {
-      existingCart[existingIndex].quantity += 1;
-    } else {
-      existingCart.push({
-        id: productData.Product_ID,
-        name: productData.name,
-        price: productData.price,
-        image: productData.Cover_Photo,
-        quantity: 1,
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/cart/add/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cust_id: 1, // later replace with logged-in user
+          product_id: productData.id,
+          quantity: 1,
+        }),
       });
+
+      const data = await res.json();
+
+      if (data.bool) {
+        alert(data.msg);
+      } else {
+        alert("Failed to add to cart");
+      }
+    } catch (err) {
+      console.error("Cart error:", err);
     }
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-    alert(`${productData.Product_Name} added to your cart! 🛒`);
   };
 
   const availability = {

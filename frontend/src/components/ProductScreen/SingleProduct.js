@@ -80,34 +80,32 @@ function SingleProduct({ product }) {
   const navigate = useNavigate();
   const baseUrl = "http://127.0.0.1:8000";
 
-  const cartAddButtonHandler = (e) => {
-    e.preventDefault(); 
+  const cartAddButtonHandler = async (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    let previousCart = localStorage.getItem("cartData");
-    let cartJson = JSON.parse(previousCart) || [];
 
-    const existingProduct = cartJson.find(
-      (item) => item.product.id === product.id
-    );
-
-    if (existingProduct) {
-      navigate("/cart");
-    } else {
-      const newCartItem = {
-        product: {
-          id: product.id,
-          prod_name: product.name,
-          price: product.price,
-          image: product.image,
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/cart/add/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        user: { id: 1 },
-        quantity: 1,
-      };
+        body: JSON.stringify({
+          cust_id: 1,
+          product_id: product.id,
+          quantity: 1,
+        }),
+      });
 
-      cartJson.push(newCartItem);
-      localStorage.setItem("cartData", JSON.stringify(cartJson));
-      setCartData(cartJson);
-      navigate("/cart");
+      const data = await res.json();
+
+      if (data.bool) {
+        navigate("/cart");
+      } else {
+        alert("Failed to add to cart");
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
