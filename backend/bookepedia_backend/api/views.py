@@ -368,40 +368,65 @@ def category_detail(request, id):
 
     return JsonResponse({"msg": "Method not allowed"}, status=405)
 
+# @csrf_exempt
+# def get_book_types(request):
+#     if request.method == "GET":
+#         books = TBL_BookType.objects.all().values()
+
+#         data = []
+#         for book in books:
+#             data.append({
+#                 "id": book["Book_ID"],
+#                 "name": book["Book_Name"],
+#                 "physical": book["Physical_Book"],
+#                 "audio": book["Audio_Book"],
+#                 "ebook": book["E_Book"],
+#                 "video": book["Video_Book"],
+#                 "is_active": book["IsActive"]
+#             })
+
+#         return JsonResponse({"data": data}, safe=False)
+
 @csrf_exempt
 def get_book_types(request):
     if request.method == "GET":
-        books = TBL_BookType.objects.all().values()
+        books = TBL_BookType.objects.all()
 
         data = []
         for book in books:
             data.append({
-                "id": book["Book_ID"],
-                "name": book["Book_Name"],
-                "physical": book["Physical_Book"],
-                "audio": book["Audio_Book"],
-                "ebook": book["E_Book"],
-                "video": book["Video_Book"],
-                "is_active": book["IsActive"]
+                "id": book.Book_ID,
+                "name": book.Book_Name,
+                "physical": book.Physical_Book,
+                "audio": book.Audio_Book,
+                "ebook": book.E_Book,
+                "video": book.Video_Book,
+
+                # 🔥 FILE URLS
+                "audio_file": request.build_absolute_uri(book.Audio_File.url) if book.Audio_File else None,
+                "video_file": request.build_absolute_uri(book.Video_File.url) if book.Video_File else None,
+                "ebook_file": request.build_absolute_uri(book.E_Book_File.url) if book.E_Book_File else None,
+
+                "is_active": book.IsActive
             })
 
-        return JsonResponse({"data": data}, safe=False)
+        return JsonResponse({"data": data})
 
 @csrf_exempt
 def add_book_type(request):
     if request.method == "POST":
         try:
-            data = json.loads(request.body)
-
             book = TBL_BookType.objects.create(
-                Book_Name=data.get("name"),
-                Physical_Book=data.get("physical", "0"),
-                Audio_Book=data.get("audio", "0"),
-                E_Book=data.get("ebook", "0"),
-                Video_Book=data.get("video", "0"),
+                Book_Name=request.POST.get("Book_Name"),
+                Physical_Book=request.POST.get("Physical_Book", "0"),
+                Audio_Book=request.POST.get("Audio_Book", "0"),
+                E_Book=request.POST.get("E_Book", "0"),
+                Video_Book=request.POST.get("Video_Book", "0"),
+                Audio_File=request.FILES.get("Audio_File"),
+                Video_File=request.FILES.get("Video_File"),
+                E_Book_File=request.FILES.get("E_Book_File"),
                 IsActive='1'
             )
-
             return JsonResponse({
                 "bool": True,
                 "msg": "Book type added successfully",
@@ -412,21 +437,53 @@ def add_book_type(request):
             return JsonResponse({
                 "bool": False,
                 "msg": str(e)
-            })
+            }, status=500)
+# @csrf_exempt
+# def update_book_type(request, id):
+#     if request.method == "PUT":
+#         try:
+#             data = json.loads(request.body)
 
+#             book = TBL_BookType.objects.get(Book_ID=id)
+
+#             book.Book_Name = data.get("name", book.Book_Name)
+#             book.Physical_Book = data.get("physical", book.Physical_Book)
+#             book.Audio_Book = data.get("audio", book.Audio_Book)
+#             book.E_Book = data.get("ebook", book.E_Book)
+#             book.Video_Book = data.get("video", book.Video_Book)
+
+#             book.save()
+
+#             return JsonResponse({
+#                 "bool": True,
+#                 "msg": "Book type updated successfully"
+#             })
+
+#         except Exception as e:
+#             return JsonResponse({
+#                 "bool": False,
+#                 "msg": str(e)
+#             })
 @csrf_exempt
 def update_book_type(request, id):
-    if request.method == "PUT":
+    if request.method in ["PUT", "POST"]:
         try:
-            data = json.loads(request.body)
-
             book = TBL_BookType.objects.get(Book_ID=id)
 
-            book.Book_Name = data.get("name", book.Book_Name)
-            book.Physical_Book = data.get("physical", book.Physical_Book)
-            book.Audio_Book = data.get("audio", book.Audio_Book)
-            book.E_Book = data.get("ebook", book.E_Book)
-            book.Video_Book = data.get("video", book.Video_Book)
+            book.Book_Name = request.POST.get("Book_Name", book.Book_Name)
+            book.Physical_Book = request.POST.get("Physical_Book", book.Physical_Book)
+            book.Audio_Book = request.POST.get("Audio_Book", book.Audio_Book)
+            book.E_Book = request.POST.get("E_Book", book.E_Book)
+            book.Video_Book = request.POST.get("Video_Book", book.Video_Book)
+
+            if request.FILES.get("Audio_File"):
+                book.Audio_File = request.FILES.get("Audio_File")
+
+            if request.FILES.get("Video_File"):
+                book.Video_File = request.FILES.get("Video_File")
+
+            if request.FILES.get("E_Book_File"):
+                book.E_Book_File = request.FILES.get("E_Book_File")
 
             book.save()
 
@@ -440,6 +497,8 @@ def update_book_type(request, id):
                 "bool": False,
                 "msg": str(e)
             })
+
+
 
 @csrf_exempt
 def delete_book_type(request, id):
@@ -652,8 +711,21 @@ def add_to_cart(request):
                 Product_ID=product
             ).first()
 
+            stock = product.Stock  # adjust field name if different
+
+            new_quantity = quantity
             if cart_item:
-                cart_item.Product_Quantity += quantity
+                new_quantity = cart_item.Product_Quantity + quantity
+
+            if new_quantity > stock:
+                return JsonResponse({
+                    "bool": False,
+                    "msg": f"Only {stock} items available in stock"
+                })
+
+            # proceed
+            if cart_item:
+                cart_item.Product_Quantity = new_quantity
                 cart_item.save()
                 msg = "Cart updated"
             else:
@@ -664,6 +736,7 @@ def add_to_cart(request):
                     Total_Amount=product.Product_Price * quantity
                 )
                 msg = "Added to cart"
+
 
             return JsonResponse({
                 "bool": True,
@@ -705,6 +778,7 @@ def get_cart(request, cust_id):
                     "price": str(item.Product_ID.Product_Price),
                     "quantity": item.Product_Quantity,
                     "total": str(item.Total_Amount),
+                    "stock": item.Product_ID.Stock, 
                     "image": request.build_absolute_uri(item.Product_ID.Cover_Photo.url) if item.Product_ID.Cover_Photo else ""
                 })
 
@@ -762,9 +836,16 @@ def update_cart_quantity(request, cart_id):
                 })
 
             cart_item = TBL_Cart_Details.objects.get(Cart_ID=cart_id)
+            stock = cart_item.Product_ID.Stock  # ✅ correct
+
+            if quantity > stock:
+                return JsonResponse({
+                    "bool": False,
+                    "msg": f"Only {stock} items available"
+                })
+
             cart_item.Product_Quantity = quantity
             cart_item.save()
-
             return JsonResponse({
                 "bool": True,
                 "msg": "Quantity updated",
@@ -822,6 +903,13 @@ def create_order(request):
             for item in cart_items:
                 product = item.Product_ID
                 qty = item.Product_Quantity
+                if qty > product.Stock:
+                    return JsonResponse({
+                        "bool": False,
+                        "msg": f"{product.Product_Name} out of stock"
+                    })
+                product.Stock -= qty
+                product.save()
                 price = product.Product_Price
                 amount = price * qty
 
@@ -880,7 +968,7 @@ def create_payment(request):
             return JsonResponse({
                 "bool": True,
                 "msg": "Payment successful",
-                "payment_id": payment.Payment_ID
+                "payment_id": payment.Transaction_ID
             })
 
         except TBL_MasterOrder_Details.DoesNotExist:
@@ -918,3 +1006,66 @@ def get_order_details(request, order_id):
 
         except Exception as e:
             return JsonResponse({"bool": False, "msg": str(e)}, status=500)
+
+@csrf_exempt
+def get_customer_orders(request, cust_id):
+    if request.method == "GET":
+        try:
+            orders = TBL_Order_Details.objects.filter(
+                MasterOrder_ID__Cust_ID=cust_id
+            ).select_related("Product_ID", "MasterOrder_ID")
+
+            data = []
+
+            for order in orders:
+                product = order.Product_ID
+                book_type = product.Book_ID
+
+                data.append({
+                    "Order_ID": order.Order_ID,
+                    "MasterOrder_ID": order.MasterOrder_ID.MasterOrder_ID,
+                    "Order_Status": order.MasterOrder_ID.Order_Status,
+                    "Product_Quantity": order.Product_Quantity,
+                    "Product_Price": str(order.Product_Price),
+                    "T_amount": str(order.T_amount),
+
+                    "product_details": {
+                        "Product_ID": product.Product_ID,
+                        "Product_Name": product.Product_Name,
+                        "Cover_Photo": product.Cover_Photo.url if product.Cover_Photo else None,
+
+                        "Book_Type_Details": {
+                            "Audio_Book": book_type.Audio_Book,
+                            "Video_Book": book_type.Video_Book,
+                            "E_Book": book_type.E_Book,
+                            "Audio_File": book_type.Audio_File.url if book_type.Audio_File else None,
+                            "Video_File": book_type.Video_File.url if book_type.Video_File else None,
+                            "E_Book_File": book_type.E_Book_File.url if book_type.E_Book_File else None,
+                        }
+                    }
+                })
+
+            return JsonResponse({
+                "bool": True,
+                "data": data
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                "bool": False,
+                "msg": str(e)
+            }, status=500)
+
+@csrf_exempt
+def get_customer(request, cust_id):
+    try:
+        customer = TBL_Customer_Details.objects.get(Cust_ID=cust_id)
+
+        return JsonResponse({
+            "Cust_ID": customer.Cust_ID,
+            "Fname": customer.Fname,
+            "Email": customer.Email
+        })
+
+    except TBL_Customer_Details.DoesNotExist:
+        return JsonResponse({"msg": "Customer not found"}, status=404)

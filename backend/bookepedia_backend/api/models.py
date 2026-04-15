@@ -95,7 +95,9 @@ class TBL_Category_Details(models.Model):
         db_table = 'bookapp_tbl_category_details'
 
 
-# ================= BOOK TYPE =================
+def booktype_file_path(instance, filename):
+    return f"BookType_Files/{instance.Book_Name}/{filename}"
+
 class TBL_BookType(models.Model):
     IS_ACTIVE_CHOICES = [('1', 'Active'), ('0', 'Inactive')]
 
@@ -106,6 +108,11 @@ class TBL_BookType(models.Model):
     Audio_Book = models.CharField(max_length=1, default='0')
     E_Book = models.CharField(max_length=1, default='0')
     Video_Book = models.CharField(max_length=1, default='0')
+
+    # 🔥 RESTORED MEDIA FIELDS
+    Audio_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
+    Video_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
+    E_Book_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
 
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 

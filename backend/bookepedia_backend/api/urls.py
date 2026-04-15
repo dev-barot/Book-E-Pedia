@@ -21,7 +21,9 @@ from .views import (
     update_cart_quantity,
     create_order,
     create_payment,
-    get_order_details
+    get_order_details,
+    get_customer,
+    get_customer_orders
 
 )
 
@@ -48,6 +50,8 @@ urlpatterns = [
     path('order/create/', create_order),
     path('payment/create/', create_payment),
     path('order/<int:order_id>/', get_order_details),
+    path('customer/<int:cust_id>/', get_customer),
+    path('customer/<int:cust_id>/orders/', get_customer_orders),
 ]
 
 
