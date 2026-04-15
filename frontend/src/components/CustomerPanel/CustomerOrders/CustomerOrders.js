@@ -9,47 +9,51 @@ function CustomerOrders() {
   const [orderItems, setOrderItems] = useState([]);
   const [expandedOrder, setExpandedOrder] = useState(null);
 
-  // Dummy Order Data (Frontend Only)
+  const baseUrl = "http://127.0.0.1:8000";
+  const customerId = localStorage.getItem("customer_id");
+
   useEffect(() => {
-    const dummyOrders = [
-      {
-        MasterOrder_ID: 1001,
-        Order_Status: "Shipped",
-        products: [
-          {
-            id: 1,
-            name: "The Alchemist",
-            quantity: 1,
-            price: 300,
-            image: p1,
-          },
-          {
-            id: 2,
-            name: "Harry Potter",
-            quantity: 2,
-            price: 400,
-            image: p1,
-          },
-        ],
-      },
-      {
-        MasterOrder_ID: 1002,
-        Order_Status: "Processing",
-        products: [
-          {
-            id: 3,
-            name: "SAGE The Power",
-            quantity: 1,
-            price: 250,
-            image: p1,
-          },
-        ],
-      },
-    ];
+    if (customerId) {
+      fetch(`${baseUrl}/api/customer/${customerId}/orders`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && Array.isArray(data.data)) {
+            setOrderItems(data.data);
+          } else {
+            setOrderItems([]);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          setOrderItems([]);
+        });
+    }
+  }, [customerId]);
+  const groupedOrders = Object.values(
+    orderItems.reduce((acc, item) => {
+      const id = item.MasterOrder_ID;
 
-    setOrderItems(dummyOrders);
-  }, []);
+      if (!acc[id]) {
+        acc[id] = {
+          MasterOrder_ID: id,
+          Order_Status: item.Order_Status,
+          products: []
+        };
+      }
 
+      acc[id].products.push({
+        id: item.product_details?.Product_ID,
+        name: item.product_details?.Product_Name,
+        quantity: item.Product_Quantity,
+        price: item.Product_Price,
+        image: item.product_details?.Cover_Photo
+          ? `${baseUrl}${item.product_details.Cover_Photo}`
+          : p1
+      });
+
+      return acc;
+    }, {})
+  );
   const toggleOrderDetails = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
@@ -77,7 +81,7 @@ function CustomerOrders() {
         {/* Orders List */}
         {masterOrderCount > 0 ? (
           <div className="order-list-lux">
-            {orderItems.map((order) => {
+            {groupedOrders.map((order) => {
               const totalAmount = order.products.reduce(
                 (total, item) => total + item.price * item.quantity,
                 0
