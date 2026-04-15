@@ -58,37 +58,57 @@ function AdminAddBookType({ onAddBookType }) {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  const payload = {
-    name: formData.Book_Name,
-    physical: formData.Physical_Book,
-    audio: formData.Audio_Book,
-    ebook: formData.E_Book,
-    video: formData.Video_Book,
-  };
-
   try {
+    // 🔥 Create FormData for file upload
+    const formDataToSend = new FormData();
+
+    formDataToSend.append("Book_Name", formData.Book_Name);
+    formDataToSend.append("Physical_Book", formData.Physical_Book);
+    formDataToSend.append("Audio_Book", formData.Audio_Book);
+    formDataToSend.append("E_Book", formData.E_Book);
+    formDataToSend.append("Video_Book", formData.Video_Book);
+
+    // ✅ Append files only if present
+    if (formData.Audio_File) {
+      formDataToSend.append("Audio_File", formData.Audio_File);
+    }
+
+    if (formData.Video_File) {
+      formDataToSend.append("Video_File", formData.Video_File);
+    }
+
+    if (formData.E_Book_File) {
+      formDataToSend.append("E_Book_File", formData.E_Book_File);
+    }
+
+    // 🔥 Decide API endpoint
     const url = bookToEdit
       ? `http://127.0.0.1:8000/api/book-types/${bookToEdit.id}/`
       : "http://127.0.0.1:8000/api/add-book-type/";
 
-    const method = bookToEdit ? "PUT" : "POST";
-
     const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      method: "POST", // using POST for both (your backend supports it)
+      body: formDataToSend, // ❗ DO NOT set Content-Type manually
     });
 
     const data = await response.json();
-    console.log(data);
+
+    if (!data.bool) {
+      alert(data.msg || "Something went wrong");
+      return;
+    }
+
+    // ✅ Success
+    alert("Book Type saved successfully");
 
     navigate("/admin/manage-booktype");
+
   } catch (error) {
-    console.error("Error submitting:", error);
+    console.error("Submit Error:", error);
+    alert("Server error. Try again.");
   }
 };
+
   
   // Helper function to get CSRF token from cookies
   function getCookie(name) {
