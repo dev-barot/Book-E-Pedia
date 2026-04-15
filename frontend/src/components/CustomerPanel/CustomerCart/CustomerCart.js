@@ -54,7 +54,10 @@ const CustomerCart = () => {
         });
 
         const data = await res.json();
-
+        if (!data.bool) {
+          alert(data.msg); // 👈 this is your popup
+          return;
+        }
         if (data.bool) {
           setCartItems((prev) =>
             prev.map((item) =>
@@ -99,6 +102,7 @@ const CustomerCart = () => {
     }
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     setCartItems(updatedCart);
+
   };
 
   const subtotal = cartItems.reduce(
@@ -107,17 +111,39 @@ const CustomerCart = () => {
   );
 
   // Checkout
-  const handleProceedToPayment = () => {
-    if (isProcessing) return;
-    setIsProcessing(true);
-    setTimeout(() => {
-      alert("Order placed successfully! 🎉");
-      localStorage.removeItem("cart");
-      setCartItems([]);
-      navigate("/");
-      setIsProcessing(false);
-    }, 1500);
+  const handleProceedToPayment = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/order/create/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cust_id: 1 }),
+      });
+
+      const data = await res.json();
+
+      if (!data.bool) {
+        alert(data.msg || "Order creation failed");
+        return;
+      }
+
+      const orderId = data.order_id;
+
+      // ✅ ONLY NAVIGATE (NO PAYMENT HERE)
+      navigate("/payment", {
+        state: {
+          orderId: orderId,
+          total: subtotal,
+        },
+      });
+
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+    }
   };
+    
 
   return (
     <div className="cart-page">
@@ -154,7 +180,7 @@ const CustomerCart = () => {
                   <div className="cart-qty-box">
                     <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>−</button>
                     <span>{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                    <button disabled={item.quantity >= item.stock} onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
                   </div>
                   <button
                     className="cart-delete-btn"
