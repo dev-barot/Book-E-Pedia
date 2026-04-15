@@ -23,6 +23,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-misf(php7bk(v0-izp*++*)j$n=6fv_u-%&ujv&37#^p*0^-x$'
+RAZORPAY_KEY_ID = 'rzp_test_SdnTwk4YH73sBq'
+RAZORPAY_KEY_SECRET = 'mbZXbUmaBUdOokl94fj1e70J'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
