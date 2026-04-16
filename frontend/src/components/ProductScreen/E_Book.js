@@ -1,37 +1,33 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
+import { getMediaUrl } from "../../utils/mediaHelper";
 import "./E_Book.css";
-import samplePdf from "./adventures_of_tom.pdf"; // Add a PDF file in this folder
 
 function E_Book() {
+  const { state } = useLocation();
+
+  const fileUrl = getMediaUrl(state?.eBookFileUrl);
+  console.log("EBOOK URL:", fileUrl);
+
+  const product = state?.productDetails || {};
 
   return (
-    <div className="ebook-container">
-
-      <header className="ebook-header">
-        <h1 className="ebook-title">
-          The Untold Journey
-        </h1>
-        <p className="ebook-author">
-          By John Doe
-        </p>
-      </header>
-
-      <div className="ebook-content">
+    <div className="ebook-container" onContextMenu={(e) => e.preventDefault()}>
+      <center>
+      <h1>{product.Product_Name || "E-Book"}</h1>
+        
+      {fileUrl ? (
         <iframe
-          src={samplePdf}
+          src={`${fileUrl}#toolbar=0`}
           title="E-Book Viewer"
-          width="100%"
-          height="100%"
+          width="80%"
+          height="500px"
           style={{ border: "none" }}
-          className="ebook-iframe"
-          scrolling="yes"
         />
-      </div>
-
-      <footer className="ebook-footer">
-        <p>© 2025 Book-E-Pedia. All rights reserved.</p>
-      </footer>
-
+      ) : (
+        <p>No e-book available</p>
+      )}
+      </center>
     </div>
   );
 }

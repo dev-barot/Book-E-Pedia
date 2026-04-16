@@ -4,218 +4,272 @@ import CustomerSidebar from "../CustomerSidebar/CustomerSidebar";
 import "./CustomerDashboard.css";
 import p1 from "./p1.jpeg";
 
+import { BASE_URL } from "../../../utils/config";
+import { getMediaUrl } from "../../../utils/mediaHelper";
+
 function CustomerDashboard() {
-const baseUrl = "http://127.0.0.1:8000";
-const customerId = localStorage.getItem("customer_id");
+  const customerId = localStorage.getItem("customer_id");
 
-const [customerName, setCustomerName] = useState("");
-const [orderItems, setOrderItems] = useState([]);
-const [totalOrders, setTotalOrders] = useState(0);
+  const [customerName, setCustomerName] = useState("");
+  const [orderItems, setOrderItems] = useState([]);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-useEffect(() => {
-if (customerId) {
-fetchOrders();
-fetchCustomerDetails();
-}
-}, [customerId]);
+  // Helper for boolean flags
+  const isTrue = (val) => val === true || val === "1";
 
-// 🔥 Fetch Orders
-function fetchOrders() {
-fetch(`${baseUrl}/api/customer/${customerId}/orders`)
-.then((res) => res.json())
-.then((data) => {
-if (data && Array.isArray(data.data)) {
-setOrderItems(data.data);
-setTotalOrders(data.data.length);
-} else {
-setOrderItems([]);
-setTotalOrders(0);
-}
-})
-.catch((err) => console.error(err));
-}
+  useEffect(() => {
+    if (!customerId) return;
 
-// 🔥 Fetch Customer
-function fetchCustomerDetails() {
-fetch(`${baseUrl}/api/customer/${customerId}`)
-.then((res) => res.json())
-.then((data) => {
-setCustomerName(data.Fname || "User");
-})
-.catch((err) => console.error(err));
-}
+    const init = async () => {
+      try {
+        await fetchCustomerDetails();
+        await fetchOrders();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-// 🔥 Unique Books (avoid duplicates)
-const uniqueBooks = Array.from(
-new Map(
-orderItems.map((item) => [
-item.product_details?.Product_ID,
-item,
-])
-).values()
-);
+    init();
+  }, [customerId]);
 
-// 🔥 Format Handling
-const handleAudioClick = (item) => {
-const audio = item.product_details?.Book_Type_Details?.Audio_File;
-if (audio) {
-navigate("/audio-book", {
-state: { audioFileUrl: audio, productDetails: item.product_details },
-});
-} else {
-alert("No audio available");
-}
-};
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/customer/${customerId}/orders`
+      );
+      const data = await res.json();
 
-const handleVideoClick = (item) => {
-const video = item.product_details?.Book_Type_Details?.Video_File;
-if (video) {
-navigate("/video-book", {
-state: { videoFileUrl: video, productDetails: item.product_details },
-});
-} else {
-alert("No video available");
-}
-};
+      if (data && Array.isArray(data.data)) {
+        setOrderItems(data.data);
+        setTotalOrders(data.data.length);
+      } else {
+        setOrderItems([]);
+        setTotalOrders(0);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-const handleEBookClick = (item) => {
-const ebook = item.product_details?.Book_Type_Details?.E_Book_File;
-if (ebook) {
-navigate("/e-book", {
-state: { eBookFileUrl: ebook, productDetails: item.product_details },
-});
-} else {
-alert("No e-book available");
-}
-};
+  const fetchCustomerDetails = async () => {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/customer/${customerId}`
+      );
+      const data = await res.json();
+      setCustomerName(data.Fname || "User");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-return ( <div className="cust-lux-body"> <CustomerSidebar />
+  // Remove duplicate books
+  const uniqueBooks = Array.from(
+    new Map(
+      orderItems.map((item) => [
+        item.product_details?.Product_ID,
+        item,
+      ])
+    ).values()
+  );
 
+  const handleAudioClick = (item) => {
+    const audio =
+      item.product_details?.Book_Type_Details?.Audio_File;
 
-  <div className="cust-lux-main">
+    if (!audio) {
+      alert("No audio available");
+      return;
+    }
 
-    {/* Profile */}
-    <div className="cust-profile-glass mb-5">
-      <div className="cust-profile-details">
-        <h1 className="cust-profile-title">Welcome, {customerName}</h1>
-        <p className="cust-profile-stat">
-          Total Orders: <span className="fw-bold text-dark">{totalOrders}</span>
-        </p>
-        <Link to="/profile/edit" className="btn-cust-lux mt-3">
-          Edit Profile
-        </Link>
-      </div>
+    navigate("/audio-book", {
+      state: {
+        audioFileUrl: audio,
+        productDetails: item.product_details,
+      },
+    });
+  };
 
-      <div className="cust-profile-avatar-lux">
-        <img src={p1} alt="Profile Avatar" />
-      </div>
-    </div>
+  const handleVideoClick = (item) => {
+    const video =
+      item.product_details?.Book_Type_Details?.Video_File;
 
-    {/* Library */}
-    <div className="library-lux-container">
-      <h2 className="library-lux-title mb-4">My Library</h2>
+    if (!video) {
+      alert("No video available");
+      return;
+    }
 
-      {uniqueBooks.length > 0 ? (
-        <div className="cust-library-grid">
+    navigate("/video-book", {
+      state: {
+        videoFileUrl: video,
+        productDetails: item.product_details,
+      },
+    });
+  };
 
-          {uniqueBooks.map((item) => {
-            const product = item.product_details;
-            const bookType = product?.Book_Type_Details;
+  const handleEBookClick = (item) => {
+    const ebook =
+      item.product_details?.Book_Type_Details?.E_Book_File;
 
-            const hasAudio = bookType?.Audio_Book === "1" || bookType?.Audio_Book === true;
-            const hasVideo = bookType?.Video_Book === "1" || bookType?.Video_Book === true;
-            const hasEBook = bookType?.E_Book === "1" || bookType?.E_Book === true;
+    if (!ebook) {
+      alert("No e-book available");
+      return;
+    }
 
-            return (
-              <div key={item.Order_ID} className="cust-book-glass-card">
+    navigate("/e-book", {
+      state: {
+        eBookFileUrl: ebook,
+        productDetails: item.product_details,
+      },
+    });
+  };
 
-                {/* Image */}
-                <div className="cust-book-img-box">
-                  <Link to={`/product/${product?.Product_Name.replace(/\s+/g, '-').toLowerCase()}/${product?.Product_ID}`}>
-                    <img
-                      src={
-                        product?.Cover_Photo
-                          ? `${baseUrl}${product.Cover_Photo}`
-                          : p1
-                      }
-                      alt="Book"
-                      onError={(e) => {
-                        e.target.src = p1;
-                      }}
-                    />
-                  </Link>
-                </div>
+  if (loading) {
+    return <p style={{ padding: "20px" }}>Loading dashboard...</p>;
+  }
 
-                {/* Details */}
-                <div className="cust-book-lux-details">
-                  <h3 className="cust-book-lux-name">
-                    {product?.Product_Name}
-                  </h3>
+  return (
+    <div className="cust-lux-body">
+      <CustomerSidebar />
 
-                  <div className="cust-book-lux-formats">
+      <div className="cust-lux-main">
+        {/* Profile */}
+        <div className="cust-profile-glass mb-5">
+          <div className="cust-profile-details">
+            <h1 className="cust-profile-title">
+              Welcome, {customerName}
+            </h1>
 
-                    {hasAudio && (
-                      <NavLink
-                        to="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleAudioClick(item);
-                        }}
+            <p className="cust-profile-stat">
+              Total Orders:
+              <span className="fw-bold text-dark">
+                {" "}
+                {totalOrders}
+              </span>
+            </p>
+
+            <Link to="/profile/edit" className="btn-cust-lux mt-3">
+              Edit Profile
+            </Link>
+          </div>
+
+          <div className="cust-profile-avatar-lux">
+            <img src={p1} alt="Profile Avatar" />
+          </div>
+        </div>
+
+        {/* Library */}
+        <div className="library-lux-container">
+          <h2 className="library-lux-title mb-4">
+            My Library
+          </h2>
+
+          {uniqueBooks.length > 0 ? (
+            <div className="cust-library-grid">
+              {uniqueBooks.map((item) => {
+                const product = item.product_details;
+                const bookType = product?.Book_Type_Details;
+
+                const hasAudio = isTrue(bookType?.Audio_Book);
+                const hasVideo = isTrue(bookType?.Video_Book);
+                const hasEBook = isTrue(bookType?.E_Book);
+
+                return (
+                  <div
+                    key={product?.Product_ID}
+                    className="cust-book-glass-card"
+                  >
+                    {/* Image */}
+                    <div className="cust-book-img-box">
+                      <Link
+                        to={`/product/${product?.Product_Name
+                          .replace(/\s+/g, "-")
+                          .toLowerCase()}/${product?.Product_ID}`}
                       >
-                        <i className="fa fa-headphones"></i>
-                      </NavLink>
-                    )}
+                        <img
+                          src={
+                            getMediaUrl(product?.Cover_Photo) || p1
+                          }
+                          alt="Book"
+                          onError={(e) => {
+                            e.target.src = p1;
+                          }}
+                        />
+                      </Link>
+                    </div>
 
-                    {hasVideo && (
-                      <NavLink
-                        to="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleVideoClick(item);
-                        }}
-                      >
-                        <i className="fa-solid fa-file-video"></i>
-                      </NavLink>
-                    )}
+                    {/* Details */}
+                    <div className="cust-book-lux-details">
+                      <h3 className="cust-book-lux-name">
+                        {product?.Product_Name}
+                      </h3>
 
-                    {hasEBook && (
-                      <NavLink
-                        to="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleEBookClick(item);
-                        }}
-                      >
-                        <i className="fa fa-book-reader"></i>
-                      </NavLink>
-                    )}
+                      <div className="cust-book-lux-formats">
+                        {hasAudio && (
+                          <NavLink
+                            to="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleAudioClick(item);
+                            }}
+                          >
+                            <i className="fa fa-headphones"></i>
+                          </NavLink>
+                        )}
 
+                        {hasVideo && (
+                          <NavLink
+                            to="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleVideoClick(item);
+                            }}
+                          >
+                            <i className="fa-solid fa-file-video"></i>
+                          </NavLink>
+                        )}
+
+                        {hasEBook && (
+                          <NavLink
+                            to="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleEBookClick(item);
+                            }}
+                          >
+                            <i className="fa fa-book-reader"></i>
+                          </NavLink>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="cust-empty-glass text-center">
+              <i className="fa-solid fa-book-open-reader empty-icon-lux mb-3"></i>
+              <p>
+                Your library is empty. Start exploring books now!
+              </p>
 
-              </div>
-            );
-          })}
-
+              <Link
+                to="/products"
+                className="btn-cust-lux mt-2"
+              >
+                Browse the Shop
+              </Link>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="cust-empty-glass text-center">
-          <i className="fa-solid fa-book-open-reader empty-icon-lux mb-3"></i>
-          <p>Your library is empty. Start exploring books now!</p>
-          <Link to="/products" className="btn-cust-lux mt-2">
-            Browse the Shop
-          </Link>
-        </div>
-      )}
-
+      </div>
     </div>
-
-  </div>
-</div>
-
-);
+  );
 }
 
 export default CustomerDashboard;
