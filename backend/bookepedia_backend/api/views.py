@@ -15,6 +15,77 @@ from .models import (
     TBL_MasterOrder_Details
 )
 logger = logging.getLogger(__name__)
+from django.http import FileResponse, HttpResponse
+from django.conf import settings
+import os
+import mimetypes
+
+from django.views.static import serve
+from django.http import Http404
+
+import re
+from django.http import HttpResponse, StreamingHttpResponse, Http404
+
+def file_iterator(file_path, offset, length, chunk_size=8192):
+    with open(file_path, 'rb') as f:
+        f.seek(offset)
+        remaining = length
+        while remaining > 0:
+            bytes_to_read = min(chunk_size, remaining)
+            data = f.read(bytes_to_read)
+            if not data:
+                break
+            remaining -= len(data)
+            yield data
+
+def serve_media(request, path):
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+
+    if not os.path.exists(file_path):
+        return HttpResponse("File not found", status=404)
+
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+
+    statobj = os.stat(file_path)
+    file_size = statobj.st_size
+    range_header = request.META.get('HTTP_RANGE', '')
+
+    if range_header:
+        match = re.search(r'bytes=(\d+)-(\d*)', range_header)
+        if match:
+            start = int(match.group(1))
+            end_match = match.group(2)
+            end = int(end_match) if end_match else file_size - 1
+            length = end - start + 1
+
+            response = StreamingHttpResponse(
+                file_iterator(file_path, start, length),
+                status=206,
+                content_type=content_type
+            )
+            response['Content-Range'] = f'bytes {start}-{end}/{file_size}'
+            response['Accept-Ranges'] = 'bytes'
+            response['Content-Length'] = str(length)
+        else:
+            response = HttpResponse(status=416)
+            response['Content-Range'] = f'bytes */{file_size}'
+    else:
+        response = StreamingHttpResponse(
+            file_iterator(file_path, 0, file_size),
+            content_type=content_type
+        )
+        response['Accept-Ranges'] = 'bytes'
+        response['Content-Length'] = str(file_size)
+
+    # Disable frame options and add broad CORS just in case
+    if "X-Frame-Options" in response:
+        del response["X-Frame-Options"]
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Expose-Headers"] = "Accept-Ranges, Content-Range, Content-Encoding, Content-Length"
+
+    return response
 
 def to_bool(value):
     return str(value).lower() in ["true","1","yes"]
