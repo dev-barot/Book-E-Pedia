@@ -1,24 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomerSidebar from "../CustomerSidebar/CustomerSidebar";
 import "./CustomerProfile.css";
 
 function CustomerProfile() {
-
-  // Dummy Customer Data (Frontend Only)
   const [customer, setCustomer] = useState({
-    Fname: "Mit",
-    Lname: "Sheth",
-    Email: "mit@example.com",
-    Phone_Number: "9876543210",
-    DOB: "2002-05-15",
-    Gender: "Male",
-    Country: "India",
-    Street: "456 Gandhinagar, Gujarat",
+    Fname: "",
+    Lname: "",
+    Email: "",
+    Phone_Number: "",
+    DOB: "",
+    Gender: "",
+    Country: "",
+    Street: "",
+    City: "",
+    State: "",
+    Pincode: "",
   });
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [originalCustomer, setOriginalCustomer] = useState(customer);
   const [message, setMessage] = useState("");
+
+  const customerId = localStorage.getItem("customer_id");
+  const baseUrl = "http://127.0.0.1:8000";
+
+  useEffect(() => {
+    if (customerId) {
+      fetch(`${baseUrl}/api/customer/${customerId}/`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.Cust_ID) {
+            setCustomer((prev) => ({ ...prev, ...data }));
+            setOriginalCustomer((prev) => ({ ...prev, ...data }));
+          }
+          setIsLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
+    }
+  }, [customerId]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -34,10 +59,39 @@ function CustomerProfile() {
   };
 
   const handleSaveClick = () => {
-    setIsEditing(false);
-    setOriginalCustomer(customer);
-    setMessage("Profile updated successfully! 🎉");
+    fetch(`${baseUrl}/api/customer/${customerId}/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(customer)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.bool) {
+        setIsEditing(false);
+        setOriginalCustomer(customer);
+        setMessage("Profile updated successfully! 🎉");
+      } else {
+        setMessage("Failed to update profile: " + data.msg);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      setMessage("An error occurred");
+    });
   };
+
+  if (isLoading) {
+    return (
+      <div className="cust-lux-body">
+        <CustomerSidebar />
+        <div className="cust-lux-main">
+          <h2 style={{color: '#1A3B5C', textAlign: 'center', marginTop: '50px'}}>Loading Profile...</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="cust-lux-body">
@@ -79,15 +133,18 @@ function CustomerProfile() {
 
           <form className="profile-lux-form row g-4">
             {[
-              { label: "First Name", id: "Fname", type: "text", icon: "fa-user" },
-              { label: "Last Name", id: "Lname", type: "text", icon: "fa-user" },
-              { label: "Email Address", id: "Email", type: "email", icon: "fa-envelope" },
-              { label: "Phone Number", id: "Phone_Number", type: "tel", icon: "fa-phone" },
-              { label: "Date of Birth", id: "DOB", type: "date", icon: "fa-calendar" },
-              { label: "Gender", id: "Gender", type: "text", icon: "fa-venus-mars" },
-              { label: "Street Address", id: "Street", type: "text", icon: "fa-map-marker-alt" },
-              { label: "Country", id: "Country", type: "text", icon: "fa-globe" },
-            ].map(({ label, id, type, icon }) => (
+              { label: "First Name", id: "Fname", type: "text", icon: "fa-user", constant: false },
+              { label: "Last Name", id: "Lname", type: "text", icon: "fa-user", constant: false },
+              { label: "Email Address", id: "Email", type: "email", icon: "fa-envelope", constant: true },
+              { label: "Phone Number", id: "Phone_Number", type: "tel", icon: "fa-phone", constant: true },
+              { label: "Date of Birth", id: "DOB", type: "text", icon: "fa-calendar", constant: true },
+              { label: "Gender (M/F)", id: "Gender", type: "text", icon: "fa-venus-mars", constant: false },
+              { label: "Street Address", id: "Street", type: "text", icon: "fa-map-marker-alt", constant: false },
+              { label: "City", id: "City", type: "text", icon: "fa-city", constant: false },
+              { label: "State", id: "State", type: "text", icon: "fa-map", constant: false },
+              { label: "Pincode", id: "Pincode", type: "text", icon: "fa-map-pin", constant: false },
+              { label: "Country", id: "Country", type: "text", icon: "fa-globe", constant: false },
+            ].map(({ label, id, type, icon, constant }) => (
               <div className="col-md-6" key={id}>
                 <div className="profile-input-group">
                   <label htmlFor={id} className="profile-label-lux">{label}</label>
@@ -96,10 +153,12 @@ function CustomerProfile() {
                     <input
                       type={type}
                       id={id}
-                      className={`form-control-lux ${!isEditing ? 'input-readonly' : ''}`}
-                      value={customer[id]}
+                      className={`form-control-lux ${(!isEditing || constant) ? 'input-readonly' : ''}`}
+                      style={constant ? { opacity: 0.7, cursor: 'not-allowed', backgroundColor: 'rgba(255,255,255,0.2)' } : {}}
+                      value={customer[id] || ''}
                       onChange={handleInputChange}
-                      readOnly={!isEditing}
+                      readOnly={!isEditing || constant}
+                      disabled={constant}
                     />
                   </div>
                 </div>
