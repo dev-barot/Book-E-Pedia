@@ -41,11 +41,17 @@ function CustomerOrders() {
         };
       }
 
+      let oType = "Physical";
+      if (item.product_details?.Book_Type_Details?.Audio_Book === '1') oType = "Audio";
+      else if (item.product_details?.Book_Type_Details?.E_Book === '1') oType = "E-Book";
+      else if (item.product_details?.Book_Type_Details?.Video_Book === '1') oType = "Video";
+
       acc[id].products.push({
         id: item.product_details?.Product_ID,
         name: item.product_details?.Product_Name,
         quantity: item.Product_Quantity,
-        price: item.Product_Price,
+        price: parseFloat(item.Product_Price) || 0,
+        orderType: oType,
         image: item.product_details?.Cover_Photo
           ? `${baseUrl}${item.product_details.Cover_Photo}`
           : p1
@@ -143,6 +149,7 @@ function CustomerOrders() {
 
                       <NavLink
                         to="/invoice"
+                        state={{ orderData: order }}
                         className="btn-invoice-lux"
                       >
                         <i className="fas fa-file-invoice me-2"></i> Invoice

@@ -1,40 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
 import "./Invoice.css";
 
 const Invoice = () => {
+  const location = useLocation();
+  const orderData = location.state?.orderData || null;
 
-  // ✅ Dummy Order Data
+  const [customerName, setCustomerName] = useState("Valued Customer");
+
+  useEffect(() => {
+    const cid = localStorage.getItem("customer_id");
+    if (cid) {
+      fetch(`http://127.0.0.1:8000/api/customer/${cid}/`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.Fname) {
+            setCustomerName(data.Fname);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }, []);
+
+  if (!orderData) {
+    return (
+      <div className="invoice" style={{ textAlign: 'center', padding: '100px 20px' }}>
+        <h2 style={{ color: '#1A3B5C', marginBottom: '20px' }}>Invoice Not Found</h2>
+        <p style={{ color: '#555', marginBottom: '30px' }}>Could not find order details. Please open the invoice directly from the Order History page.</p>
+        <Link 
+          to="/customer-dashboard/orders" 
+          style={{ 
+            background: '#1A3B5C', color: '#fff', padding: '10px 25px', 
+            textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold' 
+          }}
+        >
+          Back to Orders
+        </Link>
+      </div>
+    );
+  }
+
+  // ✅ Maps Dynamic Data
   const invoiceData = {
     seller: "Book-E-Pedia Pvt Ltd",
     sellerAddress: "123 Retail St, Ahmedabad, India",
     gst: "24ABCDE1234F1Z5",
-    orderNo: "ORD-1001",
-    orderDate: "2024-02-10",
-    invoiceNo: "INV-1001",
-    invoiceDate: "2024-02-11",
-    paymentMode: "Credit Card",
-    transactionId: "TXN-987654",
-    customerAddress: "Mit Sheth, 456 Gandhinagar, Gujarat, India",
-    shippingAddress: "Mit Sheth, 456 Gandhinagar, Gujarat, India",
+    orderNo: `ORD-${orderData.MasterOrder_ID}`,
+    orderDate: "2026-04-16", // Mock order date as backend doesn't support timestamps yet
+    invoiceNo: `INV-${orderData.MasterOrder_ID}-${Math.floor(100 + Math.random() * 900)}`,
+    invoiceDate: new Date().toISOString().split('T')[0],
+    paymentMode: "Online Transaction",
+    transactionId: `TXN-BP${orderData.MasterOrder_ID}0X99`,
+    customerAddress: customerName,
+    shippingAddress: customerName,
     taxRate: 10,
-    items: [
-      {
-        id: 1,
-        description: "The Alchemist",
-        orderType: "Physical",
-        timePeriod: "---",
-        unitPrice: 300,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        description: "Harry Potter (Audio)",
-        orderType: "Audio",
-        timePeriod: "1 Month",
-        unitPrice: 200,
-        quantity: 2,
-      },
-    ],
+    items: orderData.products.map((p, index) => ({
+      id: index + 1,
+      description: p.name,
+      orderType: p.orderType || "Standard",
+      timePeriod: "---", // Digital products don't expire in this current DB model
+      unitPrice: p.price,
+      quantity: p.quantity,
+    })),
   };
 
   // ✅ Calculations
@@ -82,7 +109,7 @@ const Invoice = () => {
           <div className="invoice-right">
             <p><strong>Shipping Address:</strong></p>
             <p>{invoiceData.shippingAddress}</p>
-            <p><strong>Customer Address:</strong></p>
+            <p><strong>Customer details:</strong></p>
             <p>{invoiceData.customerAddress}</p>
             <p><strong>Invoice No.:</strong> {invoiceData.invoiceNo}</p>
             <p><strong>Invoice Date:</strong> {invoiceData.invoiceDate}</p>
@@ -95,7 +122,7 @@ const Invoice = () => {
             <tr>
               <th>Sr. No</th>
               <th>Description</th>
-              <th>Order Type</th>
+              <th>Type</th>
               <th>Time Period</th>
               <th>Unit Price</th>
               <th>Quantity</th>
@@ -105,14 +132,14 @@ const Invoice = () => {
             </tr>
           </thead>
           <tbody>
-            {invoiceData.items.map((item, index) => {
+            {invoiceData.items.map((item) => {
               const netAmount = item.unitPrice * item.quantity;
               const taxAmount = (netAmount * invoiceData.taxRate) / 100;
               const totalAmount = netAmount + taxAmount;
 
               return (
                 <tr key={item.id}>
-                  <td>{index + 1}</td>
+                  <td>{item.id}</td>
                   <td>{item.description}</td>
                   <td>{item.orderType}</td>
                   <td>{item.timePeriod}</td>
