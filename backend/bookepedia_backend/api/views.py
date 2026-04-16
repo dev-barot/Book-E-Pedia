@@ -1132,11 +1132,43 @@ def get_customer(request, cust_id):
     try:
         customer = TBL_Customer_Details.objects.get(Cust_ID=cust_id)
 
-        return JsonResponse({
-            "Cust_ID": customer.Cust_ID,
-            "Fname": customer.Fname,
-            "Email": customer.Email
-        })
+        if request.method == "GET":
+            return JsonResponse({
+                "Cust_ID": customer.Cust_ID,
+                "Fname": customer.Fname,
+                "Lname": customer.Lname,
+                "Email": customer.Email,
+                "Gender": customer.Gender,
+                "DOB": customer.DOB.strftime('%Y-%m-%d') if customer.DOB else "",
+                "Phone_Number": customer.Phone_Number,
+                "Building": customer.Building,
+                "Street": customer.Street,
+                "City": customer.City,
+                "State": customer.State,
+                "Country": customer.Country,
+                "Pincode": customer.Pincode,
+            })
+        
+        elif request.method in ["PUT", "POST"]:
+            import json
+            data = json.loads(request.body.decode('utf-8'))
+            customer.Fname = data.get("Fname", customer.Fname)
+            customer.Lname = data.get("Lname", customer.Lname)
+            customer.Gender = data.get("Gender", customer.Gender)
+            
+            # Email, DOB, and Phone_Number are kept constant from registration
+            
+            customer.Building = data.get("Building", customer.Building)
+            customer.Street = data.get("Street", customer.Street)
+            customer.City = data.get("City", customer.City)
+            customer.State = data.get("State", customer.State)
+            customer.Country = data.get("Country", customer.Country)
+            customer.Pincode = data.get("Pincode", customer.Pincode)
+            
+            customer.save()
+            return JsonResponse({"bool": True, "msg": "Profile updated successfully"})
 
     except TBL_Customer_Details.DoesNotExist:
         return JsonResponse({"msg": "Customer not found"}, status=404)
+    except Exception as e:
+        return JsonResponse({"msg": str(e)}, status=500)
