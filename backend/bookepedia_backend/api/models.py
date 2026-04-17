@@ -204,6 +204,8 @@ class TBL_Cart_Details(models.Model):
 class TBL_MasterOrder_Details(models.Model):
     ORDER_STATUS_CHOICES = [
         ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Shipped', 'Shipped'),
         ('Completed', 'Completed'),
         ('Cancelled', 'Cancelled'),
     ]
@@ -302,3 +304,37 @@ class TBL_Payment(models.Model):
 
     def __str__(self):
         return f"Payment {self.Transaction_ID}"
+
+class TBL_Feedback_Details(models.Model):
+    Feedback_ID = models.AutoField(primary_key=True)
+
+    Product_ID = models.ForeignKey(
+        TBL_Product_Details,
+        on_delete=models.CASCADE,
+        db_column='Product_ID_id'
+    )
+
+    Cust_ID = models.ForeignKey(
+        TBL_Customer_Details,
+        on_delete=models.CASCADE,
+        db_column='Cust_ID_id'
+    )
+
+    Description = models.TextField()
+
+    Rating = models.IntegerField(default=5)  # optional but useful (1–5 stars)
+
+    IsActive = models.CharField(
+        max_length=1,
+        choices=[('1', 'Active'), ('0', 'Inactive')],
+        default='1'
+    )
+
+    Feedback_DateTime = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        db_table = 'TBL_Feedback_Details'
+        managed = False
+        ordering = ['-Feedback_DateTime']
+
+    def __str__(self):
+        return f"Feedback {self.Feedback_ID} - Product {self.Product_ID_id}"

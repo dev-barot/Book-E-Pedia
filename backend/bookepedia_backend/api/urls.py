@@ -23,8 +23,17 @@ from .views import (
     create_payment,
     get_order_details,
     get_customer,
-    get_customer_orders
-
+    get_customer_orders,
+    get_all_orders,
+    update_order_status,
+    get_trending_books,
+    dashboard_counts,
+    get_low_stock_products,
+    get_feedbacks,
+    add_feedback,
+    soft_delete_feedback,
+    get_all_customers,
+    deactivate_customer
 )
 
 urlpatterns = [
@@ -52,6 +61,16 @@ urlpatterns = [
     path('order/<int:order_id>/', get_order_details),
     path('customer/<int:cust_id>/', get_customer),
     path('customer/<int:cust_id>/orders/', get_customer_orders),
+    path('admin/orders/', get_all_orders),
+    path('admin/orders/<int:order_id>/', update_order_status),
+    path("admin/trending-books/", get_trending_books),
+    path("admin/dashboard-counts/", dashboard_counts),
+    path("admin/low-stock/", get_low_stock_products),
+    path('feedbacks/', get_feedbacks),
+    path("feedback/add/", add_feedback),
+    path('feedbacks/<int:feedback_id>/delete/', soft_delete_feedback),
+    path('customers/', get_all_customers),
+    path('customers/deactivate/<int:cust_id>/', deactivate_customer),
 ]
 
 

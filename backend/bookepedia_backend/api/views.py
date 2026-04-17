@@ -12,14 +12,16 @@ from .models import (
     TBL_Cart_Details,
     TBL_Payment,
     TBL_Order_Details,
-    TBL_MasterOrder_Details
+    TBL_MasterOrder_Details,
+    TBL_Feedback_Details
 )
 logger = logging.getLogger(__name__)
 from django.http import FileResponse, HttpResponse
 from django.conf import settings
 import os
 import mimetypes
-
+from django.db.models import Sum
+from django.db.models import Count
 from django.views.static import serve
 from django.http import Http404
 
@@ -1172,3 +1174,253 @@ def get_customer(request, cust_id):
         return JsonResponse({"msg": "Customer not found"}, status=404)
     except Exception as e:
         return JsonResponse({"msg": str(e)}, status=500)
+
+@csrf_exempt
+def get_all_orders(request):
+    if request.method == "GET":
+        try:
+            orders = TBL_MasterOrder_Details.objects.all().order_by('-MasterOrder_ID')
+
+            data = []
+            for order in orders:
+                data.append({
+                    "MasterOrder_ID": order.MasterOrder_ID,
+                    "Cust_ID": order.Cust_ID_id,
+                    "Emp_ID": order.Emp_ID_id,
+                    "Order_DateTime": order.Order_DateTime,
+                    "T_Quantity": order.T_Quantity,
+                    "T_Amount": str(order.T_Amount),
+                    "Order_Status": order.Order_Status
+                })
+
+            return JsonResponse({"orders": data})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+def update_order_status(request, order_id):
+    if request.method in ["PUT", "POST"]:   # 👈 FIX
+        try:
+            data = json.loads(request.body)
+
+            order = TBL_MasterOrder_Details.objects.get(MasterOrder_ID=order_id)
+            order.Order_Status = data.get("Order_Status", order.Order_Status)
+            order.save()
+
+            return JsonResponse({"msg": "Status updated"})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
+from django.db.models import Sum
+from django.http import JsonResponse
+
+def get_trending_books(request):
+    try:
+        trending = (
+            TBL_Order_Details.objects
+            .values(
+                "Product_ID__Product_ID",
+                "Product_ID__Product_Name",
+                "Product_ID__Cover_Photo"
+            )
+            .annotate(total_ordered=Sum("Product_Quantity"))
+            .order_by("-total_ordered")[:5]
+        )
+
+        data = []
+        for item in trending:
+            image_path = item["Product_ID__Cover_Photo"]
+
+            data.append({
+                "product_id": item["Product_ID__Product_ID"],
+                "name": item["Product_ID__Product_Name"],
+                "image": f"/media/{image_path}" if image_path else None,
+                "total": item["total_ordered"]
+            })
+
+        return JsonResponse({"books": data})
+
+    except Exception as e:
+        print("TRENDING ERROR:", str(e))
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+def dashboard_counts(request):
+    try:
+        total_orders = TBL_MasterOrder_Details.objects.count()
+        completed_orders = TBL_MasterOrder_Details.objects.filter(Order_Status="Completed").count()
+
+        total_sales = sum([o.T_Amount for o in TBL_MasterOrder_Details.objects.all()])
+
+        fulfillment_rate = int((completed_orders / total_orders) * 100) if total_orders else 0
+
+        return JsonResponse({
+            "total_customers": TBL_Customer_Details.objects.count(),
+            "total_products": TBL_Product_Details.objects.count(),
+            "total_categories": TBL_Category_Details.objects.count(),
+            "total_orders": total_orders,
+            "total_sales": total_sales,
+            "completed_orders": completed_orders,
+            "fulfillment_rate": fulfillment_rate
+        })
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+def get_low_stock_products(request):
+    try:
+        low_stock = TBL_Product_Details.objects.filter(Stock__lt=10)
+
+        data = [
+            {
+                "id": p.Product_ID,
+                "name": p.Product_Name,
+                "stock": p.Stock,
+                "image": f"/media/{p.Cover_Photo}" if p.Cover_Photo else None
+            }
+            for p in low_stock
+        ]
+
+        return JsonResponse({"products": data})
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+
+def get_feedbacks(request):
+    try:
+        product_id = request.GET.get("product_id")
+
+        feedbacks = TBL_Feedback_Details.objects.filter(IsActive='1')
+
+        if product_id:
+            feedbacks = feedbacks.filter(Product_ID_id=product_id)  # 👈 THIS LINE SAVES YOU
+
+        feedbacks = feedbacks.order_by('-Feedback_DateTime')[:3]
+
+        data = []
+        for fb in feedbacks:
+            data.append({
+                "Feedback_ID": fb.Feedback_ID,
+                "Product_ID": fb.Product_ID_id,
+                "Cust_ID": fb.Cust_ID_id,
+                "rating": fb.Rating,
+                "Description": fb.Description,
+                "Feedback_DateTime": fb.Feedback_DateTime.strftime("%Y-%m-%d %H:%M:%S"),
+                "customer_name": f"{fb.Cust_ID.Fname} {fb.Cust_ID.Lname}" if fb.Cust_ID else "Unknown"
+            })
+
+        return JsonResponse({"data": data})
+
+    except Exception as e:
+        print("🔥 FEEDBACK ERROR:", str(e))
+        return JsonResponse({"error": str(e)}, status=500)
+
+@csrf_exempt
+def add_feedback(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            cust_id = data.get("cust_id")
+            product_id = data.get("product_id")
+            description = data.get("description")
+            rating = data.get("rating", 0)
+
+            if not all([cust_id, product_id, description]):
+                return JsonResponse({"error": "Missing fields"}, status=400)
+
+            # 🔒 CHECK: has user purchased this product?
+            has_purchased = TBL_Order_Details.objects.filter(
+                MasterOrder_ID__Cust_ID=cust_id,
+                Product_ID=product_id
+            ).exists()
+
+            if not has_purchased:
+                return JsonResponse({
+                    "error": "You can only review purchased products"
+                }, status=403)
+
+            feedback = TBL_Feedback_Details.objects.create(
+                Cust_ID_id=cust_id,
+                Product_ID_id=product_id,
+                Description=description,
+                Rating=rating,
+                IsActive='1'
+            )
+
+            return JsonResponse({
+                "msg": "Feedback added",
+                "id": feedback.Feedback_ID
+            })
+
+        except Exception as e:
+            print("FEEDBACK CREATE ERROR:", str(e))
+            return JsonResponse({"error": str(e)}, status=500)
+@csrf_exempt
+def soft_delete_feedback(request, feedback_id):
+    if request.method == "PUT":
+        try:
+            feedback = TBL_Feedback_Details.objects.get(Feedback_ID=feedback_id)
+            feedback.IsActive = '0'
+            feedback.save()
+
+            return JsonResponse({"msg": "Feedback archived successfully"})
+
+        except TBL_Feedback_Details.DoesNotExist:
+            return JsonResponse({"error": "Feedback not found"}, status=404)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+@csrf_exempt
+def get_all_customers(request):
+    if request.method == "GET":
+        try:
+            customers = TBL_Customer_Details.objects.all()
+
+            data = []
+            for c in customers:
+                data.append({
+                    "Cust_ID": c.Cust_ID,
+                    "Fname": c.Fname,
+                    "Lname": c.Lname,
+                    "Email": c.Email,
+                    "Gender": c.Gender,
+                    "Phone_Number": c.Phone_Number,
+                    "Building": c.Building,
+                    "Street": c.Street,
+                    "City": c.City,
+                    "State": c.State,
+                    "Country": c.Country,
+                    "Pincode": c.Pincode,
+                    "IsActive": getattr(c, "IsActive", "1")
+                })
+
+            return JsonResponse({"data": data})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+@csrf_exempt
+def deactivate_customer(request, cust_id):
+    if request.method == "PUT":
+        try:
+            customer = TBL_Customer_Details.objects.get(Cust_ID=cust_id)
+            customer.IsActive = '0'   # soft delete
+            customer.save()
+
+            return JsonResponse({"msg": "Customer deactivated"})
+
+        except TBL_Customer_Details.DoesNotExist:
+            return JsonResponse({"error": "Customer not found"}, status=404)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
