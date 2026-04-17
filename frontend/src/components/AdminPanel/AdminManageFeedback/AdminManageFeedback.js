@@ -31,10 +31,22 @@ function AdminManageFeedback() {
   };
 
   // Handle delete feedback
-  const handleDeleteFeedback = (id) => {
-    const updatedFeedbacks = feedbacks.filter(feedback => feedback.Feedback_ID !== id);
-    setFeedbacks(updatedFeedbacks);
-    alert(`Feedback with ID ${id} has been deleted.`);
+  const handleDeleteFeedback = async (id) => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/feedbacks/${id}/delete/`, {
+        method: "PUT"
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Delete failed");
+
+      // remove from UI after backend success
+      setFeedbacks(prev => prev.filter(f => f.Feedback_ID !== id));
+
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
   };
 
   return (
@@ -73,7 +85,6 @@ function AdminManageFeedback() {
           <table className="admin-lux-table">
             <thead>
               <tr>
-                <th>Feedback ID</th>
                 <th>IDs Info</th>
                 <th>Description</th>
                 <th>Date & Time</th>
@@ -94,13 +105,27 @@ function AdminManageFeedback() {
               ) : (
                 feedbacks.map((feedback) => (
                   <tr key={feedback.Feedback_ID}>
-                    <td className="id-cell">#{feedback.Feedback_ID}</td>
                     <td>
                       <div style={{ fontSize: '0.9rem' }}><strong>Prod:</strong> {feedback.Product_ID}</div>
                       <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}><strong>Cust:</strong> {feedback.Cust_ID}</div>
                     </td>
-                    <td className="desc-cell" title={feedback.Description}>{feedback.Description}</td>
-                    <td>
+                    <td className="desc-cell">
+                      
+                      {/* ⭐ Rating */}
+                      <div style={{ marginBottom: "5px" }}>
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span key={i} style={{ color: i < feedback.rating ? "#f5b50a" : "#ccc" }}>
+                            ★
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* 💬 Review Text */}
+                      <div title={feedback.Description}>
+                        {feedback.Description}
+                      </div>
+
+                    </td>                    <td>
                       <div style={{ fontWeight: '500' }}>{new Date(feedback.Feedback_DateTime).toLocaleDateString()}</div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
                         {new Date(feedback.Feedback_DateTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
