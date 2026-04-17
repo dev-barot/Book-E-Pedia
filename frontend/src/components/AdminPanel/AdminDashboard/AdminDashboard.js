@@ -17,7 +17,8 @@ function AdminDashboard() {
   const [lowStockBooks, setLowStockBooks] = useState([]);
   const [trendingBooks, setTrendingBooks] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
-
+  const [fulfillmentRate, setFulfillmentRate] = useState(0);
+  const [lowStock, setLowStock] = useState([]);
   const handleSidebarToggle = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
@@ -27,18 +28,32 @@ function AdminDashboard() {
     const fetchDashboardData = async () => {
       try {
         const [countsRes, ordersRes, productsRes, feedbacksRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/dashboard-counts/"),
-          fetch("http://127.0.0.1:8000/api/masterorders/"),
+          fetch("http://127.0.0.1:8000/api/admin/dashboard-counts/"),
+          fetch("http://127.0.0.1:8000/api/admin/orders/"),
           fetch("http://127.0.0.1:8000/api/products/"),
           fetch("http://127.0.0.1:8000/api/feedbacks/")
         ]);
+        const trendingRes = await fetch("http://127.0.0.1:8000/api/admin/trending-books/");
+        const trendingData = await trendingRes.json();
+
+        setTrendingBooks(trendingData.books || []);
+        const dashboardRes = await fetch("http://127.0.0.1:8000/api/admin/dashboard-counts/");
+        const dashboardData = await dashboardRes.json();
+        const lowStockRes = await fetch("http://127.0.0.1:8000/api/admin/low-stock/");
+        const lowStockData = await lowStockRes.json();
+
+        setLowStock(lowStockData.products || []);
+        setFulfillmentRate(dashboardData.fulfillment_rate || 0);
 
         if (countsRes.ok) setDashboardData(await countsRes.json());
         
         if (ordersRes.ok) {
           const orders = await ordersRes.json();
-          const orderArr = orders.data || orders || [];
-          setRecentOrders([...orderArr].reverse().slice(0, 4));
+          const orderArr = orders.orders || [];
+          setRecentOrders(orderArr
+              .sort((a, b) => b.MasterOrder_ID - a.MasterOrder_ID)
+              .slice(0, 4)
+          );
         }
 
         if (productsRes.ok) {
@@ -46,7 +61,6 @@ function AdminDashboard() {
           const pData = products.data || products || [];
           
           setLowStockBooks([...pData].filter(p => p.Stock < 10 && p.Stock >= 0).sort((a, b) => a.Stock - b.Stock).slice(0, 3));
-          setTrendingBooks([...pData].sort((a, b) => b.Product_ID - a.Product_ID).slice(0, 4));
         }
 
         if (feedbacksRes.ok) {
@@ -58,6 +72,7 @@ function AdminDashboard() {
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       }
+      
     };
 
     fetchDashboardData();
@@ -134,9 +149,7 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Customers</h3>
                 <h2 className="counter-value">{dashboardData.total_customers}</h2>
-                <div className="metric-footer">
-                  <span className="trend positive"><i className="fa-solid fa-arrow-trend-up"></i> +12.5% vs last month</span>
-                </div>
+
               </div>
               <div className="metric-decoration decor-blue"></div>
             </div>
@@ -151,9 +164,7 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Products</h3>
                 <h2 className="counter-value">{dashboardData.total_products}</h2>
-                <div className="metric-footer">
-                  <span className="trend neutral"><i className="fa-solid fa-minus"></i> Stable inventory</span>
-                </div>
+
               </div>
               <div className="metric-decoration decor-purple"></div>
             </div>
@@ -168,9 +179,7 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Categories</h3>
                 <h2 className="counter-value">{dashboardData.total_categories}</h2>
-                <div className="metric-footer">
-                  <span className="trend positive"><i className="fa-solid fa-arrow-trend-up"></i> +2.4% vs last month</span>
-                </div>
+
               </div>
               <div className="metric-decoration decor-green"></div>
             </div>
@@ -185,9 +194,7 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Orders</h3>
                 <h2 className="counter-value">{dashboardData.total_orders}</h2>
-                <div className="metric-footer">
-                  <span className="trend positive"><i className="fa-solid fa-arrow-trend-up"></i> +18.2% vs last month</span>
-                </div>
+ 
               </div>
               <div className="metric-decoration decor-orange"></div>
             </div>
@@ -247,30 +254,46 @@ function AdminDashboard() {
               <button className="icon-btn-lux"><i className="fa-solid fa-ellipsis"></i></button>
             </div>
             
-            <div className="activity-list">
-              {trendingBooks.length > 0 ? trendingBooks.map((book, i) => (
-                <div className="dashboard-list-item" key={i} style={{padding: "10px 0"}}>
-                  <div className="item-left-info">
-                    <div className="activity-icon-glass glow-orange" style={{width: "40px", height: "40px"}}><strong>#{i+1}</strong></div>
-                    <div className="item-titles">
-                      <h4>{book.Product_Name}</h4>
-                      <p>Active Listing</p>
+            <div className="trending-books">
+              {trendingBooks.length > 0 ? (
+                trendingBooks.map((book, index) => (
+                  <div key={book.product_id} className="trending-row">
+
+                    <div className="rank">#{index + 1}</div>
+
+                   <img
+                      src={
+                        book.image
+                          ? `http://127.0.0.1:8000${book.image}`
+                          : "https://via.placeholder.com/50x70?text=No+Image"
+                      }
+                      alt={book.name}
+                      className="book-image"
+                  />
+
+                    <div className="book-info">
+                      <div className="book-name">{book.name}</div>
+                      <div className="book-count">{book.total} orders</div>
                     </div>
+
                   </div>
-                  <i className="fa-solid fa-arrow-trend-up text-success"></i>
-                </div>
-              )) : <p className="text-muted text-center mt-4">No trending books available.</p>}
+                ))
+              ) : (
+                <p>No trending books yet. Business is… quiet.</p>
+              )}
             </div>
 
-            <div className="panel-footer-stat mt-auto">
-              <div className="health-header">
-                <p>System Health Cluster</p>
-                <span className="status-badge optimal">Optimal</span>
+            <div className="health-section">
+              <h4>Order Fulfillment Rate</h4>
+              {/* 👇 THIS IS THE BAR YOU FORGOT */}
+              <div className="health-bar">
+                <div
+                  className="health-fill"
+                  style={{ width: `${fulfillmentRate}%` }}
+                ></div>
               </div>
-              <div className="health-bar-container">
-                <div className="health-bar-lux"><div className="health-fill-lux"></div></div>
-                <div className="health-glow"></div>
-              </div>
+
+              <p>{fulfillmentRate}% Orders Completed</p>
             </div>
           </div>
         </div>
@@ -310,24 +333,35 @@ function AdminDashboard() {
               <h2><i className="fa-solid fa-triangle-exclamation me-2 text-danger"></i> Low Stock Alerts</h2>
             </div>
             <div className="activity-list">
-              {lowStockBooks.length > 0 ? lowStockBooks.map((book, i) => (
-                <div className="dashboard-list-item" key={i}>
-                  <div className="item-left-info">
-                    {book.Cover_Photo ? (
-                      <img src={book.Cover_Photo.startsWith('http') ? book.Cover_Photo : `http://127.0.0.1:8000${book.Cover_Photo}`} 
-                           alt={book.Product_Name} 
-                           style={{width: "44px", height: "60px", objectFit: "cover", borderRadius: "4px"}}/>
-                    ) : (
-                      <div className="book-thumb-mock"></div>
-                    )}
-                    <div className="item-titles">
-                      <h4>{book.Product_Name}</h4>
-                      <p className="text-danger fw-bold">Only {book.Stock} copies left!</p>
+
+              {lowStock.length === 0 ? (
+                <p style={{ color: "green" }}>All stock levels optimal</p>
+              ) : (
+                lowStock.map((item, index) => (
+                  <div key={index} className="low-stock-item">
+                    
+                    <img
+                      src={
+                        item.image
+                          ? `http://127.0.0.1:8000${item.image}`
+                          : "https://via.placeholder.com/40x55"
+                      }
+                      alt={item.name}
+                      className="low-stock-img"
+                    />
+
+                    <div className="low-stock-info">
+                      <p className="book-name">{item.name}</p>
+                      <p className="book-stock">
+                        {item.stock === 0
+                          ? "Out of Stock"
+                          : `Only ${item.stock} left`}
+                      </p>
                     </div>
+
                   </div>
-                  <button className="btn btn-sm btn-outline-danger" style={{borderRadius: "20px", fontSize: "0.8rem", fontWeight: "600"}}>Restock</button>
-                </div>
-              )) : <p className="text-muted text-center mt-4"><i className="fa-solid fa-check-circle text-success me-2"></i>All stock levels optimal.</p>}
+                ))
+              )}
             </div>
           </div>
 
