@@ -21,7 +21,19 @@ function ProductDetail() {
   const [newFeedback, setNewFeedback] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [rating, setRating] = useState(0);
+  const fetchFeedbacks = async () => {
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/feedbacks/?product_id=${id}`
+        );
+        const data = await res.json();
 
+        setFeedbacks(data.data || []);
+      } catch (err) {
+        console.error("Feedback fetch error:", err);
+      }
+  };
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -51,22 +63,51 @@ function ProductDetail() {
       }
     };
 
+
     fetchProduct();
+    fetchFeedbacks();
   }, [id]);
 
-  const handleAddFeedback = () => {
+  const handleAddFeedback = async () => {
     if (!newFeedback.trim()) return alert("Please enter a review.");
-    const newEntry = {
-      id: Date.now(),
-      Description: newFeedback,
-      customer_name: "Anonymous User",
-      Feedback_DateTime: new Date().toISOString(),
-    };
-    const updatedFeedback = [newEntry, ...feedbacks];
-    localStorage.setItem(`feedbacks_${productData.id}`, JSON.stringify(updatedFeedback));
-    setFeedbacks(updatedFeedback);
-    setNewFeedback("");
-    setShowForm(false);
+
+
+    const custId = localStorage.getItem("customer_id");
+
+
+    if (!custId) {
+      return alert("User not logged in");
+    }
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/feedback/add/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cust_id: custId,
+          product_id: productData.id,
+          description: newFeedback,
+          rating: rating, // 👈 new
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Review submitted successfully");
+        fetchFeedbacks();
+        setNewFeedback("");
+        setRating(0);
+        setShowForm(false);
+      } else {
+        alert(data.error || "Failed to submit review");
+      }
+
+    } catch (err) {
+      console.error("Feedback error:", err);
+    }
   };
 
   const cartAddButtonHandler = async (e) => {
@@ -173,6 +214,21 @@ function ProductDetail() {
 
           {showForm && (
             <div className="glass-form-box mb-4 p-4">
+              <div className="rating-box mb-3 text-center">
+                {[1,2,3,4,5].map((star) => (
+                  <span
+                    key={star}
+                    style={{
+                      cursor: "pointer",
+                      fontSize: "24px",
+                      color: star <= rating ? "#ffc107" : "#ccc"
+                    }}
+                    onClick={() => setRating(star)}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
               <textarea
                 value={newFeedback}
                 onChange={(e) => setNewFeedback(e.target.value)}
@@ -190,8 +246,13 @@ function ProductDetail() {
           <div className="reviews-list">
             {displayedFeedback.length > 0 ? (
               displayedFeedback.map((feedback) => (
-                <div key={feedback.id} className="single-review mb-3">
-                  <p className="review-text">"{feedback.Description}"</p>
+                <div key={feedback.Feedback_ID} className="single-review mb-3">
+                  <div className="review-text">
+                    {"★".repeat(feedback.rating || 0)}
+                    {"☆".repeat(5 - (feedback.rating || 0))}
+                    <br />
+                    "{feedback.Description}"
+                  </div>
                   <small className="review-meta">
                     <strong>{feedback.customer_name}</strong> - {new Date(feedback.Feedback_DateTime).toLocaleDateString()}
                   </small>

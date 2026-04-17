@@ -13,7 +13,31 @@ function AdminViewCustomers() {
   const handleSidebarToggle = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
+  const handleDeactivate = async (custId) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/customers/deactivate/${custId}/`,
+        {
+          method: "PUT",
+        }
+      );
 
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Customer deactivated");
+
+        // remove from UI instantly (feels faster, less annoying)
+        setCustomers(prev => prev.filter(c => c.Cust_ID !== custId));
+      } else {
+        alert(data.error || "Failed to deactivate");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Something broke");
+    }
+  };
   // Fetch customer details from API
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -118,8 +142,12 @@ function AdminViewCustomers() {
                       </span>
                     </td>
                     <td className="actions-cell">
-                      <button className="icon-btn-lux view" title="View Details">
-                        <i className="fa-solid fa-eye"></i>
+                      <button 
+                        className="icon-btn-lux delete"
+                        title="Deactivate Customer"
+                        onClick={() => handleDeactivate(customer.Cust_ID)}
+                      >
+                        <i className="fa-solid fa-trash"></i>
                       </button>
                     </td>
                   </tr>
