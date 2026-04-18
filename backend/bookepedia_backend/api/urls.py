@@ -33,7 +33,8 @@ from .views import (
     add_feedback,
     soft_delete_feedback,
     get_all_customers,
-    deactivate_customer
+    deactivate_customer,
+    employee_detail
 )
 
 urlpatterns = [
@@ -52,6 +53,7 @@ urlpatterns = [
     path("products/<int:id>/", update_product),
     path("delete-product/<int:id>/", delete_product),
     path('employees/', get_employees, name='employees'),
+    path('employees/<int:id>/', employee_detail, name='employee_detail'),
     path('cart/add/', add_to_cart),
     path('cart/<int:cust_id>/', get_cart),
     path('cart/remove/<int:cart_id>/', remove_from_cart),

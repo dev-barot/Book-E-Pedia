@@ -738,26 +738,99 @@ def update_product(request, id):
 @csrf_exempt
 def get_employees(request):
     if request.method == "GET":
-        employees = TBL_Employee_Details.objects.filter(IsActive='1')
+        employees = TBL_Employee_Details.objects.all()
 
         data = [
             {
+                "Emp_ID": emp.Emp_ID,
+                "Emp_Type": emp.Emp_Type,
+                "Fname": emp.Fname,
+                "Lname": emp.Lname,
+                "Gender": emp.Gender,
+                "DOB": emp.DOB,
+                "email": emp.email,
+                "Password": emp.Password,
+                "Phone_Number": emp.Phone_Number,
+                "Address": emp.Address,
+                "Salary": emp.Salary,
+                "Designation": emp.Designation,
+                "Emp_Photo": emp.Emp_Photo.url if emp.Emp_Photo else None,
+                "IsActive": emp.IsActive,
                 "id": emp.Emp_ID,
                 "fname": emp.Fname,
                 "lname": emp.Lname,
                 "designation": emp.Designation,
-                "email":emp.email,
-                "phone":emp.Phone_Number
+                "phone": emp.Phone_Number
             }
             for emp in employees
         ]
 
         return JsonResponse({"data": data}, safe=False)
 
+    elif request.method == "POST":
+        try:
+            emp_id = request.POST.get("Emp_ID")
+            emp = TBL_Employee_Details.objects.create(
+                Emp_ID=emp_id,
+                Emp_Type=request.POST.get("Emp_Type", "0"),
+                Fname=request.POST.get("Fname"),
+                Lname=request.POST.get("Lname"),
+                Gender=request.POST.get("Gender"),
+                DOB=request.POST.get("DOB"),
+                email=request.POST.get("email"),
+                Password=request.POST.get("Password"),
+                Phone_Number=request.POST.get("Phone_Number"),
+                Address=request.POST.get("Address"),
+                Salary=request.POST.get("Salary"),
+                Designation=request.POST.get("Designation"),
+                Emp_Photo=request.FILES.get("Emp_Photo"),
+                IsActive=request.POST.get("IsActive", "1")
+            )
+            return JsonResponse({"bool": True, "msg": "Employee added successfully", "id": emp.Emp_ID})
+        except Exception as e:
+            return JsonResponse({"bool": False, "msg": str(e)}, status=500)
+
     return JsonResponse(
         {"bool": False, "msg": "Method not allowed"},
         status=405
     )
+
+@csrf_exempt
+def employee_detail(request, id):
+    try:
+        emp = TBL_Employee_Details.objects.get(Emp_ID=id)
+    except TBL_Employee_Details.DoesNotExist:
+        return JsonResponse({"bool": False, "msg": "Employee not found"}, status=404)
+
+    if request.method in ["PUT", "POST"]:
+        try:
+            emp.Emp_Type = request.POST.get("Emp_Type", emp.Emp_Type)
+            emp.Fname = request.POST.get("Fname", emp.Fname)
+            emp.Lname = request.POST.get("Lname", emp.Lname)
+            emp.Gender = request.POST.get("Gender", emp.Gender)
+            emp.DOB = request.POST.get("DOB", emp.DOB)
+            emp.email = request.POST.get("email", emp.email)
+            emp.Password = request.POST.get("Password", emp.Password)
+            emp.Phone_Number = request.POST.get("Phone_Number", emp.Phone_Number)
+            emp.Address = request.POST.get("Address", emp.Address)
+            emp.Salary = request.POST.get("Salary", emp.Salary)
+            emp.Designation = request.POST.get("Designation", emp.Designation)
+            emp.IsActive = request.POST.get("IsActive", emp.IsActive)
+            
+            if "Emp_Photo" in request.FILES:
+                emp.Emp_Photo = request.FILES.get("Emp_Photo")
+                
+            emp.save()
+            return JsonResponse({"bool": True, "msg": "Employee updated successfully"})
+        except Exception as e:
+            return JsonResponse({"bool": False, "msg": str(e)}, status=500)
+            
+    elif request.method == "DELETE":
+        emp.IsActive = '0'
+        emp.save()
+        return JsonResponse({"bool": True, "msg": "Employee deleted successfully"})
+
+    return JsonResponse({"bool": False, "msg": "Method not allowed"}, status=405)
 
 @csrf_exempt
 def add_to_cart(request):

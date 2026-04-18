@@ -80,7 +80,7 @@ function AdminAddEmployees() {
       const url = employeeToEdit
         ? `http://127.0.0.1:8000/api/employees/${employeeToEdit.Emp_ID}/`
         : "http://127.0.0.1:8000/api/employees/";
-      const method = employeeToEdit ? "PUT" : "POST";
+      const method = "POST"; // Use POST for both add and edit due to FormData parsing limitations with PUT in Django
 
       const response = await fetch(url, {
         method: method,
