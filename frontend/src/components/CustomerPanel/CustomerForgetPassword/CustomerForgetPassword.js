@@ -2,23 +2,24 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import profileImage from "./profile.jpeg";
 import "./CustomerForgetPassword.css";
+import { BASE_URL } from "../../../utils/config";
 
 function CustomerForgetPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [devResetLink, setDevResetLink] = useState("");
 
   const navigate = useNavigate();
 
-  const handleResetRequest = () => {
+  const handleResetRequest = async () => {
     if (!email) {
       setError("Please enter your email address.");
       setMessage("");
       return;
     }
 
-    // Basic email format validation
     const emailPattern = /\S+@\S+\.\S+/;
     if (!emailPattern.test(email)) {
       setError("Please enter a valid email address.");
@@ -28,13 +29,45 @@ function CustomerForgetPassword() {
 
     setError("");
     setMessage("");
+    setDevResetLink("");
     setIsSending(true);
 
-    // Simulated API delay
-    setTimeout(() => {
-      setMessage("A password reset link has been sent to your email (Demo Mode).");
-      setIsSending(false);
-    }, 1500);
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/forgot-password/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+      const data = await res.json();
+      const success = data.bool ?? data.status === "OK";
+      const responseMessage =
+        data.msg || data.message || data.detail || "Something went wrong";
+
+      if (success) {
+        setMessage(responseMessage);
+        setDevResetLink(data.reset_link || "");
+        if (data.reset_token && data.reset_email) {
+          sessionStorage.setItem(
+            "customer_reset_context",
+            JSON.stringify({
+              token: data.reset_token,
+              email: data.reset_email,
+            })
+          );
+        }
+      } else {
+        setError(responseMessage);
+      }
+    } catch (err) {
+      setError("Server error. Try again.");
+    }
+
+    setIsSending(false);
   };
 
   return (
@@ -48,8 +81,7 @@ function CustomerForgetPassword() {
         <div className="cust-fp-form-container">
           <h1>Forgot Your Password?</h1>
           <p>
-            Enter your email address below and we'll send you instructions
-            to reset your password.
+            Enter your email address and we'll send you a reset link.
           </p>
 
           <input
@@ -64,6 +96,14 @@ function CustomerForgetPassword() {
           </button>
 
           {message && <p className="success-message">{message}</p>}
+          {devResetLink && (
+            <p className="success-message">
+              Dev reset link:{" "}
+              <a href={devResetLink} target="_blank" rel="noreferrer">
+                Open reset page
+              </a>
+            </p>
+          )}
           {error && <p className="error-message">{error}</p>}
 
           <p>

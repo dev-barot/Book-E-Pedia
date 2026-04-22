@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./ResetPassword.css";
+import { BASE_URL } from "../../../utils/config";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -8,46 +9,54 @@ const ResetPassword = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isResetting, setIsResetting] = useState(false);
-
+  const [token, setToken] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Demo token validation
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const token = params.get("token");
+    const rawToken = params.get("token") || "";
+    const rawEmail = params.get("email") || "";
+    const storedContext = sessionStorage.getItem("customer_reset_context");
+    let fallbackToken = "";
+    let fallbackEmail = "";
 
-    if (!token) {
-      setError(
-        "Invalid or missing token. Please request a new password reset link."
-      );
+    if (storedContext) {
+      try {
+        const parsed = JSON.parse(storedContext);
+        fallbackToken = parsed.token || "";
+        fallbackEmail = parsed.email || "";
+      } catch (error) {
+        sessionStorage.removeItem("customer_reset_context");
+      }
     }
+
+    const effectiveEmail = rawEmail || fallbackEmail;
+    const effectiveToken =
+      fallbackEmail && effectiveEmail === fallbackEmail && fallbackToken
+        ? fallbackToken
+        : rawToken || fallbackToken;
+
+    setToken(effectiveToken);
+    setEmail(effectiveEmail);
   }, [location]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const params = new URLSearchParams(location.search);
-    const token = params.get("token");
-
     if (!token || !password || !email) {
-      setError("Please fill in all fields.");
+      setError("All fields are required.");
       setMessage("");
       return;
     }
 
-    // Basic Email Validation
     const emailPattern = /\S+@\S+\.\S+/;
     if (!emailPattern.test(email)) {
-      setError("Please enter a valid email address.");
-      setMessage("");
+      setError("Enter a valid email.");
       return;
     }
 
-    // Password Strength Check
     if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
-      setMessage("");
+      setError("Password must be at least 6 characters.");
       return;
     }
 
@@ -55,25 +64,52 @@ const ResetPassword = () => {
     setMessage("");
     setIsResetting(true);
 
-    // Simulated Reset Delay
-    setTimeout(() => {
-      setMessage("Password reset successfully! Redirecting to login...");
-      setIsResetting(false);
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/reset-password-confirm/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            email: email,
+            password: password,
+          }),
+        }
+      );
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
-    }, 1500);
+      const data = await res.json();
+
+      const success = data.bool ?? data.status === "OK";
+      const responseMessage =
+        data.msg || data.message || data.detail || "Reset failed";
+
+      if (success) {
+        setMessage(responseMessage);
+        sessionStorage.removeItem("customer_reset_context");
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } else {
+        setError(responseMessage);
+      }
+    } catch (err) {
+      setError("Server error. Try again.");
+    }
+
+    setIsResetting(false);
   };
 
   return (
     <div className="reset-password-body">
       <div className="reset-password-container">
         <h1>Reset Your Password</h1>
-        <p>Enter your email and new password to reset your account.</p>
+        <p>Enter your email and new password.</p>
 
         <form onSubmit={handleSubmit} className="reset-password-form">
-
           <input
             type="email"
             placeholder="Email Address"
@@ -97,7 +133,6 @@ const ResetPassword = () => {
           >
             {isResetting ? "Resetting..." : "Reset Password"}
           </button>
-
         </form>
 
         {message && <p className="reset-password-success">{message}</p>}
