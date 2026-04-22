@@ -6,6 +6,7 @@ from .views import (
     add_category,
     customer_register,
     login_view,
+    employee_login,
     get_book_types,
     add_book_type,
     update_book_type,
@@ -43,6 +44,7 @@ from .views import (
 urlpatterns = [
     path('register/', customer_register),
     path('login/', login_view),
+    path('employee-login/', employee_login),
     path('categories/', get_categories),
     path('add-category/', add_category),
     path('category/', category_list_create),

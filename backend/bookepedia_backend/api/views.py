@@ -298,6 +298,45 @@ def login_view(request):
 
     return JsonResponse({'bool': False, 'msg': 'Method not allowed'}, status=405)
 
+# =========================
+# Employee Login API
+# =========================
+@csrf_exempt
+def employee_login(request):
+    if request.method == 'POST':
+        try:
+            if not request.body:
+                return JsonResponse({'bool': False, 'msg': 'Empty request body'})
+
+            data = json.loads(request.body.decode('utf-8'))
+
+            email = data.get('email')
+            password = data.get('password')
+
+            if not email or not password:
+                return JsonResponse({'bool': False, 'msg': 'Email and password required'})
+
+            employee = TBL_Employee_Details.objects.filter(email=email).first()
+
+            if employee and employee.Password == password:
+                return JsonResponse({
+                    'bool': True,
+                    'emp_id': employee.Emp_ID,
+                    'emp_name': f"{employee.Fname} {employee.Lname}",
+                    'emp_type': employee.Emp_Type
+                })
+
+            return JsonResponse({'bool': False, 'msg': 'Invalid email or password'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'bool': False, 'msg': 'Invalid JSON format'})
+
+        except Exception as e:
+            logger.error(f"Employee Login error: {str(e)}")
+            return JsonResponse({'bool': False, 'msg': 'Something went wrong'})
+
+    return JsonResponse({'bool': False, 'msg': 'Method not allowed'}, status=405)
+
 @csrf_exempt
 def add_category(request):
     if request.method == 'POST':
