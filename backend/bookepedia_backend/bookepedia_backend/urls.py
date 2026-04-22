@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from api.views import serve_media
+from api.views import add_to_cart, serve_media
 
 urlpatterns = [
     path('media/<path:path>', serve_media),
@@ -11,6 +11,7 @@ urlpatterns = [
 
     # ALL API ROUTES HERE
     path('api/', include('api.urls')),
+    path('cart/', add_to_cart),
 ]
 
 # if settings.DEBUG:

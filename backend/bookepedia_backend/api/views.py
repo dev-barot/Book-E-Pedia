@@ -16,7 +16,7 @@ from .models import (
     TBL_Order_Details,
     TBL_MasterOrder_Details,
     TBL_Feedback_Details,
-    TBL_PasswordResetToken
+    # TBL_PasswordResetToken
 )
 logger = logging.getLogger(__name__)
 from django.http import FileResponse, HttpResponse
@@ -1726,7 +1726,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import TBL_Customer_Details, TBL_PasswordResetToken
+from .models import TBL_Customer_Details #TBL_PasswordResetToken
 from django.db import ProgrammingError, OperationalError
 
 @api_view(['POST'])
@@ -1743,97 +1743,67 @@ def forgot_password_request(request):
         customer = TBL_Customer_Details.objects.filter(Email=email).first()
 
         if customer:
-            token_key = secrets.token_urlsafe(32)
+            token  = secrets.token_urlsafe(16)
 
-            TBL_PasswordResetToken.objects.create(
-                customer=customer,
-                key=token_key,
-                ip_address=request.META.get('REMOTE_ADDR'),
-                user_agent=request.META.get('HTTP_USER_AGENT')
-            )
+            # TBL_PasswordResetToken.objects.create(
+            #     customer=customer,
+            #     key=token_key,
+            #     ip_address=request.META.get('REMOTE_ADDR'),
+            #     user_agent=request.META.get('HTTP_USER_AGENT')
+            # )
 
-            reset_link = (
-                f"{settings.FRONTEND_BASE_URL.rstrip('/')}/customer/reset-password"
-                f"?token={token_key}&email={email}"
-            )
+            reset_link = f"{settings.FRONTEND_BASE_URL}/customer/reset-password?email={email}&token={token}"
 
             send_mail(
-                "Password Reset Request - Book E-Pedia",
-                f"Hi {customer.Fname},\n\nClick the link below to reset your password:\n\n{reset_link}\n\nThis link expires in 1 hour.",
+                "Password Reset - Book E-Pedia",
+                f"Hi {customer.Fname},\n\nReset your password:\n{reset_link}",
                 settings.DEFAULT_FROM_EMAIL,
                 [email]
             )
 
-        response_data = {
+        return Response({
             'bool': True,
-            'msg': 'If an account exists, a reset link has been sent.'
-        }
+            'msg': 'If account exists, reset link sent'
+        })
 
-        if customer and settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
-            response_data['reset_link'] = reset_link
-            response_data['reset_token'] = token_key
-            response_data['reset_email'] = email
-
-        return Response(response_data)
-    except (ProgrammingError, OperationalError) as exc:
-        logger.exception("Password reset request failed because the reset token table is unavailable: %s", exc)
+    except Exception as e:
         return Response(
-            {
-                'bool': False,
-                'msg': 'Password reset is not ready yet. Please run the latest database migrations and try again.'
-            },
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-    except Exception as exc:
-        logger.exception("Unexpected forgot password error: %s", exc)
-        return Response(
-            {'bool': False, 'msg': 'Unable to process the reset request right now.'},
+            {'bool': False, 'msg': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
 @api_view(['POST'])
 def reset_password_confirm(request):
-    token_str = request.data.get('token')
     email = request.data.get('email')
     new_password = request.data.get('password')
 
-    if not token_str or not email or not new_password:
+    if not email or not new_password:
         return Response(
-            {'bool': False, 'msg': 'Token, email, and password are required.'},
+            {'bool': False, 'msg': 'Email and password required'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Verify the token against your custom table and customer email
-    reset_token = TBL_PasswordResetToken.objects.filter(
-        key=token_str, 
-        customer__Email=email, 
-        is_used=False
-    ).first()
+    try:
+        customer = TBL_Customer_Details.objects.filter(Email=email).first()
 
-    # In local console-email development, the browser may open a stale link.
-    # Fall back to the latest valid unused token for the same email only in dev mode.
-    if (
-        not reset_token
-        and settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend'
-    ):
-        reset_token = (
-            TBL_PasswordResetToken.objects.filter(
-                customer__Email=email,
-                is_used=False
+        if not customer:
+            return Response(
+                {'bool': False, 'msg': 'User not found'},
+                status=status.HTTP_404_NOT_FOUND
             )
-            .order_by('-created_at')
-            .first()
+
+        customer.Password = new_password
+        customer.save()
+
+        return Response({
+            'bool': True,
+            'msg': 'Password updated successfully'
+        })
+
+    except Exception as e:
+        return Response(
+            {'bool': False, 'msg': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-    if reset_token and reset_token.is_valid():
-        customer = reset_token.customer
-        customer.Password = new_password # Update password in tbl_customer_details
-        customer.save()
-        
-        # Mark token as used to prevent reuse
-        reset_token.is_used = True
-        reset_token.save()
-        
-        return Response({'bool': True, 'msg': 'Password updated successfully.'})
-    
-    return Response({'bool': False, 'msg': 'Invalid or expired token.'}, status=400)
+
