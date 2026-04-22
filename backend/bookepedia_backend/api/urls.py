@@ -34,7 +34,10 @@ from .views import (
     soft_delete_feedback,
     get_all_customers,
     deactivate_customer,
-    employee_detail
+    employee_detail,
+    get_report_data,
+    reset_password_confirm,
+    forgot_password_request
 )
 
 urlpatterns = [
@@ -73,6 +76,7 @@ urlpatterns = [
     path('feedbacks/<int:feedback_id>/delete/', soft_delete_feedback),
     path('customers/', get_all_customers),
     path('customers/deactivate/<int:cust_id>/', deactivate_customer),
+    path('get_report_data/<str:report_type>/', get_report_data),
+    path('forgot-password/', forgot_password_request),
+    path('reset-password-confirm/', reset_password_confirm),
 ]
-
-

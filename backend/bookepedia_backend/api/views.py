@@ -1,5 +1,7 @@
 import json
 import logging
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.core.mail import send_mail
 from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -13,7 +15,8 @@ from .models import (
     TBL_Payment,
     TBL_Order_Details,
     TBL_MasterOrder_Details,
-    TBL_Feedback_Details
+    TBL_Feedback_Details,
+    TBL_PasswordResetToken
 )
 logger = logging.getLogger(__name__)
 from django.http import FileResponse, HttpResponse
@@ -27,6 +30,17 @@ from django.http import Http404
 
 import re
 from django.http import HttpResponse, StreamingHttpResponse, Http404
+from django.core.mail import EmailMessage
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from django.utils.http import urlsafe_base64_decode
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+import secrets  # For generating the secure token
+from django.core.mail import send_mail
+from django.conf import settings
 
 def file_iterator(file_path, offset, length, chunk_size=8192):
     with open(file_path, 'rb') as f:
@@ -1497,3 +1511,329 @@ def deactivate_customer(request, cust_id):
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+
+from django.utils.dateparse import parse_date
+
+@csrf_exempt
+def get_report_data(request, report_type):
+    if request.method != "GET":
+        return JsonResponse({"error": "Only GET method allowed"}, status=405)
+        
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    start = parse_date(start_date) if start_date else None
+    end = parse_date(end_date) if end_date else None
+
+    def filter_by_date(queryset, date_field):
+        if start and end:
+            return queryset.filter(**{f"{date_field}__range": (start, end)})
+        elif start:
+            return queryset.filter(**{f"{date_field}__gte": start})
+        elif end:
+            return queryset.filter(**{f"{date_field}__lte": end})
+        return queryset
+
+    try:
+        if report_type == "customer":
+            customers = TBL_Customer_Details.objects.values(
+                'Cust_ID', 'Fname', 'Lname', 'Gender', 'DOB', 'Email', 
+                'Phone_Number', 'City', 'State', 'Country', 'IsActive'
+            )
+            return JsonResponse(list(customers), safe=False)
+
+        elif report_type == "order":
+            from .models import TBL_Order_Details
+            orders = TBL_Order_Details.objects.select_related(
+                'MasterOrder_ID', 'Product_ID', 'MasterOrder_ID__Cust_ID'
+            )
+            
+            orders = filter_by_date(orders, "MasterOrder_ID__Order_DateTime")
+
+            orders_list = orders.values(
+                'Order_ID',
+                'MasterOrder_ID',
+                'MasterOrder_ID__Order_DateTime',
+                'MasterOrder_ID__Order_Status',
+                'MasterOrder_ID__Cust_ID__Fname',
+                'MasterOrder_ID__Cust_ID__Lname',
+                'Product_ID__Product_Name',
+                'Product_Price',
+                'Product_Quantity',
+                'T_amount'
+            )
+
+            # Format datetime
+            formatted_orders = list(orders_list)
+            for o in formatted_orders:
+                if isinstance(o['MasterOrder_ID__Order_DateTime'], datetime):
+                    o['MasterOrder_ID__Order_DateTime'] = o['MasterOrder_ID__Order_DateTime'].strftime("%Y-%m-%d %H:%M:%S")
+
+            return JsonResponse(formatted_orders, safe=False)
+
+        elif report_type == "payment":
+            payments = TBL_Payment.objects.select_related(
+                'MasterOrder_ID', 'MasterOrder_ID__Cust_ID'
+            )
+
+            payments = filter_by_date(payments, "Payment_Date")
+
+            payments_list = payments.values(
+                'Transaction_ID',
+                'MasterOrder_ID',
+                'MasterOrder_ID__Cust_ID__Fname',
+                'MasterOrder_ID__Cust_ID__Lname',
+                'Payment_Status',
+                'Payment_Mode',
+                'Payment_Date'
+            )
+            
+            formatted_payments = list(payments_list)
+            for p in formatted_payments:
+                if isinstance(p['Payment_Date'], datetime):
+                    p['Payment_Date'] = p['Payment_Date'].strftime("%Y-%m-%d %H:%M:%S")
+
+            return JsonResponse(formatted_payments, safe=False)
+
+        elif report_type == "product":
+            products = TBL_Product_Details.objects.select_related('Category_ID', 'Book_ID').values(
+                'Product_ID', 'Product_Name', 'Category_ID__Category_Name', 
+                'Book_ID__Book_Name', 'Product_Price', 'Stock', 'IsActive'
+            )
+            return JsonResponse(list(products), safe=False)
+
+        elif report_type == "category":
+            categories = TBL_Category_Details.objects.values(
+                'Category_ID', 'Category_Name', 'Category_Description', 'IsActive'
+            )
+            return JsonResponse(list(categories), safe=False)
+
+        return JsonResponse({"error": "Invalid report type"}, status=400)
+    except Exception as e:
+        logger.error(f"Report Error: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+from email.mime.text import MIMEText
+import base64
+from urllib.parse import quote
+from django.core.mail import get_connection
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+
+from urllib.parse import quote
+
+import secrets
+from django.core.cache import cache
+
+# @csrf_exempt
+# def forgot_password_request(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body.decode('utf-8'))
+#             email = data.get('email')
+
+#             if not email:
+#                 return JsonResponse({'bool': False, 'msg': 'Email is required'}, status=400)
+
+#             try:
+#                 customer = TBL_Customer_Details.objects.get(Email=email)
+#             except TBL_Customer_Details.DoesNotExist:
+#                 # Return OK to prevent email enumeration
+#                 return JsonResponse({"bool": True, "msg": "If an account exists, a reset link has been sent."})
+
+#             # ✅ Simple URL-safe random token — no = or % characters at all
+#             token = secrets.token_urlsafe(32)
+
+#             # ✅ Store token → email mapping for 1 hour using Django cache
+#             cache.set(f"pwd_reset_{token}", email, timeout=3600)
+
+#             reset_url = f"http://localhost:3000/customer/reset-password/?token={token}&email={email}"
+
+#             email_subject = "Password Reset Request - Book E-Pedia"
+#             email_body = (
+#                 f"Hi {customer.Fname},\n\n"
+#                 f"Click the link below to reset your password:\n\n"
+#                 f"{reset_url}\n\n"
+#                 f"This link expires in 1 hour.\n"
+#             )
+
+#             try:
+#                 email_obj = EmailMessage(
+#                     email_subject,
+#                     email_body,
+#                     settings.DEFAULT_FROM_EMAIL,
+#                     [customer.Email],
+#                 )
+#                 email_obj.send()
+#                 logger.info(f"Reset link sent to {email}")
+#                 return JsonResponse({"bool": True, "msg": "If an account exists, a reset link has been sent."})
+#             except Exception as e:
+#                 logger.error(f"Email send failed: {str(e)}")
+#                 return JsonResponse({'bool': False, 'msg': 'Failed to send email.'}, status=500)
+
+#         except json.JSONDecodeError:
+#             return JsonResponse({'bool': False, 'msg': 'Invalid JSON format'}, status=400)
+#         except Exception as e:
+#             logger.error(f"Forgot password error: {str(e)}")
+#             return JsonResponse({'bool': False, 'msg': 'An internal error occurred.'}, status=500)
+
+#     return JsonResponse({'bool': False, 'msg': 'Invalid method'}, status=405)
+
+
+# from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+# from django.utils.http import urlsafe_base64_decode
+# import base64
+
+# @csrf_exempt
+# def reset_password_confirm(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body.decode('utf-8'))
+#             token = data.get('token')
+#             password = data.get('password')
+
+#             if not token or not password:
+#                 return JsonResponse({'bool': False, 'msg': 'Token and password are required'}, status=400)
+
+#             # ✅ Look up email from cache using token
+#             email = cache.get(f"pwd_reset_{token}")
+
+#             if not email:
+#                 return JsonResponse({'bool': False, 'msg': 'Invalid or expired token'}, status=400)
+
+#             try:
+#                 customer = TBL_Customer_Details.objects.get(Email=email)
+#                 customer.Password = password
+#                 customer.save()
+
+#                 # ✅ Delete token so it can't be reused
+#                 cache.delete(f"pwd_reset_{token}")
+
+#                 return JsonResponse({'bool': True, 'msg': 'Password updated successfully'})
+
+#             except TBL_Customer_Details.DoesNotExist:
+#                 return JsonResponse({'bool': False, 'msg': 'User not found'}, status=404)
+
+#         except Exception as e:
+#             print("RESET ERROR:", str(e))
+#             return JsonResponse({'bool': False, 'msg': 'Internal error'}, status=500)
+
+#     return JsonResponse({'bool': False, 'msg': 'Invalid method'}, status=405)
+
+# views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import TBL_Customer_Details, TBL_PasswordResetToken
+from django.db import ProgrammingError, OperationalError
+
+@api_view(['POST'])
+def forgot_password_request(request):
+    email = request.data.get('email')
+
+    if not email:
+        return Response(
+            {'bool': False, 'msg': 'Email is required.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        customer = TBL_Customer_Details.objects.filter(Email=email).first()
+
+        if customer:
+            token_key = secrets.token_urlsafe(32)
+
+            TBL_PasswordResetToken.objects.create(
+                customer=customer,
+                key=token_key,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT')
+            )
+
+            reset_link = (
+                f"{settings.FRONTEND_BASE_URL.rstrip('/')}/customer/reset-password"
+                f"?token={token_key}&email={email}"
+            )
+
+            send_mail(
+                "Password Reset Request - Book E-Pedia",
+                f"Hi {customer.Fname},\n\nClick the link below to reset your password:\n\n{reset_link}\n\nThis link expires in 1 hour.",
+                settings.DEFAULT_FROM_EMAIL,
+                [email]
+            )
+
+        response_data = {
+            'bool': True,
+            'msg': 'If an account exists, a reset link has been sent.'
+        }
+
+        if customer and settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+            response_data['reset_link'] = reset_link
+            response_data['reset_token'] = token_key
+            response_data['reset_email'] = email
+
+        return Response(response_data)
+    except (ProgrammingError, OperationalError) as exc:
+        logger.exception("Password reset request failed because the reset token table is unavailable: %s", exc)
+        return Response(
+            {
+                'bool': False,
+                'msg': 'Password reset is not ready yet. Please run the latest database migrations and try again.'
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    except Exception as exc:
+        logger.exception("Unexpected forgot password error: %s", exc)
+        return Response(
+            {'bool': False, 'msg': 'Unable to process the reset request right now.'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+def reset_password_confirm(request):
+    token_str = request.data.get('token')
+    email = request.data.get('email')
+    new_password = request.data.get('password')
+
+    if not token_str or not email or not new_password:
+        return Response(
+            {'bool': False, 'msg': 'Token, email, and password are required.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Verify the token against your custom table and customer email
+    reset_token = TBL_PasswordResetToken.objects.filter(
+        key=token_str, 
+        customer__Email=email, 
+        is_used=False
+    ).first()
+
+    # In local console-email development, the browser may open a stale link.
+    # Fall back to the latest valid unused token for the same email only in dev mode.
+    if (
+        not reset_token
+        and settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend'
+    ):
+        reset_token = (
+            TBL_PasswordResetToken.objects.filter(
+                customer__Email=email,
+                is_used=False
+            )
+            .order_by('-created_at')
+            .first()
+        )
+
+    if reset_token and reset_token.is_valid():
+        customer = reset_token.customer
+        customer.Password = new_password # Update password in tbl_customer_details
+        customer.save()
+        
+        # Mark token as used to prevent reuse
+        reset_token.is_used = True
+        reset_token.save()
+        
+        return Response({'bool': True, 'msg': 'Password updated successfully.'})
+    
+    return Response({'bool': False, 'msg': 'Invalid or expired token.'}, status=400)
