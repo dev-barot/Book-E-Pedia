@@ -1,0 +1,175 @@
+/* ===============================
+   PREMIUM LUXURY TABLE & UI CSS
+   (Shared among Employee Pages)
+   ================================ */
+
+.admin-table-wrapper {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-xl, 16px);
+  box-shadow: 0 10px 40px rgba(31, 78, 121, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  padding: 1px;
+  overflow: hidden;
+  animation: fadeUp 0.8s ease-out 0.2s both;
+}
+
+.admin-lux-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.admin-lux-table thead th {
+  padding: 20px 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-muted, #64748b);
+  border-bottom: 1px solid rgba(31, 78, 121, 0.1);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.admin-lux-table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.admin-lux-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.002);
+  box-shadow: 0 4px 15px rgba(31, 78, 121, 0.05);
+}
+
+.admin-lux-table td {
+  padding: 20px 24px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(31, 78, 121, 0.05);
+  color: var(--color-primary-dark, #1e293b);
+  font-size: 0.95rem;
+}
+
+.admin-lux-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.id-cell {
+  font-weight: 700;
+  font-family: monospace;
+  color: var(--color-accent, #38bdf8);
+}
+
+.name-cell {
+  font-weight: 600;
+}
+
+.desc-cell {
+  color: var(--color-text-muted, #64748b);
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.status-badge.optimal {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.critical {
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.status-badge.neutral {
+  background: rgba(100, 116, 139, 0.15);
+  color: #475569;
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+/* Action Buttons */
+.actions-cell {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn-lux {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 1);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted, #64748b);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(31, 78, 121, 0.05);
+  transition: all 0.3s;
+}
+
+.icon-btn-lux:hover {
+  transform: translateY(-2px);
+}
+
+.icon-btn-lux.edit:hover, .icon-btn-lux.view:hover {
+  background: #fff;
+  color: #3b82f6;
+  border-color: #bfdbfe;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+}
+
+.icon-btn-lux.delete:hover {
+  background: #fff;
+  color: #ef4444;
+  border-color: #fecaca;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
+}
+
+/* Empty State */
+.empty-state-cell {
+  text-align: center;
+  padding: 60px 20px !important;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--color-text-muted, #64748b);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: rgba(31, 78, 121, 0.2);
+}
+
+.empty-state-content p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

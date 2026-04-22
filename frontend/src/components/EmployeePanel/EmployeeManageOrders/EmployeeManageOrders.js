@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
+import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
 import "./EmployeeManageOrders.css";
 
 function EmployeeManageOrders() {

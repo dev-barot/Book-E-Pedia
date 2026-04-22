@@ -2,6 +2,7 @@ import EmployeeSidebar from '../EmployeeSidebar/EmployeeSidebar';
 import React, { useState, useEffect } from "react";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import { Link, useNavigate } from "react-router-dom";
+import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
 import "./EmployeeManageProducts.css";
 
 function EmployeeManageProducts() {

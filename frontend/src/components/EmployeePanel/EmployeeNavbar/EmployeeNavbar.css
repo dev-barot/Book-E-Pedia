@@ -1,0 +1,151 @@
+/* =========================================
+   EMPLOYEE NAVBAR — Blue Admin Style
+========================================= */
+
+:root {
+  --primary: #1f4e79;
+  --secondary: #2f6da3;
+  --light-bg: #eaf4ff;
+  --text-dark: #233647;
+}
+
+/* Navbar Wrapper */
+.navbar-main-container {
+  margin-left: 23.5%;
+  top: 10px;
+  height: 60px;
+  border-radius: 20px;
+  background: #000000 !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 25px rgba(31, 78, 121, 0.15);
+  padding: 0 20px;
+}
+
+/* Main Navbar */
+.admin-main-navbar {
+  background: linear-gradient(135deg, #1f4e79, #2f6da3) !important;
+  border-radius: 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+/* Sidebar Toggler */
+.navbar-main-container .sidebar-toggler {
+  cursor: pointer;
+  font-size: 22px;
+  color: white;
+  margin-right: 15px;
+  transition: 0.3s ease;
+}
+
+.navbar-main-container .sidebar-toggler:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* Nav Links */
+.navbar-main-container .navbar-nav {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-main-container .nav-item .nav-link {
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  margin-left: 20px;
+  transition: 0.3s ease;
+}
+
+.navbar-main-container .nav-item .nav-link:hover {
+  color: #d4e9fb;
+  transform: translateY(-2px);
+}
+
+/* Icons */
+.fa-envelope,
+.fa-bell,
+.fa-user {
+  font-size: 18px;
+}
+
+/* User Profile Text */
+.nav-item.dropdown .user-profile-top-navbar .d-lg-inline-flex {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Dropdown Menu */
+.navbar-main-container .dropdown-menu {
+  position: absolute;
+  right: 0;
+  left: auto;
+  top: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid #d4e9fb;
+  box-shadow: 0 15px 35px rgba(31, 78, 121, 0.2);
+  padding: 10px 0;
+}
+
+/* Dropdown Links */
+.navbar-main-container .dropdown-menu a {
+  color: var(--text-dark);
+  padding: 12px 20px;
+  display: block;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.navbar-main-container .dropdown-menu a:hover {
+  background: var(--light-bg);
+  color: var(--primary);
+}
+
+/* Search Wrapper */
+.admin-search-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Search Input */
+.admin-search-input {
+  width: 450px;
+  height: 40px;
+  background: #f4f9ff;
+  border-radius: 50px;
+  border: 1px solid #cfe6fa;
+  padding: 0 20px;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.admin-search-input:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(47, 109, 163, 0.2);
+}
+
+/* Sticky Width Fix */
+.sticky-top.px-4.py-0.admin-main-navbar {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .admin-search-input {
+    width: 250px;
+  }
+  .navbar-main-container {
+    margin-left: 0;
+  }
+}

@@ -22,57 +22,75 @@ function Login() {
     });
   };
 
-const submitHandler = async (event) => {
-  event.preventDefault();
+  const submitHandler = async (event) => {
+    event.preventDefault();
 
-  const adminEmail = "admin";
-  const adminPassword = "admin123";
+    const adminEmail = "admin";
+    const adminPassword = "admin123";
 
-  // Admin login stays local
-  if (
-    loginFormData.email === adminEmail &&
-    loginFormData.password === adminPassword
-  ) {
-    localStorage.setItem("admin_login", "true");
-    navigate("/admin/dashboard");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://127.0.0.1:8000/api/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginFormData),
-    });
-
-    const data = await response.json();
-
-    if (data.bool) {
-      const userData = {
-        Cust_ID: data.user_id,
-        Email: loginFormData.email,
-        Fname: data.user,
-        login: true,
-      };
-
-      localStorage.setItem("customer_login", "true");
-      localStorage.setItem("customer_username", data.user);
-      localStorage.setItem("customer_id", data.user_id);
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      setUser(userData);
-      navigate("/customer/dashboard");
-    } else {
-      setFormError(true);
-      setErrorMsg(data.msg || "Invalid email or password");
+    // Admin login stays local
+    if (
+      loginFormData.email === adminEmail &&
+      loginFormData.password === adminPassword
+    ) {
+      localStorage.setItem("admin_login", "true");
+      navigate("/admin/dashboard");
+      return;
     }
-  } catch (error) {
-    setFormError(true);
-    setErrorMsg("Server error. Try again.");
-  }
-};
+
+    try {
+      // Try employee login first
+      const empResponse = await fetch("http://127.0.0.1:8000/api/employee-login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginFormData),
+      });
+
+      const empData = await empResponse.json();
+
+      if (empData.bool) {
+        localStorage.setItem("employee_login", "true");
+        localStorage.setItem("employee_id", empData.emp_id);
+        localStorage.setItem("employee_name", empData.emp_name);
+        localStorage.setItem("employee_type", empData.emp_type);
+        navigate("/employee/dashboard");
+        return;
+      }
+
+      // Try customer login
+      const response = await fetch("http://127.0.0.1:8000/api/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginFormData),
+      });
+
+      const data = await response.json();
+
+      if (data.bool) {
+        const userData = {
+          Cust_ID: data.user_id,
+          Email: loginFormData.email,
+          Fname: data.user,
+          login: true,
+        };
+
+        localStorage.setItem("customer_login", "true");
+        localStorage.setItem("customer_username", data.user);
+        localStorage.setItem("customer_id", data.user_id);
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        setUser(userData);
+        navigate("/customer/dashboard");
+      } else {
+        setFormError(true);
+        setErrorMsg("Invalid email or password");
+      }
+    } catch (error) {
+      setFormError(true);
+      setErrorMsg("Server error. Try again.");
+    }
+  };
+
 
   const buttonEnable =
     loginFormData.email !== "" && loginFormData.password !== "";
@@ -83,10 +101,10 @@ const submitHandler = async (event) => {
   return (
     <div className="login-lux-page">
       <div className="container-xxl py-5 d-flex justify-content-center align-items-center min-vh-100">
-        
+
         <div className="login-glass-card p-4 p-md-5 w-100">
           <div className="row align-items-center h-100">
-            
+
             {/* Left Header Box */}
             <div className="col-md-5 text-center text-md-start mb-5 mb-md-0 position-relative">
               <span className="badge-lux mb-4 d-inline-block">Book-E-Pedia</span>
@@ -101,7 +119,7 @@ const submitHandler = async (event) => {
             {/* Right Form Box */}
             <div className="col-md-7 ps-md-5">
               <form onSubmit={submitHandler} className="login-lux-form">
-                
+
                 <div className="mb-4">
                   <label className="login-lux-label">Email Address</label>
                   <div className="input-icon-wrapper">
@@ -168,7 +186,7 @@ const submitHandler = async (event) => {
 
           </div>
         </div>
-        
+
       </div>
     </div>
   );

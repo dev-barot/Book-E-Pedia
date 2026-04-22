@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
+import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
+import "../EmployeeCommon.css";
 
 function EmployeeDashboard() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -12,15 +14,13 @@ function EmployeeDashboard() {
 
   return (
     <div
-      className={`dashboard-main-container ${
-        isSidebarCollapsed ? "collapsed" : ""
-      }`}
+      className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""
+        }`}
     >
       {/* Top Navbar */}
       <div
-        className={`top-main-dashboard-navbar ${
-          isSidebarCollapsed ? "collapsed" : ""
-        }`}
+        className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""
+          }`}
       >
         <EmployeeNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
@@ -30,9 +30,8 @@ function EmployeeDashboard() {
 
       {/* Main Content */}
       <div
-        className={`dashboard-main-content ${
-          isSidebarCollapsed ? "expanded" : ""
-        }`}
+        className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""
+          }`}
       >
         <h1>Employee Dashboard</h1>
         <p>
