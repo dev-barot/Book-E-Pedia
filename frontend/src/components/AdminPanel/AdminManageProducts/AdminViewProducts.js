@@ -1,79 +1,171 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
-import './AdminManageProducts.css';
-import AdminNavbar from '../AdminNavbar/AdminNavbar';
-function AdminViewProducts() {
-  const handleEdit = (productId) => {
-    alert(`Edit product with ID: ${productId}`);
-    // Add navigation or modal logic for editing
-  };
+import AdminNavbar from "../AdminNavbar/AdminNavbar";
+import "../AdminCommon.css";
+import "./AdminViewCustomers.css";
 
-  const handleDelete = (productId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      alert(`Product with ID: ${productId} deleted.`);
-      // Add delete logic (e.g., API call)
+function AdminViewCustomers() {
+  const [customers, setCustomers] = useState([]);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Function to handle sidebar toggle
+  const handleSidebarToggle = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+  const handleDeactivate = async (custId) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/customers/deactivate/${custId}/`,
+        {
+          method: "PUT",
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Customer deactivated");
+
+        // remove from UI instantly (feels faster, less annoying)
+        setCustomers(prev => prev.filter(c => c.Cust_ID !== custId));
+      } else {
+        alert(data.error || "Failed to deactivate");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Something broke");
     }
   };
+  // Fetch customer details from API
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/customers/");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        setCustomers(result.data);
+      } catch (err) {
+        setError("Failed to fetch customer details");
+        console.error("Error fetching customers:", err);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
 
   return (
-    <div>
-          <AdminSidebar />
-          <AdminNavbar/>
-      <div className="view-products-temp content" style={{ marginLeft: "500px" }}>
-        <div className="admin-panel">
-          <main className="main-content">
-            <section id="manage-products" className="section">
-              <div className="container">
-                <div className="header">
-                  <h1>Manage Products</h1>
-                </div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Product ID</th>
-                      <th>Name</th>
-                      <th>Author</th>
-                      <th>Price</th>
-                      <th>Stock</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* Sample data - replace with dynamic data */}
-                    <tr>
-                      <td>1</td>
-                      <td>Example Book</td>
-                      <td>John Doe</td>
-                      <td>$19.99</td>
-                      <td>25</td>
-                      <td className="actions">
+    <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
+
+      {/* Top Navbar */}
+      <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
+        <AdminNavbar onToggleSidebar={handleSidebarToggle} />
+      </div>
+
+      {/* Sidebar */}
+      <div className={`sidebar-main-section ${isSidebarCollapsed ? "collapsed" : ""}`}>
+        <AdminSidebar isCollapsed={isSidebarCollapsed} />
+      </div>
+
+      {/* Main Content */}
+      <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
+
+        <div className="section admin-panel">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2>Customer Directory</h2>
+          </div>
+
+          {/* DATA TABLE SECTION */}
+          <div className="admin-table-wrapper glass-card">
+            {error && (
+              <div style={{ padding: '20px', color: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderBottom: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                <i className="fa-solid fa-circle-exclamation" style={{ marginRight: '8px' }}></i> {error}
+              </div>
+            )}
+
+            <table className="admin-lux-table">
+              <thead>
+                <tr>
+                  <th>Customer Profile</th>
+                  <th>Contact Information</th>
+                  <th>Address Details</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customers.length > 0 ? (
+                  customers.map((customer) => (
+                    <tr key={customer.Cust_ID}>
+                      <td>
+                        <div className="id-cell" style={{ fontSize: '0.8rem', marginBottom: '4px' }}>#{customer.Cust_ID}</div>
+                        <div className="name-cell">{customer.Fname} {customer.Lname}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                          <i className={`fa-solid ${customer.Gender === "M" ? 'fa-mars text-blue-400' : 'fa-venus text-pink-400'}`}></i> {customer.Gender === "M" ? "Male" : "Female"}
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <i className="fa-regular fa-envelope" style={{ color: 'var(--color-text-muted)' }}></i> {customer.Email}
+                        </div>
+                        <div style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <i className="fa-solid fa-phone"></i> {customer.Phone_Number}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="desc-cell" style={{ maxWidth: '250px', whiteSpace: 'normal', lineHeight: '1.4' }}>
+                          {[
+                            customer.Building,
+                            customer.Street,
+                            customer.City,
+                            customer.State,
+                            customer.Country ? `${customer.Country} - ${customer.Pincode}` : customer.Pincode
+                          ].filter(Boolean).join(', ')}
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${customer.IsActive === "1" ? "optimal" : "neutral"}`}>
+                          {customer.IsActive === "1" ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="actions-cell">
                         <button
-                          className="edit"
-                          onClick={() => handleEdit(1)}
+                          className="icon-btn-lux delete"
+                          title="Deactivate Customer"
+                          onClick={() => handleDeactivate(customer.Cust_ID)}
                         >
-                          <i className="fas fa-edit"></i> Edit
-                        </button>
-                        <button
-                          className="delete"
-                          onClick={() => handleDelete(1)}
-                        >
-                          <i className="fas fa-trash-alt"></i> Delete
+                          <i className="fa-solid fa-trash"></i>
                         </button>
                       </td>
                     </tr>
-                    {/* Map dynamic rows here */}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          </main>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="empty-state-cell">
+                      <div className="empty-state-content">
+                        <i className="fa-solid fa-users empty-icon"></i>
+                        <p>No customer data available.</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <a href="#" className="btn btn-lg btn-primary btn-lg-square back-to-top">
-        <i className="bi bi-arrow-up"></i>
-      </a>
     </div>
   );
 }
 
-export default AdminViewProducts;
+export default AdminViewCustomers;

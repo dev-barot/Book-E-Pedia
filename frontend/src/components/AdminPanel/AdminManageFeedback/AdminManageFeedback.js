@@ -51,13 +51,6 @@ function AdminManageFeedback() {
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
-      {/* Premium ambient animated background elements */}
-      <div className="dashboard-ambient-bg">
-        <div className="ambient-orb orb-1"></div>
-        <div className="ambient-orb orb-2"></div>
-        <div className="ambient-orb orb-3"></div>
-      </div>
-
       {/* Top Navbar */}
       <div className={`top-main-dashboard-navbar  ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <AdminNavbar onToggleSidebar={handleSidebarToggle} />
@@ -70,86 +63,90 @@ function AdminManageFeedback() {
 
       {/* Main Content */}
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
-        
-        {/* HEADER SECTION */}
-        <div className="admin-header-section">
-          <div className="admin-header-titles">
-            <h1 className="text-gradient-lux">Customer Feedback</h1>
-            <p>Monitor user reviews, complaints, and product feedback.</p>
+
+        <div className="section admin-panel">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2>Customer Feedback</h2>
           </div>
 
-        </div>
-
-        {/* DATA TABLE SECTION */}
-        <div className="admin-table-wrapper glass-card">
-          <table className="admin-lux-table">
-            <thead>
-              <tr>
-                <th>IDs Info</th>
-                <th>Description</th>
-                <th>Date & Time</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {feedbacks.length === 0 ? (
+          {/* DATA TABLE SECTION */}
+          <div className="admin-table-wrapper glass-card">
+            <table className="admin-lux-table">
+              <thead>
                 <tr>
-                  <td colSpan="6" className="empty-state-cell">
-                    <div className="empty-state-content">
-                      <i className="fa-regular fa-comment-dots empty-icon"></i>
-                      <p>No feedback available.</p>
-                    </div>
-                  </td>
+                  <th>IDs Info</th>
+                  <th>Description</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              ) : (
-                feedbacks.map((feedback) => (
-                  <tr key={feedback.Feedback_ID}>
-                    <td>
-                      <div style={{ fontSize: '0.9rem' }}><strong>Prod:</strong> {feedback.Product_ID}</div>
-                      <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}><strong>Cust:</strong> {feedback.Cust_ID}</div>
-                    </td>
-                    <td className="desc-cell">
-                      
-                      {/* ⭐ Rating */}
-                      <div style={{ marginBottom: "5px" }}>
-                        {Array.from({ length: 5 }, (_, i) => (
-                          <span key={i} style={{ color: i < feedback.rating ? "#f5b50a" : "#ccc" }}>
-                            ★
-                          </span>
-                        ))}
+              </thead>
+              <tbody>
+                {feedbacks.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="empty-state-cell">
+                      <div className="empty-state-content">
+                        <i className="fa-regular fa-comment-dots empty-icon"></i>
+                        <p>No feedback available.</p>
                       </div>
-
-                      {/* 💬 Review Text */}
-                      <div title={feedback.Description}>
-                        {feedback.Description}
-                      </div>
-
-                    </td>                    <td>
-                      <div style={{ fontWeight: '500' }}>{new Date(feedback.Feedback_DateTime).toLocaleDateString()}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                        {new Date(feedback.Feedback_DateTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`status-badge ${feedback.IsActive === "1" ? "optimal" : "neutral"}`}>
-                        {feedback.IsActive === "1" ? 'Active' : 'Archived'}
-                      </span>
-                    </td>
-                    <td className="actions-cell">
-                      <button 
-                        className="icon-btn-lux delete" 
-                        onClick={() => handleDeleteFeedback(feedback.Feedback_ID)}
-                        title="Delete Feedback"
-                      >
-                        <i className="fa-solid fa-trash-can"></i>
-                      </button>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  feedbacks.map((feedback) => (
+                    <tr key={feedback.Feedback_ID}>
+                      <td>
+                        <div style={{ fontSize: '0.9rem' }}><strong>Prod:</strong> {feedback.Product_ID}</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}><strong>Cust:</strong> {feedback.Cust_ID}</div>
+                      </td>
+                      <td className="desc-cell">
+
+                        {/* ⭐ Rating */}
+                        <div style={{ marginBottom: "5px" }}>
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i} style={{ color: i < feedback.rating ? "#f5b50a" : "#ccc" }}>
+                              ★
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* 💬 Review Text */}
+                        <div title={feedback.Description}>
+                          {feedback.Description}
+                        </div>
+
+                      </td>                    <td>
+                        <div style={{ fontWeight: '500' }}>{new Date(feedback.Feedback_DateTime).toLocaleDateString()}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                          {new Date(feedback.Feedback_DateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${feedback.IsActive === "1" ? "optimal" : "neutral"}`}>
+                          {feedback.IsActive === "1" ? 'Active' : 'Archived'}
+                        </span>
+                      </td>
+                      <td className="actions-cell">
+                        <button
+                          className="icon-btn-lux delete"
+                          onClick={() => handleDeleteFeedback(feedback.Feedback_ID)}
+                          title="Delete Feedback"
+                        >
+                          <i className="fa-solid fa-trash-can"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

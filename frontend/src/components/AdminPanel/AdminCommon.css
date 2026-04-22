@@ -10,7 +10,8 @@
   border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: var(--radius-xl, 16px);
   box-shadow: 0 10px 40px rgba(31, 78, 121, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-  padding: 1px; /* border effect */
+  padding: 1px;
+  /* border effect */
   overflow: hidden;
   animation: fadeUp 0.8s ease-out 0.2s both;
 }
@@ -129,7 +130,8 @@
   transform: translateY(-2px);
 }
 
-.icon-btn-lux.edit:hover, .icon-btn-lux.view:hover {
+.icon-btn-lux.edit:hover,
+.icon-btn-lux.view:hover {
   background: #fff;
   color: #3b82f6;
   border-color: #bfdbfe;
@@ -170,6 +172,27 @@
 
 /* Animations */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   GLOBAL ADMIN PANEL CONTAINER
+   ================================ */
+.admin-panel {
+  background: #f4f9ff;
+  border-radius: 25px;
+  margin: 80px auto;
+  padding: 40px;
+  width: 95%;
+  max-width: 1400px;
+  box-shadow: 0 30px 60px rgba(31, 78, 121, 0.2);
+  border: 1px solid rgba(31, 78, 121, 0.08);
 }

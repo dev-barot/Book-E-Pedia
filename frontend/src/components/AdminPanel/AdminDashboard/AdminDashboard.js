@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./AdminDashboard.css";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar } from "recharts";
 
 function AdminDashboard() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -19,6 +20,13 @@ function AdminDashboard() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [fulfillmentRate, setFulfillmentRate] = useState(0);
   const [lowStock, setLowStock] = useState([]);
+
+  // Chart states
+  const [revenueData, setRevenueData] = useState([]);
+  const [statusData, setStatusData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [trendingChartData, setTrendingChartData] = useState([]);
+
   const handleSidebarToggle = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
@@ -36,31 +44,77 @@ function AdminDashboard() {
         const trendingRes = await fetch("http://127.0.0.1:8000/api/admin/trending-books/");
         const trendingData = await trendingRes.json();
 
-        setTrendingBooks(trendingData.books || []);
-        const dashboardRes = await fetch("http://127.0.0.1:8000/api/admin/dashboard-counts/");
-        const dashboardData = await dashboardRes.json();
+        const tBooks = trendingData.books || [];
+        setTrendingBooks(tBooks);
+
+        // Horizontal Bar Chart Aggregation
+        setTrendingChartData(tBooks.slice(0, 5).map(b => ({
+          name: b.name.length > 15 ? b.name.substring(0, 15) + "..." : b.name,
+          orders: b.total
+        })));
+
+        // Update dashboard counts
+        if (countsRes.ok) {
+          const dData = await countsRes.json();
+          setDashboardData(dData);
+          setFulfillmentRate(dData.fulfillment_rate || 0);
+        }
+
         const lowStockRes = await fetch("http://127.0.0.1:8000/api/admin/low-stock/");
         const lowStockData = await lowStockRes.json();
-
         setLowStock(lowStockData.products || []);
-        setFulfillmentRate(dashboardData.fulfillment_rate || 0);
 
-        if (countsRes.ok) setDashboardData(await countsRes.json());
-        
         if (ordersRes.ok) {
           const orders = await ordersRes.json();
           const orderArr = orders.orders || [];
-          setRecentOrders(orderArr
-              .sort((a, b) => b.MasterOrder_ID - a.MasterOrder_ID)
-              .slice(0, 4)
+
+          setRecentOrders([...orderArr]
+            .sort((a, b) => b.MasterOrder_ID - a.MasterOrder_ID)
+            .slice(0, 4)
           );
+
+          // Aggregate Revenue Trend Data
+          const trendData = [...orderArr]
+            .filter(o => o.Order_Status !== "Cancelled")
+            .sort((a, b) => a.MasterOrder_ID - b.MasterOrder_ID)
+            .slice(-15) // Recent 15 successful orders stream
+            .map((o) => ({
+              name: `Ord #${o.MasterOrder_ID}`,
+              revenue: parseFloat(o.T_Amount) || 0
+            }));
+          setRevenueData(trendData.length > 0 ? trendData : [{ name: "No Data", revenue: 0 }]);
+
+          // Aggregate Order Status Pie Data
+          const statusCounts = orderArr.reduce((acc, o) => {
+            acc[o.Order_Status] = (acc[o.Order_Status] || 0) + 1;
+            return acc;
+          }, {});
+
+          const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+          const pData = Object.keys(statusCounts).map((key, index) => ({
+            name: key,
+            value: statusCounts[key],
+            color: COLORS[index % COLORS.length]
+          }));
+          setStatusData(pData.length > 0 ? pData : [{ name: "No Data", value: 1, color: "#ccc" }]);
         }
 
         if (productsRes.ok) {
           const products = await productsRes.json();
           const pData = products.data || products || [];
-          
           setLowStockBooks([...pData].filter(p => p.Stock < 10 && p.Stock >= 0).sort((a, b) => a.Stock - b.Stock).slice(0, 3));
+
+          // Catalog Analytics Aggregation
+          const catCounts = pData.reduce((acc, p) => {
+            const cName = p.category_name || "Unknown";
+            acc[cName] = (acc[cName] || 0) + 1;
+            return acc;
+          }, {});
+
+          setCategoryData(Object.keys(catCounts).map(k => ({
+            name: k,
+            products: catCounts[k]
+          })).sort((a, b) => b.products - a.products));
         }
 
         if (feedbacksRes.ok) {
@@ -72,38 +126,27 @@ function AdminDashboard() {
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       }
-      
     };
 
     fetchDashboardData();
-    const interval = setInterval(fetchDashboardData, 10000);
+    const interval = setInterval(fetchDashboardData, 15000);
     return () => clearInterval(interval);
   }, []);
 
-  // --- Dynamic Graph Data Calculation ---
-  // Derive dynamic chart values from totals so it actively grows with live API data
-  const orderBase = dashboardData.total_orders || 0;
-  
-  // Create deterministic heights (0-100) based on cumulative totals
-  const safeHeight = (h) => Math.min(Math.max(Math.floor(h), 15), 100);
-  
-  const weeklyData = [
-    { label: "Mon", height: safeHeight(30 + (orderBase * 2 % 25)) },
-    { label: "Tue", height: safeHeight(45 + (orderBase * 3 % 35)) },
-    { label: "Wed", height: safeHeight(55 + (orderBase * 5 % 20)) },
-    { label: "Thu", height: safeHeight(40 + (orderBase * 7 % 45)) },
-    { label: "Fri", height: safeHeight(65 + (orderBase * 4 % 15)) },
-    { label: "Sat", height: safeHeight(75 + (orderBase * 9 % 25)) },
-    // Sunday (Today) dynamically rises noticeably with recent sales modulo
-    { label: "Sun", height: safeHeight(40 + (dashboardData.total_sales % 5000) / 100) },
-  ];
-
-  // Identify the peak dynamically for styling
-  const maxBarValue = Math.max(...weeklyData.map(d => d.height));
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip" style={{ background: "rgba(255,255,255,0.9)", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
+          <p className="label" style={{ margin: 0, fontWeight: "bold", color: "#1f2937" }}>{`${label}`}</p>
+          <p className="intro" style={{ margin: 0, color: "#3b82f6" }}>{`₹${payload[0].value || payload[0].payload.products}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`} translate="no">
-      {/* Premium ambient animated background elements */}
       <div className="dashboard-ambient-bg">
         <div className="ambient-orb orb-1"></div>
         <div className="ambient-orb orb-2"></div>
@@ -119,8 +162,7 @@ function AdminDashboard() {
       </div>
 
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
-        
-        {/* HEADER SECTION */}
+
         <div className="admin-header-section">
           <div className="admin-header-titles">
             <br></br>
@@ -128,14 +170,6 @@ function AdminDashboard() {
             <h1 className="text-gradient-lux" >Executive Dashboard</h1>
             <p>Welcome back. Real-time platform analytics & operational metrics.</p>
           </div>
-          {/* <div className="admin-header-actions">
-            <button className="btn-glass-lux">
-              <span className="btn-content"><i className="fa-solid fa-download"></i> Export Analytics</span>
-            </button>
-            <button className="btn-primary-lux">
-              <span className="btn-content"><i className="fa-solid fa-rocket"></i> Launch Campaign</span>
-            </button>
-          </div> */}
         </div>
 
         {/* TOP METRICS GRID */}
@@ -149,7 +183,6 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Customers</h3>
                 <h2 className="counter-value">{dashboardData.total_customers}</h2>
-
               </div>
               <div className="metric-decoration decor-blue"></div>
             </div>
@@ -164,7 +197,6 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Products</h3>
                 <h2 className="counter-value">{dashboardData.total_products}</h2>
-
               </div>
               <div className="metric-decoration decor-purple"></div>
             </div>
@@ -179,7 +211,6 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Categories</h3>
                 <h2 className="counter-value">{dashboardData.total_categories}</h2>
-
               </div>
               <div className="metric-decoration decor-green"></div>
             </div>
@@ -194,14 +225,13 @@ function AdminDashboard() {
               <div className="metric-info">
                 <h3>Total Orders</h3>
                 <h2 className="counter-value">{dashboardData.total_orders}</h2>
- 
               </div>
               <div className="metric-decoration decor-orange"></div>
             </div>
           </div>
         </div>
 
-        {/* MIDDLE SECTION - CHARTS & SALES */}
+        {/* MIDDLE SECTION - CHARTS */}
         <div className="charts-grid border-glow">
           <div className="main-chart-panel glass-card panel-large">
             <div className="panel-header">
@@ -210,7 +240,7 @@ function AdminDashboard() {
                   <span className="recording-dot"></span> Live
                 </div>
                 <h2>Revenue Analytics</h2>
-                <p>Real-time financial performance overview</p>
+                <p>Order stream performance overview</p>
               </div>
               <div className="panel-value-group">
                 <span className="value-label">Total Revenue</span>
@@ -218,99 +248,127 @@ function AdminDashboard() {
               </div>
             </div>
 
-            {/* HIGH-END CSS MOCK GRAPH CONTAINER */}
-            <div className="css-graph-container">
-              <div className="graph-grid-lines">
-                <span><div className="line-label">High</div></span>
-                <span><div className="line-label">Mid</div></span>
-                <span><div className="line-label">Low</div></span>
-                <span><div className="line-label">Min</div></span>
-                <span></span>
-              </div>
-              <div className="bars-container">
-                {weeklyData.map((data, index) => {
-                  const isPeak = data.height === maxBarValue;
-                  return (
-                    <div className="bar-wrapper" key={index}>
-                      <div 
-                        className={`bar ${isPeak ? "peak-bar" : ""}`} 
-                        style={{ height: `${data.height}%` }}
-                      >
-                        <div className="bar-glow"></div>
-                        {isPeak && <div className="peak-indicator">Peak</div>}
-                      </div>
-                      <span className="label">{data.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
+            <div style={{ width: '100%', height: 300, marginTop: '20px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={revenueData}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.4)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} dx={-10} tickFormatter={(val) => `₹${val}`} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* TRENDING BOOKS (Replaced Action Audit) */}
           <div className="side-data-panel glass-card panel-side">
-            <div className="panel-header">
-              <h2><i className="fa-solid fa-fire me-2 text-warning"></i> Trending Books</h2>
-              <button className="icon-btn-lux"><i className="fa-solid fa-ellipsis"></i></button>
+            <div className="panel-header" style={{ marginBottom: "10px" }}>
+              <h2><i className="fa-solid fa-chart-pie me-2 text-primary"></i> Order Status Distribution</h2>
             </div>
-            
-            <div className="trending-books">
-              {trendingBooks.length > 0 ? (
-                trendingBooks.map((book, index) => (
-                  <div key={book.product_id} className="trending-row">
 
-                    <div className="rank">#{index + 1}</div>
-
-                   <img
-                      src={
-                        book.image
-                          ? `http://127.0.0.1:8000${book.image}`
-                          : "https://via.placeholder.com/50x70?text=No+Image"
-                      }
-                      alt={book.name}
-                      className="book-image"
+            <div style={{ width: '100%', height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={statusData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {statusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
+                    itemStyle={{ color: "#1f2937", fontWeight: "bold" }}
                   />
-
-                    <div className="book-info">
-                      <div className="book-name">{book.name}</div>
-                      <div className="book-count">{book.total} orders</div>
-                    </div>
-
-                  </div>
-                ))
-              ) : (
-                <p>No trending books yet. Business is… quiet.</p>
-              )}
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
 
-            <div className="health-section">
+            <div className="health-section" style={{ marginTop: "20px" }}>
               <h4>Order Fulfillment Rate</h4>
-              {/* 👇 THIS IS THE BAR YOU FORGOT */}
               <div className="health-bar">
                 <div
                   className="health-fill"
-                  style={{ width: `${fulfillmentRate}%` }}
+                  style={{ width: `${fulfillmentRate}%`, background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)" }}
                 ></div>
               </div>
-
               <p>{fulfillmentRate}% Orders Completed</p>
             </div>
           </div>
         </div>
 
-        {/* NEW BLOCKS FOR ACTIVE ANALYSIS */}
-        <div className="bottom-dashboard-grid">
-          {/* 1. Recent Orders */}
+        {/* CATALOG INSIGHTS GRID */}
+        <div className="charts-grid border-glow" style={{ marginTop: "20px" }}>
+          <div className="main-chart-panel glass-card panel-large">
+            <div className="panel-header">
+              <div className="panel-title-group">
+                <h2>Product Diversity Overview</h2>
+                <p>Volume of products distributed across catalog categories</p>
+              </div>
+            </div>
+            <div style={{ width: '100%', height: 260, marginTop: '20px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={categoryData} margin={{ top: 5, right: 30, left: -20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.4)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
+                  <Tooltip cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }} contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }} />
+                  <Bar dataKey="products" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
+                    {categoryData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'][index % 5]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="side-data-panel glass-card panel-side">
+            <div className="panel-header">
+              <h2><i className="fa-solid fa-fire text-warning"></i> Trending Order Distribution</h2>
+            </div>
+            <div style={{ width: '100%', height: 250, marginTop: '10px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={trendingChartData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(255,255,255,0.4)" />
+                  <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
+                  <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: "#1f2937", fontSize: 11, fontWeight: 500 }} width={90} />
+                  <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }} />
+                  <Bar dataKey="orders" fill="#f59e0b" radius={[0, 4, 4, 0]} barSize={20} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM BLOCKS */}
+        <div className="bottom-dashboard-grid mt-4">
           <div className="glass-card panel-side">
-            <div className="panel-header" style={{marginBottom: "20px"}}>
+            <div className="panel-header" style={{ marginBottom: "20px" }}>
               <h2><i className="fa-solid fa-cart-shopping me-2"></i> Recent Orders</h2>
             </div>
-            <div className="activity-list" style={{paddingRight: "10px"}}>
+            <div className="activity-list" style={{ paddingRight: "10px" }}>
               {recentOrders.length > 0 ? recentOrders.map((order, i) => {
                 let statusColor = "optimal";
-                if(order.Order_Status === "Pending" || order.Order_Status === "Processing") statusColor = "danger";
+                if (order.Order_Status === "Pending" || order.Order_Status === "Processing") statusColor = "danger";
                 else if (order.Order_Status === "Shipped") statusColor = "warning";
-                
+
                 return (
                   <div className="dashboard-list-item" key={i}>
                     <div className="item-left-info">
@@ -327,47 +385,35 @@ function AdminDashboard() {
             </div>
           </div>
 
-          {/* 2. Low Stock Alerts */}
           <div className="glass-card panel-side">
-            <div className="panel-header" style={{marginBottom: "20px"}}>
+            <div className="panel-header" style={{ marginBottom: "20px" }}>
               <h2><i className="fa-solid fa-triangle-exclamation me-2 text-danger"></i> Low Stock Alerts</h2>
             </div>
             <div className="activity-list">
-
               {lowStock.length === 0 ? (
-                <p style={{ color: "green" }}>All stock levels optimal</p>
+                <p style={{ color: "green", fontWeight: 500, textAlign: "center", marginTop: "10px" }}>✓ All stock levels optimal</p>
               ) : (
                 lowStock.map((item, index) => (
-                  <div key={index} className="low-stock-item">
-                    
+                  <div key={index} className="low-stock-item" style={{ display: "flex", gap: "15px", alignItems: "center", padding: "10px 0", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                     <img
-                      src={
-                        item.image
-                          ? `http://127.0.0.1:8000${item.image}`
-                          : "https://via.placeholder.com/40x55"
-                      }
+                      src={item.image ? `http://127.0.0.1:8000${item.image}` : "https://via.placeholder.com/40x55"}
                       alt={item.name}
-                      className="low-stock-img"
+                      style={{ width: "40px", height: "55px", borderRadius: "4px", objectFit: "cover" }}
                     />
-
                     <div className="low-stock-info">
-                      <p className="book-name">{item.name}</p>
-                      <p className="book-stock">
-                        {item.stock === 0
-                          ? "Out of Stock"
-                          : `Only ${item.stock} left`}
+                      <p style={{ margin: 0, fontWeight: 600, color: "#1f2937" }}>{item.name}</p>
+                      <p style={{ margin: 0, fontSize: "0.85rem", color: item.stock === 0 ? "#ef4444" : "#f59e0b", fontWeight: 500 }}>
+                        {item.stock === 0 ? "Out of Stock" : `Only ${item.stock} left`}
                       </p>
                     </div>
-
                   </div>
                 ))
               )}
             </div>
           </div>
 
-          {/* 3. Recent Customer Feedback */}
           <div className="glass-card panel-side">
-            <div className="panel-header" style={{marginBottom: "20px"}}>
+            <div className="panel-header" style={{ marginBottom: "20px" }}>
               <h2><i className="fa-regular fa-comment-dots me-2 text-primary"></i> Customer Feedback</h2>
             </div>
             <div className="activity-list">
@@ -377,12 +423,12 @@ function AdminDashboard() {
                   <div className="dashboard-list-item flex-column align-items-start" key={i}>
                     <div className="item-left-info w-100 justify-content-between mb-2">
                       <div className="item-titles">
-                        <h4>{fb.customer_name || `Customer #${fb.Cust_ID}`} <span style={{color: "#f59e0b", fontSize: "0.8rem", marginLeft: "8px"}}>★★★★★</span></h4>
+                        <h4>{fb.customer_name || `Customer #${fb.Cust_ID}`} <span style={{ color: "#f59e0b", fontSize: "0.8rem", marginLeft: "8px" }}>★★★★★</span></h4>
                         <p>{fbDate}</p>
                       </div>
                       <button className="btn p-0 text-primary" title="Reply"><i className="fa-solid fa-reply"></i></button>
                     </div>
-                    <div className="feedback-bubble">
+                    <div className="feedback-bubble" style={{ background: "rgba(59, 130, 246, 0.05)", padding: "10px", borderRadius: "8px", fontStyle: "italic", fontSize: "0.9rem", color: "#4b5563", width: "100%" }}>
                       "{fb.Description}"
                     </div>
                   </div>

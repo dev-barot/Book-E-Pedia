@@ -231,17 +231,3 @@ table button:hover {
     background: #d4e9fb;
     transform: scale(1.05);
 }
-
-/* ===============================
-   ADMIN PANEL MAIN CARD
-================================ */
-
-.admin-panel {
-    background: #f4f9ff;
-    border-radius: 25px;
-    padding: 50px;
-    margin: 60px auto;
-    max-width: 1100px;
-    box-shadow: 0 30px 60px rgba(31, 78, 121, 0.2);
-    border: 1px solid rgba(31, 78, 121, 0.08);
-}

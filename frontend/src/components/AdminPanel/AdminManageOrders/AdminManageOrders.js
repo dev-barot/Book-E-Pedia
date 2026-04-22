@@ -87,122 +87,130 @@ function AdminManageOrders() {
       </div>
 
       <div className="dashboard-main-content">
+        <div className="section admin-panel">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2>Order Fulfillment</h2>
+          </div>
 
-        <div className="admin-header-titles centered">
-          <h1 className="text-gradient-lux">Order Fulfillment</h1>
-        </div>
-
-        <div className="admin-table-wrapper glass-card">
-          <table className="admin-lux-table">
-            <thead>
-              <tr>
-                <th>Order #</th>
-                <th>Customer / Emp</th>
-                <th>Date</th>
-                <th>Stats</th>
-                <th>Current Status</th>
-                <th>Update Status</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {orders.length === 0 ? (
+          <div className="admin-table-wrapper glass-card">
+            <table className="admin-lux-table">
+              <thead>
                 <tr>
-                  <td colSpan="6">No orders available</td>
+                  <th>Order #</th>
+                  <th>Customer / Emp</th>
+                  <th>Date</th>
+                  <th>Stats</th>
+                  <th>Current Status</th>
+                  <th>Update Status</th>
                 </tr>
-              ) : (
-                orders.map((order) => {
-                  const currentIndex = getStatusIndex(order.Order_Status);
-                  const isOrderLocked =
-                    order.Order_Status === "Completed" ||
-                    order.Order_Status === "Cancelled";
+              </thead>
 
-                  return (
-                    <tr key={order.MasterOrder_ID}>
-                      <td>#{order.MasterOrder_ID}</td>
+              <tbody>
+                {orders.length === 0 ? (
+                  <tr>
+                    <td colSpan="6">No orders available</td>
+                  </tr>
+                ) : (
+                  orders.map((order) => {
+                    const currentIndex = getStatusIndex(order.Order_Status);
+                    const isOrderLocked =
+                      order.Order_Status === "Completed" ||
+                      order.Order_Status === "Cancelled";
 
-                      <td>
-                        <div><strong>Cust:</strong> {order.Cust_ID}</div>
-                        <div><strong>Emp:</strong> {order.Emp_ID}</div>
-                      </td>
+                    return (
+                      <tr key={order.MasterOrder_ID}>
+                        <td>#{order.MasterOrder_ID}</td>
 
-                      <td>
-                        {new Date(order.Order_DateTime).toLocaleString()}
-                      </td>
+                        <td>
+                          <div><strong>Cust:</strong> {order.Cust_ID}</div>
+                          <div><strong>Emp:</strong> {order.Emp_ID}</div>
+                        </td>
 
-                      <td>
-                        <div>Qty: {order.T_Quantity}</div>
-                        <div>₹{order.T_Amount}</div>
-                      </td>
+                        <td>
+                          {new Date(order.Order_DateTime).toLocaleString()}
+                        </td>
 
-                      <td>
-                        <span className={`status-badge ${getStatusBadgeClass(order.Order_Status)}`}>
-                          {order.Order_Status}
-                        </span>
-                      </td>
+                        <td>
+                          <div>Qty: {order.T_Quantity}</div>
+                          <div>₹{order.T_Amount}</div>
+                        </td>
 
-                      <td>
-                        <div className="status-progress-container">
-                          {statusOptions.map((status) => {
-                            const optionIndex = getStatusIndex(status);
+                        <td>
+                          <span className={`status-badge ${getStatusBadgeClass(order.Order_Status)}`}>
+                            {order.Order_Status}
+                          </span>
+                        </td>
 
-                            const isCompletedStep = optionIndex < currentIndex;
-                            const isCurrentStep = optionIndex === currentIndex;
-                            const isNextStep = optionIndex === currentIndex + 1;
+                        <td>
+                          <div className="status-progress-container">
+                            {statusOptions.map((status) => {
+                              const optionIndex = getStatusIndex(status);
 
-                            const isCancelledStep = status === "Cancelled";
-                            const isOrderCancelled = order.Order_Status === "Cancelled";
+                              const isCompletedStep = optionIndex < currentIndex;
+                              const isCurrentStep = optionIndex === currentIndex;
+                              const isNextStep = optionIndex === currentIndex + 1;
 
-                            let className = "status-step";
+                              const isCancelledStep = status === "Cancelled";
+                              const isOrderCancelled = order.Order_Status === "Cancelled";
 
-                            if (isOrderCancelled) {
-                              className += status === "Cancelled"
-                                ? " cancelled-active"
-                                : " disabled";
-                            } else if (isCompletedStep) {
-                              className += " done";
-                            } else if (isCurrentStep) {
-                              className += " current";
-                            } else if (isNextStep) {
-                              className += " next";
-                            } else if (isCancelledStep) {
-                              className += " cancel-btn";
-                            } else {
-                              className += " disabled";
-                            }
+                              let className = "status-step";
 
-                            return (
-                              <div
-                                key={status}
-                                className={className}
-                                onClick={() => {
-                                  if (isOrderLocked) return;
+                              if (isOrderCancelled) {
+                                className += status === "Cancelled"
+                                  ? " cancelled-active"
+                                  : " disabled";
+                              } else if (isCompletedStep) {
+                                className += " done";
+                              } else if (isCurrentStep) {
+                                className += " current";
+                              } else if (isNextStep) {
+                                className += " next";
+                              } else if (isCancelledStep) {
+                                className += " cancel-btn";
+                              } else {
+                                className += " disabled";
+                              }
 
-                                  // 🔴 CANCEL anytime before completed
-                                  if (status === "Cancelled") {
-                                    handleStatusChange(order.MasterOrder_ID, "Cancelled");
-                                    return;
-                                  }
+                              return (
+                                <div
+                                  key={status}
+                                  className={className}
+                                  onClick={() => {
+                                    if (isOrderLocked) return;
 
-                                  // ✅ only next step allowed
-                                  if (isNextStep) {
-                                    handleStatusChange(order.MasterOrder_ID, status);
-                                  }
-                                }}
-                              >
-                                {status}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
+                                    // 🔴 CANCEL anytime before completed
+                                    if (status === "Cancelled") {
+                                      handleStatusChange(order.MasterOrder_ID, "Cancelled");
+                                      return;
+                                    }
 
-          </table>
+                                    // ✅ only next step allowed
+                                    if (isNextStep) {
+                                      handleStatusChange(order.MasterOrder_ID, status);
+                                    }
+                                  }}
+                                >
+                                  {status}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+
+            </table>
+          </div>
         </div>
       </div>
     </div>
