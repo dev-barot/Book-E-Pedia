@@ -83,7 +83,7 @@ urlpatterns = [
     path('forgot-password/', forgot_password_request),
     path('reset-password-confirm/', reset_password_confirm),
 ]
-def api_home(request):
-    return JsonResponse({
-        "message": "API is working 🚀"
-    })
+# def api_home(request):
+#     return JsonResponse({
+#         "message": "API is working 🚀"
+#     })
