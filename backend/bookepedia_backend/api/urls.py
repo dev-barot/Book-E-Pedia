@@ -1,4 +1,5 @@
 from django.urls import path
+from django.http import JsonResponse
 from .views import (
     category_list_create,
     category_detail,
@@ -82,3 +83,7 @@ urlpatterns = [
     path('forgot-password/', forgot_password_request),
     path('reset-password-confirm/', reset_password_confirm),
 ]
+def api_home(request):
+    return JsonResponse({
+        "message": "API is working 🚀"
+    })

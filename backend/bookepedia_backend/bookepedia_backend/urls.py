@@ -12,6 +12,7 @@ urlpatterns = [
     # ALL API ROUTES HERE
     path('api/', include('api.urls')),
     path('cart/', add_to_cart),
+    path('api/', api_home),
 ]
 
 # if settings.DEBUG:

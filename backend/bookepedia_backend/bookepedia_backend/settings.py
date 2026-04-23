@@ -36,7 +36,7 @@ RAZORPAY_KEY_ID = 'rzp_test_SdnTwk4YH73sBq'
 RAZORPAY_KEY_SECRET = 'mbZXbUmaBUdOokl94fj1e70J'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["bookepedia-backend.onrender.com"]
 
