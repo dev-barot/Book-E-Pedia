@@ -118,9 +118,11 @@ function AdminManageOrders() {
                     <td colSpan="6">No orders available</td>
                   </tr>
                 ) : (
-                  orders.map((order) => {
+                   orders.map((order) => {
                     const currentIndex = getStatusIndex(order.Order_Status);
+                    const isDigitalOnly = order.has_physical === false;
                     const isOrderLocked =
+                      isDigitalOnly ||
                       order.Order_Status === "Completed" ||
                       order.Order_Status === "Cancelled";
 
@@ -150,57 +152,63 @@ function AdminManageOrders() {
 
                         <td>
                           <div className="status-progress-container">
-                            {statusOptions.map((status) => {
-                              const optionIndex = getStatusIndex(status);
+                            {isDigitalOnly ? (
+                              <div className="status-step done" style={{ width: '100%', cursor: 'default' }}>
+                                Digital Order - Completed
+                              </div>
+                            ) : (
+                              statusOptions.map((status) => {
+                                const optionIndex = getStatusIndex(status);
 
-                              const isCompletedStep = optionIndex < currentIndex;
-                              const isCurrentStep = optionIndex === currentIndex;
-                              const isNextStep = optionIndex === currentIndex + 1;
+                                const isCompletedStep = optionIndex < currentIndex;
+                                const isCurrentStep = optionIndex === currentIndex;
+                                const isNextStep = optionIndex === currentIndex + 1;
 
-                              const isCancelledStep = status === "Cancelled";
-                              const isOrderCancelled = order.Order_Status === "Cancelled";
+                                const isCancelledStep = status === "Cancelled";
+                                const isOrderCancelled = order.Order_Status === "Cancelled";
 
-                              let className = "status-step";
+                                let className = "status-step";
 
-                              if (isOrderCancelled) {
-                                className += status === "Cancelled"
-                                  ? " cancelled-active"
-                                  : " disabled";
-                              } else if (isCompletedStep) {
-                                className += " done";
-                              } else if (isCurrentStep) {
-                                className += " current";
-                              } else if (isNextStep) {
-                                className += " next";
-                              } else if (isCancelledStep) {
-                                className += " cancel-btn";
-                              } else {
-                                className += " disabled";
-                              }
+                                if (isOrderCancelled) {
+                                  className += status === "Cancelled"
+                                    ? " cancelled-active"
+                                    : " disabled";
+                                } else if (isCompletedStep) {
+                                  className += " done";
+                                } else if (isCurrentStep) {
+                                  className += " current";
+                                } else if (isNextStep) {
+                                  className += " next";
+                                } else if (isCancelledStep) {
+                                  className += " cancel-btn";
+                                } else {
+                                  className += " disabled";
+                                }
 
-                              return (
-                                <div
-                                  key={status}
-                                  className={className}
-                                  onClick={() => {
-                                    if (isOrderLocked) return;
+                                return (
+                                  <div
+                                    key={status}
+                                    className={className}
+                                    onClick={() => {
+                                      if (isOrderLocked) return;
 
-                                    // 🔴 CANCEL anytime before completed
-                                    if (status === "Cancelled") {
-                                      handleStatusChange(order.MasterOrder_ID, "Cancelled");
-                                      return;
-                                    }
+                                      // 🔴 CANCEL anytime before completed
+                                      if (status === "Cancelled") {
+                                        handleStatusChange(order.MasterOrder_ID, "Cancelled");
+                                        return;
+                                      }
 
-                                    // ✅ only next step allowed
-                                    if (isNextStep) {
-                                      handleStatusChange(order.MasterOrder_ID, status);
-                                    }
-                                  }}
-                                >
-                                  {status}
-                                </div>
-                              );
-                            })}
+                                      // ✅ only next step allowed
+                                      if (isNextStep) {
+                                        handleStatusChange(order.MasterOrder_ID, status);
+                                      }
+                                    }}
+                                  >
+                                    {status}
+                                  </div>
+                                );
+                              })
+                            )}
                           </div>
                         </td>
                       </tr>

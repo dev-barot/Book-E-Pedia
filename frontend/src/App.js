@@ -44,6 +44,7 @@ import EmployeeManageBookType from './components/EmployeePanel/EmployeeManageBoo
 import EmployeeManageProducts from './components/EmployeePanel/EmployeeManageProducts/EmployeeManageProducts';
 import EmployeeProfile from './components/EmployeePanel/EmployeeProfile/EmployeeProfile';
 import EmployeeForgetPassword from './components/EmployeePanel/EmployeeForgetPassword/EmployeeForgetPassword';
+import EmployeeResetPassword from './components/EmployeePanel/EmployeeForgetPassword/ResetPassword';
 import EmployeeAddBookType from './components/EmployeePanel/EmployeeManageBookType/EmployeeAddBookType';
 import EmployeeAddProducts from './components/EmployeePanel/EmployeeManageProducts/EmployeeAddProducts';
 
@@ -112,6 +113,7 @@ function App() {
     '/employee/add-products',
     '/employee/profile',
     '/employee/forget-password',
+    '/employee/reset-password',
     '/admin/dashboard',
     '/admin/manage-orders',
     '/admin/manage-categories',
@@ -176,6 +178,7 @@ function App() {
           <Route exact path='/employee/add-products' element={<EmployeeAddProducts onAddProduct={handleAddProduct} />} />
           <Route exact path='/employee/profile' element={<EmployeeProfile />} />
           <Route exact path='/employee/forget-password' element={<EmployeeForgetPassword />} />
+          <Route exact path='/employee/reset-password' element={<EmployeeResetPassword />} />
 
           {/* Admin */}
           <Route exact path='/admin/dashboard' element={<AdminDashboard />} />

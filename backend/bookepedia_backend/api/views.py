@@ -791,7 +791,7 @@ def update_product(request, id):
 @csrf_exempt
 def get_employees(request):
     if request.method == "GET":
-        employees = TBL_Employee_Details.objects.all()
+        employees = TBL_Employee_Details.objects.filter(IsActive='1')
 
         data = [
             {
@@ -855,7 +855,25 @@ def employee_detail(request, id):
     except TBL_Employee_Details.DoesNotExist:
         return JsonResponse({"bool": False, "msg": "Employee not found"}, status=404)
 
-    if request.method in ["PUT", "POST"]:
+    if request.method == "GET":
+        return JsonResponse({
+            "Emp_ID": emp.Emp_ID,
+            "Emp_Type": emp.Emp_Type,
+            "Fname": emp.Fname,
+            "Lname": emp.Lname,
+            "Gender": emp.Gender,
+            "DOB": emp.DOB,
+            "email": emp.email,
+            "Password": emp.Password,
+            "Phone_Number": emp.Phone_Number,
+            "Address": emp.Address,
+            "Salary": emp.Salary,
+            "Designation": emp.Designation,
+            "Emp_Photo": request.build_absolute_uri(emp.Emp_Photo.url) if emp.Emp_Photo else None,
+            "IsActive": emp.IsActive,
+        })
+
+    elif request.method in ["PUT", "POST"]:
         try:
             emp.Emp_Type = request.POST.get("Emp_Type", emp.Emp_Type)
             emp.Fname = request.POST.get("Fname", emp.Fname)
@@ -1091,12 +1109,21 @@ def create_order(request):
             total_amount = 0
             total_quantity = 0
 
+            # Determine if any item is a physical book
+            has_physical = False
+            for item in cart_items:
+                if item.Product_ID.Book_ID and (item.Product_ID.Book_ID.Physical_Book == '1' or item.Product_ID.Book_ID.Physical_Book == True):
+                    has_physical = True
+                    break
+
+            initial_status = "Pending" if has_physical else "Completed"
+
             master_order = TBL_MasterOrder_Details.objects.create(
                 Cust_ID=customer,
                 Emp_ID=employee,
                 T_Quantity=0,
                 T_Amount=0,
-                Order_Status="Pending"
+                Order_Status=initial_status
             )
 
             for item in cart_items:
@@ -1234,6 +1261,7 @@ def get_customer_orders(request, cust_id):
                         "Cover_Photo": product.Cover_Photo.url if product.Cover_Photo else None,
 
                         "Book_Type_Details": {
+                            "Physical_Book": book_type.Physical_Book,
                             "Audio_Book": book_type.Audio_Book,
                             "Video_Book": book_type.Video_Book,
                             "E_Book": book_type.E_Book,
@@ -1309,6 +1337,12 @@ def get_all_orders(request):
 
             data = []
             for order in orders:
+                # Check if this master order has any physical books
+                has_physical = TBL_Order_Details.objects.filter(
+                    MasterOrder_ID=order,
+                    Product_ID__Book_ID__Physical_Book='1'
+                ).exists()
+
                 data.append({
                     "MasterOrder_ID": order.MasterOrder_ID,
                     "Cust_ID": order.Cust_ID_id,
@@ -1316,7 +1350,8 @@ def get_all_orders(request):
                     "Order_DateTime": order.Order_DateTime,
                     "T_Quantity": order.T_Quantity,
                     "T_Amount": str(order.T_Amount),
-                    "Order_Status": order.Order_Status
+                    "Order_Status": order.Order_Status,
+                    "has_physical": has_physical
                 })
 
             return JsonResponse({"orders": data})
@@ -1845,4 +1880,73 @@ def reset_password_confirm(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
+@api_view(['POST'])
+def employee_forgot_password_request(request):
+    email = request.data.get('email')
 
+    if not email:
+        return Response(
+            {'bool': False, 'msg': 'Email is required.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        employee = TBL_Employee_Details.objects.filter(email=email).first()
+
+        if employee:
+            import secrets
+            token  = secrets.token_urlsafe(16)
+
+            reset_link = f"{settings.FRONTEND_BASE_URL}/employee/reset-password?email={email}&token={token}"
+
+            send_mail(
+                "Employee Password Reset - Book E-Pedia",
+                f"Hi {employee.Fname},\n\nReset your password:\n{reset_link}",
+                settings.DEFAULT_FROM_EMAIL,
+                [email]
+            )
+
+        return Response({
+            'bool': True,
+            'msg': 'If account exists, reset link sent'
+        })
+
+    except Exception as e:
+        return Response(
+            {'bool': False, 'msg': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+def employee_reset_password_confirm(request):
+    email = request.data.get('email')
+    new_password = request.data.get('password')
+
+    if not email or not new_password:
+        return Response(
+            {'bool': False, 'msg': 'Email and password required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        employee = TBL_Employee_Details.objects.filter(email=email).first()
+
+        if not employee:
+            return Response(
+                {'bool': False, 'msg': 'User not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        employee.Password = new_password
+        employee.save()
+
+        return Response({
+            'bool': True,
+            'msg': 'Password updated successfully'
+        })
+
+    except Exception as e:
+        return Response(
+            {'bool': False, 'msg': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

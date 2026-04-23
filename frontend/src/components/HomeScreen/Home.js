@@ -33,21 +33,35 @@ import bookShelf from "./Realistic_Digital_Bookshelf_With_Colorful_Books_And_Sig
 function Home() {
   const navigate = useNavigate();
   
+  const [trendingBooks, setTrendingBooks] = useState([]);
   const [featuredCategories, setFeaturedCategories] = useState([]);
-  useEffect(() => {
-  fetch("http://127.0.0.1:8000/api/category/")
-    .then((res) => res.json())
-    .then((data) => {
-      const activeCategories = (data.data || []).filter(
-        (cat) => cat.IsActive === "1"
-      );
 
-      setFeaturedCategories(activeCategories.slice(0, 10));
-    })
-    .catch((err) => {
-      console.error("Error fetching categories:", err);
-    });
-}, []);
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/category/")
+      .then((res) => res.json())
+      .then((data) => {
+        const activeCategories = (data.data || []).filter(
+          (cat) => cat.IsActive === "1"
+        );
+        setFeaturedCategories(activeCategories.slice(0, 10));
+      })
+      .catch((err) => {
+        console.error("Error fetching categories:", err);
+      });
+
+    fetch("http://127.0.0.1:8000/api/products/")
+      .then((res) => res.json())
+      .then((data) => {
+        const activeProducts = (data.data || []).filter(
+          (p) => p.is_active === true || p.is_active === "1"
+        );
+        // Take top 5 for trending
+        setTrendingBooks(activeProducts.slice(0, 5));
+      })
+      .catch((err) => {
+        console.error("Error fetching trending books:", err);
+      });
+  }, []);
   // Add to cart with login check
   const addToCart = (book) => {
     const isLoggedIn = localStorage.getItem('userToken');
@@ -64,7 +78,7 @@ function Home() {
       existingCart.push({ ...book, quantity: 1 });
     }
     localStorage.setItem('cart', JSON.stringify(existingCart));
-    alert(`${book.title} has been added to your cart!`);
+    alert(`${book.name} has been added to your cart!`);
   };
 
   const [currentImage, setCurrentImage] = useState({
@@ -91,16 +105,6 @@ function Home() {
       container.scrollBy({ left: direction === 'left' ? -350 : 350, behavior: "smooth" });
     }
   };
-
-
-
-  const dummyBooks = [
-    { id: 1, img: bestbook1, title: "Walk into the Shadow", author: "Olivia Wilson", price: 250 },
-    { id: 2, img: bestbook2, title: "My Book Cover", author: "John Doe", price: 500 },
-    { id: 3, img: bestbook3, title: "Soul", author: "Olivia Wilson", price: 1000 },
-    { id: 4, img: bestbook4, title: "Fairytale World", author: "Jane Smith", price: 700 },
-    { id: 5, img: bestbook5, title: "Hare and Rabbit", author: "Mark Twain", price: 950 },
-  ];
 
   return (
     <div className="home-lux-container" translate="no">
@@ -151,7 +155,7 @@ function Home() {
                 <div
                   className="category-glass-card"
                   key={cat.Category_ID || i}
-                  onClick={() => navigate("/categories")}
+                  onClick={() => navigate(`/products?category=${encodeURIComponent(cat.Category_Name)}`)}
                 >
                   <div className="cat-icon-wrapper">
                     <img
@@ -174,10 +178,10 @@ function Home() {
           <h2 className="section-title text-center mb-5">Best Sellers & Trending</h2>
           
           <div className="products-grid-lux">
-            {dummyBooks.map((book) => (
+            {trendingBooks.map((book) => (
               <div className="product-card-lux" key={`bs-${book.id}`}>
                 <div className="product-image-container">
-                  <img src={book.img} alt={book.title} />
+                  <img src={book.cover_photo ? `http://127.0.0.1:8000${book.cover_photo}` : bestbook1} alt={book.name} />
                   <div className="product-overlay">
                     <button className="btn-add-cart-lux" onClick={() => addToCart(book)}>
                       <i className="fa-solid fa-cart-plus me-2"></i> Add to Cart
@@ -187,7 +191,7 @@ function Home() {
                 </div>
                 <div className="product-details-lux">
                   <p className="product-author">{book.author}</p>
-                  <h4 className="product-title">{book.title}</h4>
+                  <h4 className="product-title">{book.name}</h4>
                   <div className="product-footer">
                     <span className="product-price">₹{book.price}</span>
                     <span className="product-rating"><i className="fa-solid fa-star text-warning text-small"></i> 4.8</span>

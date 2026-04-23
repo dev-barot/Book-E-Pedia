@@ -1,5 +1,5 @@
 /* =====================================
-   MODERN LIGHT BLUE ADMIN SIDEBAR
+   PREMIUM LUXURY ADMIN SIDEBAR
 ===================================== */
 
 .sidebar {
@@ -10,11 +10,10 @@
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Light Blue Gradient */
+  /* Light Blue Theme */
   background: linear-gradient(to bottom, #2f6da3, #4f8ec9);
-  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
-
-  transition: 0.3s ease;
+  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.15);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
 }
 
@@ -27,18 +26,28 @@
 /* Remove Bootstrap white */
 .sidear-exclude-navbar {
   background: transparent !important;
+  padding: 0 !important;
+  width: 100%;
 }
 
 /* BRAND */
 .brand-title,
 .navbar-brand h3 {
   margin-top: 30px;
-  font-size: 18px;
-  font-weight: 700;
-  color: white !important;
+  margin-bottom: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff !important;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  letter-spacing: 1px;
+}
+
+.navbar-brand {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 /* PROFILE */
@@ -46,86 +55,129 @@
 .border-profile-admin {
   display: flex;
   align-items: center;
-  padding: 12px;
-  margin-left: 50px !important;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.674);
-  color: rgb(3, 0, 0);
-  margin-top: 50px !important;
+  padding: 16px;
+  margin: 30px 20px !important;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-box h6 {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin: 0;
 }
 
 .profile-icon {
-  font-size: 22px;
+  font-size: 20px;
+  background: linear-gradient(135deg, #2980b9, #2c3e50);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* NAV LINKS */
+.sidebar-bottom {
+  padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .nav-link-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-
-  padding: 12px 20px !important;
-  margin: 6px 12px;
-
-  border-radius: 10px;
-  color: white !important;
+  gap: 15px;
+  padding: 14px 20px !important;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.75) !important;
   text-decoration: none;
-  font-weight: 500;
-  font-size: large;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent !important;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2px;
 }
 
 /* ICON */
 .nav-link-title i {
-  width: 30px;
+  width: 24px;
   text-align: center;
-  color: white !important;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.75) !important;
+  transition: all 0.3s ease;
 }
 
 /* HOVER */
 .nav-link-title:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  transform: translateX(20px);
-  font-size: larger;
-  font-weight: 600;
-  padding-left: 20px;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+  transform: translateX(5px);
 }
 
-/* ACTIVE FIX (NO WHITE) */
-.sidebar .nav-link-title.active {
-  background: rgba(255, 255, 255, 0.25) !important;
-  color: #ffffff !important;
+.nav-link-title:hover i {
+  color: #2980b9 !important;
+  transform: scale(1.1);
+}
 
-  transform: translateX(20px);
-  font-size: larger;
-  font-weight: 600;
-  padding-left: 20px;  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+/* ACTIVE */
+.sidebar .nav-link-title.active {
+  background: linear-gradient(135deg, rgba(41, 128, 185, 0.8), rgba(26, 59, 92, 0.9)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  border-left: 4px solid #6dd5ed;
 }
 
 .sidebar .nav-link-title.active i {
   color: #ffffff !important;
 }
 
-/* ===== BOTTOM SECTION (Logout Area Different Shade) ===== */
-
-.sidebar .nav-link-title:last-child {
+/* LOGOUT */
+.sidebar .nav-link-title.logout {
   margin-top: 25px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.5) !important;
+  color: #000000 !important;
   border-radius: 12px;
 }
 
-/* Logout Hover */
-.sidebar .nav-link-title:last-child:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
+.sidebar .nav-link-title.logout i {
+  color: #000000 !important;
 }
 
-/* Optional smooth scrollbar */
+.sidebar .nav-link-title.logout:hover {
+  background: rgba(231, 76, 60, 0.2) !important;
+  color: #ff6b6b !important;
+  transform: translateY(-2px);
+}
+
+.sidebar .nav-link-title.logout:hover i {
+  color: #ff6b6b !important;
+}
+
+/* Scrollbar */
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
 
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

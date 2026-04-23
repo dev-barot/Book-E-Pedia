@@ -38,7 +38,9 @@ from .views import (
     employee_detail,
     get_report_data,
     reset_password_confirm,
-    forgot_password_request
+    forgot_password_request,
+    employee_forgot_password_request,
+    employee_reset_password_confirm
 )
 
 urlpatterns = [
@@ -81,4 +83,6 @@ urlpatterns = [
     path('get_report_data/<str:report_type>/', get_report_data),
     path('forgot-password/', forgot_password_request),
     path('reset-password-confirm/', reset_password_confirm),
+    path('employee-forgot-password/', employee_forgot_password_request),
+    path('employee-reset-password-confirm/', employee_reset_password_confirm),
 ]

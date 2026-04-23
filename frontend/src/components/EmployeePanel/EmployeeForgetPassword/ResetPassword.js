@@ -1,82 +1,156 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import profileImage from "./profile.jpeg";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./EmployeeForgetPassword.css";
+import { BASE_URL } from "../../../utils/config";
 
-function ResetPassword() {
+const ResetPassword = () => {
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
+  const [token, setToken] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const validatePassword = (pwd) => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-      pwd
-    );
-  };
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const rawToken = params.get("token") || "";
+    const rawEmail = params.get("email") || "";
+    const storedContext = sessionStorage.getItem("employee_reset_context");
+    let fallbackToken = "";
+    let fallbackEmail = "";
 
-  const handleResetPassword = () => {
+    if (storedContext) {
+      try {
+        const parsed = JSON.parse(storedContext);
+        fallbackToken = parsed.token || "";
+        fallbackEmail = parsed.email || "";
+      } catch (error) {
+        sessionStorage.removeItem("employee_reset_context");
+      }
+    }
+
+    const effectiveEmail = rawEmail || fallbackEmail;
+    const effectiveToken =
+      fallbackEmail && effectiveEmail === fallbackEmail && fallbackToken
+        ? fallbackToken
+        : rawToken || fallbackToken;
+
+    setToken(effectiveToken);
+    setEmail(effectiveEmail);
+  }, [location]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!token || !password || !email) {
+      setError("All fields are required.");
+      setMessage("");
+      return;
+    }
+
+    const emailPattern = /\S+@\S+\.\S+/;
+    if (!emailPattern.test(email)) {
+      setError("Enter a valid email.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
     setError("");
+    setMessage("");
+    setIsResetting(true);
 
-    if (!validatePassword(password)) {
-      setError(
-        "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/employee-reset-password-confirm/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            email: email,
+            password: password,
+          }),
+        }
       );
-      return;
+
+      const data = await res.json();
+
+      const success = data.bool ?? data.status === "OK";
+      const responseMessage =
+        data.msg || data.message || data.detail || "Reset failed";
+
+      if (success) {
+        setMessage(responseMessage);
+        sessionStorage.removeItem("employee_reset_context");
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } else {
+        setError(responseMessage);
+      }
+    } catch (err) {
+      setError("Server error. Try again.");
     }
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    // Frontend-only simulation
-    console.log("Password reset successfully");
-
-    alert("Password reset successfully! Redirecting to login...");
-    navigate("/login");
+    setIsResetting(false);
   };
 
   return (
     <div className="cust-fp-body">
       <div className="cust-fp-container">
-        <div className="cust-fp-illustration">
-          <img src={profileImage} alt="Profile Illustration" />
-        </div>
+        <div className="cust-fp-form-container" style={{ margin: '0 auto', textAlign: 'center', flex: 'none', width: '100%' }}>
+          <h1>Reset Your Password</h1>
+          <p>Enter your email and new password.</p>
 
-        <div className="cust-fp-form-container">
-          <h1>Reset Password</h1>
-          <p>Set a new password for your account.</p>
+          <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ width: '80%', padding: '12px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #ccc' }}
+            />
 
-          {error && (
-            <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>
-          )}
+            <input
+              type="password"
+              placeholder="New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ width: '80%', padding: '12px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #ccc' }}
+            />
 
-          <input
-            type="password"
-            placeholder="New Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            <button
+              type="submit"
+              disabled={isResetting}
+              style={{ width: '80%', padding: '12px', borderRadius: '8px', border: 'none', background: '#007bff', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              {isResetting ? "Resetting..." : "Reset Password"}
+            </button>
+          </form>
 
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          {message && <p style={{ color: "green", marginTop: "15px" }}>{message}</p>}
+          {error && <p style={{ color: "red", marginTop: "15px" }}>{error}</p>}
 
-          <button onClick={handleResetPassword}>
-            Reset Password
-          </button>
-
-          <p>
-            <Link to="/login">Back to login</Link>
+          <p style={{ marginTop: "20px" }}>
+            <span
+              onClick={() => navigate("/login")}
+              style={{ cursor: "pointer", color: "#007bff", textDecoration: "underline" }}
+            >
+              Back to Login
+            </span>
           </p>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ResetPassword;

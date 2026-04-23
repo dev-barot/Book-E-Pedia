@@ -1,44 +1,87 @@
 import React, { useEffect, useState } from "react";
 import "./CustomerCart.css";
 import { useNavigate, Link } from "react-router-dom";
-import { books } from "../../ProductScreen/books";
 
 const CustomerCart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [similarBooks, setSimilarBooks] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
 
-  // Similar books = books NOT already in the cart (max 4)
-  const similarBooks = books
-    .filter((book) => !cartItems.some((item) => item.id === book.id))
-    .slice(0, 4);
+  useEffect(() => {
+    const fetchCartAndProducts = async () => {
+      try {
+        const [cartRes, productsRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/api/cart/1/"),
+          fetch("http://127.0.0.1:8000/api/products/")
+        ]);
+        
+        const cartData = await cartRes.json();
+        const productsData = await productsRes.json();
 
-  // Load cart from localStorage
-    useEffect(() => {
-      const fetchCart = async () => {
-        try {
-          const res = await fetch("http://127.0.0.1:8000/api/cart/1/");
-          const data = await res.json();
+        const fetchedProducts = productsData.data || [];
 
-          if (data.bool) {
-            const formatted = data.data.map((item) => ({
-              id: item.cart_id,
-              name: item.product_name,
-              price: parseFloat(item.price),
-              quantity: item.quantity,
-              total: parseFloat(item.total),
-              image: item.image
-            }));
-
-            setCartItems(formatted);
-          }
-        } catch (err) {
-          console.error("Cart fetch error:", err);
+        let formattedCart = [];
+        if (cartData.bool) {
+          formattedCart = cartData.data.map((item) => ({
+            id: item.cart_id,
+            product_id: item.product_id,
+            name: item.product_name,
+            price: parseFloat(item.price),
+            quantity: item.quantity,
+            total: parseFloat(item.total),
+            image: item.image,
+            stock: item.stock
+          }));
+          setCartItems(formattedCart);
         }
-      };
 
-      fetchCart();
-    }, []);
+        // Calculate similar books
+        const cartProductIds = formattedCart.map(item => item.product_id);
+        const cartCategories = new Set();
+        const cartBookIds = new Set();
+
+        fetchedProducts.forEach(p => {
+          if (cartProductIds.includes(p.id)) {
+            if (p.category_id) cartCategories.add(p.category_id);
+            if (p.book_id) cartBookIds.add(p.book_id);
+          }
+        });
+
+        // Exclude books already in cart, and must be active
+        let recommended = fetchedProducts.filter(p => 
+          !cartProductIds.includes(p.id) && (p.is_active === true || p.is_active === "1")
+        );
+
+        if (cartProductIds.length > 0) {
+          recommended = recommended.filter(p => 
+            cartCategories.has(p.category_id) || cartBookIds.has(p.book_id)
+          );
+        }
+
+        if (recommended.length === 0) {
+           recommended = fetchedProducts.filter(p => 
+             !cartProductIds.includes(p.id) && (p.is_active === true || p.is_active === "1")
+           );
+        }
+
+        const formattedSimilar = recommended.slice(0, 4).map(p => ({
+          id: p.id,
+          name: p.name,
+          author: p.author,
+          price: p.price,
+          image: p.cover_photo ? `http://127.0.0.1:8000${p.cover_photo}` : "",
+        }));
+
+        setSimilarBooks(formattedSimilar);
+
+      } catch (err) {
+        console.error("Cart fetch error:", err);
+      }
+    };
+
+    fetchCartAndProducts();
+  }, []);
 
   // Update Quantity
     const updateQuantity = async (cartId, quantity) => {
@@ -89,20 +132,31 @@ const CustomerCart = () => {
       console.error(err);
     }
   };
-  // Add similar book to cart
-  const addToCart = (book) => {
-    const existing = cartItems.find((item) => item.id === book.id);
-    let updatedCart;
-    if (existing) {
-      updatedCart = cartItems.map((item) =>
-        item.id === book.id ? { ...item, quantity: item.quantity + 1 } : item
-      );
-    } else {
-      updatedCart = [...cartItems, { ...book, quantity: 1 }];
-    }
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    setCartItems(updatedCart);
 
+  // Add similar book to cart
+  const addToCart = async (book) => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/cart/add/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cust_id: 1,
+          product_id: book.id,
+          quantity: 1,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.bool) {
+        window.location.reload();
+      } else {
+        alert("Failed to add to cart");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const subtotal = cartItems.reduce(

@@ -396,26 +396,20 @@ function AdminManageProducts() {
       </div>
 
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
-        
-        {/* HEADER SECTION */}
-
-        <div className="admin-action-bar">
-  <Link 
-    to="/admin/add-products" 
-    className="btn-primary-lux action-bar-btn"
-    style={{ textDecoration: 'none' }}
-  >
-    <span className="add-btn-content">
-      <i className="fa-solid fa-plus-circle"></i> Add Product
-    </span>
-  </Link>
-</div>
-
-{/* TITLE SECTION */}
-<div className="admin-header-titles centered">
-  <h1 className="text-gradient-lux">Product Inventory</h1>
-  <p>Administer staff, roles, and employee records.</p>
-</div>
+        <div className="section admin-panel">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2>Product Management</h2>
+            <Link to="/admin/add-products" className="btn btn-primary">
+              Add New Product
+            </Link>
+          </div>
 
         {/* DATA TABLE SECTION */}
         <div className="admin-table-wrapper glass-card" style={{ overflowX: 'auto' }}>
@@ -548,6 +542,7 @@ function AdminManageProducts() {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

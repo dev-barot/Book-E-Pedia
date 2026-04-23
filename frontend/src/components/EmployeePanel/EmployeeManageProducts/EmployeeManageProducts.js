@@ -3,37 +3,60 @@ import React, { useState, useEffect } from "react";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import { Link, useNavigate } from "react-router-dom";
 import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
-import "./EmployeeManageProducts.css";
+// import "./EmployeeManageProducts.css";
+import "../../AdminPanel/AdminCommon.css";
+import "../../AdminPanel/AdminManageProducts/AdminManageProducts.css";
 
 function EmployeeManageProducts() {
-
-  const [productList, setProductList] = useState([]);
+const [productList, setProductList] = useState([]);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ Load products from localStorage
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/products/");
+      if (!response.ok) throw new Error("Failed to fetch products");
+      const data = await response.json();
+      console.log("Raw response from /api/products/:", data);
+      if (data.data && Array.isArray(data.data)) {
+        if (data.data.length > 0) {
+          console.log("First product details:", data.data[0]);
+        }
+        setProductList(data.data);
+      } else {
+        console.error("Expected data.data to be an array but got:", data);
+        setProductList([]);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProductList([]);
+    }
+  };
+
   useEffect(() => {
-    const storedProducts =
-      JSON.parse(localStorage.getItem("products")) || [];
-    setProductList(storedProducts);
+    fetchProducts();
   }, []);
 
   const handleEdit = (product) => {
     navigate("/employee/add-products", { state: { product } });
   };
 
-  // ✅ Delete from localStorage
-  const handleDelete = (productId) => {
+  const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/delete-product/${productId}/`,
+          {
+            method: "DELETE",
+          }
+        );
 
-      const updatedProducts = productList.filter(
-        (product) => product.Product_ID !== productId
-      );
+        if (!response.ok) throw new Error("Failed to delete product");
 
-      setProductList(updatedProducts);
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
-
-      console.log(`Product deleted: ${productId}`);
+        fetchProducts(); // Refresh list
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
     }
   };
 
@@ -41,18 +64,24 @@ function EmployeeManageProducts() {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-  // ✅ Get book type names
   const getBookTypes = (bookTypeDetails) => {
     const types = [];
-    if (bookTypeDetails?.Physical_Book === "1") types.push("Physical Book");
-    if (bookTypeDetails?.Audio_Book === "1") types.push("Audio Book");
+    if (bookTypeDetails?.Physical_Book === "1") types.push("Physical");
+    if (bookTypeDetails?.Audio_Book === "1") types.push("Audio");
     if (bookTypeDetails?.E_Book === "1") types.push("E-Book");
-    if (bookTypeDetails?.Video_Book === "1") types.push("Video Book");
+    if (bookTypeDetails?.Video_Book === "1") types.push("Video");
     return types.length > 0 ? types.join(", ") : "N/A";
   };
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
+      {/* Premium ambient animated background elements */}
+      <div className="dashboard-ambient-bg">
+        <div className="ambient-orb orb-1"></div>
+        <div className="ambient-orb orb-2"></div>
+        <div className="ambient-orb orb-3"></div>
+      </div>
+
       <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <EmployeeNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
@@ -62,98 +91,153 @@ function EmployeeManageProducts() {
       </div>
 
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
-        <Link to="/employee/add-products" className="btn btn-primary">
-          <i className="fa fa-plus-circle"></i> Add Product
-        </Link>
+        <div className="section admin-panel">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2>Product Management</h2>
+            <Link to="/employee/add-products" className="btn btn-primary">
+              Add New Product
+            </Link>
+          </div>
 
-        <div className="admin-view-book-type-container">
-          <h1 className="admin-view-book-type-title">Manage Products</h1>
-
-          <table className="admin-view-book-type-table">
+        {/* DATA TABLE SECTION */}
+        <div className="admin-table-wrapper glass-card" style={{ overflowX: 'auto' }}>
+          <table className="admin-lux-table" style={{ minWidth: '1200px' }}>
             <thead>
               <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Description</th>
+                <th>Cover</th>
+                <th>Product Info</th>
                 <th>Category</th>
-                <th>Book Type</th>
-                <th>Author</th>
-                <th>Publisher</th>
-                <th>Language</th>
-                <th>Pages</th>
-                <th>Duration</th>
+                <th>Formats</th>
+                <th>Author/Pub</th>
+                <th>Metrics</th>
                 <th>Price</th>
                 <th>Stock</th>
-                <th>Cover Image</th>
-                <th>Back Image</th>
                 <th>Actions</th>
               </tr>
             </thead>
-
             <tbody>
               {productList.length === 0 ? (
                 <tr>
-                  <td colSpan="15">No products available</td>
+                  <td colSpan="9" className="empty-state-cell">
+                    <div className="empty-state-content">
+                      <i className="fa-solid fa-box-open empty-icon"></i>
+                      <p>No products available in inventory.</p>
+                    </div>
+                  </td>
                 </tr>
               ) : (
                 productList.map((product) => (
-                  <tr key={product.Product_ID}>
-                    <td>{product.Product_ID}</td>
-                    <td>{product.Product_Name}</td>
-                    <td>{product.Product_Description}</td>
-                    <td>{product.Category_Name || "N/A"}</td>
-                    <td>{getBookTypes(product.Book_Type_Details)}</td>
-                    <td>{product.Author || "N/A"}</td>
-                    <td>{product.Publisher || "N/A"}</td>
-                    <td>{product.Language || "N/A"}</td>
-                    <td>{product.Number_of_Pages || "N/A"}</td>
-                    <td>{product.Time_Duration || "N/A"}</td>
-                    <td>{product.Product_Price}</td>
-                    <td>{product.Stock}</td>
-
+                  <tr key={product.id}>
                     <td>
-                      {product.Cover_Photo && (
-                        <img
-                          src={product.Cover_Photo}
-                          alt="Cover"
-                          width={50}
-                        />
+                      {product.cover_photo ? (
+                        <div
+                          style={{
+                            width: "50px",
+                            height: "65px",
+                            borderRadius: "6px",
+                            overflow: "hidden",
+                            boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+                          }}
+                        >
+                          <img
+                            src={`http://127.0.0.1:8000${product.cover_photo}`}
+                            alt="Cover"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover"
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            width: "50px",
+                            height: "65px",
+                            borderRadius: "6px",
+                            background: "rgba(31,78,121,0.1)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                          }}
+                        >
+                          <i className="fa-solid fa-image"></i>
+                        </div>
                       )}
                     </td>
 
                     <td>
-                      {product.Back_Photo && (
-                        <img
-                          src={product.Back_Photo}
-                          alt="Back"
-                          width={50}
-                        />
-                      )}
+                      <div className="name-cell">{product.name}</div>
+                      <div className="desc-cell" style={{ fontSize: "0.8rem" }}>
+                        #{product.id} • {product.language}
+                      </div>
                     </td>
 
                     <td>
+                      <span className="status-badge neutral">
+                        {product.category_name}
+                      </span>
+                    </td>
+
+                    <td>{product.book_name}</td>
+
+                    <td>
+                      <div>{product.author}</div>
+                      <div style={{ fontSize: "0.8rem" }}>
+                        {product.publisher}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div>{product.pages} Pages</div>
+                      <div>{product.duration}</div>
+                    </td>
+
+                    <td>₹{product.price}</td>
+
+                    <td>
+                      <span
+                        className={`status-badge ${
+                          product.stock > 10
+                            ? "optimal"
+                            : product.stock > 0
+                            ? "neutral"
+                            : "critical"
+                        }`}
+                      >
+                        {product.stock}
+                      </span>
+                    </td>
+
+                    <td className="actions-cell">
                       <button
+                        className="icon-btn-lux edit"
                         onClick={() => handleEdit(product)}
-                        className="admin-view-book-type-edit-btn"
                       >
                         <i className="fa-solid fa-pen"></i>
                       </button>
 
                       <button
-                        onClick={() => handleDelete(product.Product_ID)}
-                        className="admin-view-book-type-delete-btn"
+                        className="icon-btn-lux delete"
+                        onClick={() => handleDelete(product.id)}
                       >
                         <i className="fa-solid fa-trash-can"></i>
                       </button>
                     </td>
-
                   </tr>
                 ))
               )}
             </tbody>
-
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

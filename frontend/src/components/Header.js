@@ -26,6 +26,16 @@ const Header = () => {
   // Check if user is logged in (customer or admin)
   const isLoggedIn = localStorage.getItem('customer_login') === 'true' || localStorage.getItem('admin_login') === 'true';
 
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery(''); // Optionally clear the search input after searching
+    }
+  };
+
   return (
     <header className='main-top-bar'>
       <div className="home-top-bar">
@@ -104,10 +114,15 @@ const Header = () => {
             </li>
           </ul>
         
-          <div className="search-top-bar">
-            <input type="text" placeholder="What do you want to read?" />
-            <button>Search</button>
-          </div>
+          <form className="search-top-bar" onSubmit={handleSearchSubmit}>
+            <input 
+              type="text" 
+              placeholder="What do you want to read?" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit">Search</button>
+          </form>
         </nav>
       </div>
     </header>

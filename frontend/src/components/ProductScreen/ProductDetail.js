@@ -34,11 +34,23 @@ function ProductDetail() {
         console.error("Feedback fetch error:", err);
       }
   };
+  const [availability, setAvailability] = useState({
+    "E-Book": false,
+    "Physical Book": false,
+    "Audio book": false,
+    "Video Book": false,
+  });
+
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndFormats = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/products/");
-        const data = await res.json();
+        const [resProducts, resBookTypes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/api/products/"),
+          fetch("http://127.0.0.1:8000/api/book-types/")
+        ]);
+
+        const data = await resProducts.json();
+        const btData = await resBookTypes.json();
 
         const found = data.data.find(p => p.id === parseInt(id));
 
@@ -57,14 +69,24 @@ function ProductDetail() {
               ? `http://127.0.0.1:8000${found.cover_photo}`
               : null
           });
+
+          // Match the format availability dynamically
+          const foundBt = (btData.data || []).find(bt => bt.id === found.book_id);
+          if (foundBt) {
+            setAvailability({
+              "E-Book": foundBt.ebook === "1" || foundBt.ebook === true,
+              "Physical Book": foundBt.physical === "1" || foundBt.physical === true,
+              "Audio book": foundBt.audio === "1" || foundBt.audio === true,
+              "Video Book": foundBt.video === "1" || foundBt.video === true,
+            });
+          }
         }
       } catch (err) {
-        console.error("Error fetching product:", err);
+        console.error("Error fetching product details:", err);
       }
     };
 
-
-    fetchProduct();
+    fetchProductAndFormats();
     fetchFeedbacks();
   }, [id]);
 
@@ -138,13 +160,6 @@ function ProductDetail() {
     }
   };
 
-  const availability = {
-    "E-Book": true,
-    "Physical Book": true,
-    "Audio book": false,
-    "Video Book": false,
-  };
-
   const displayedFeedback = showAll ? feedbacks : feedbacks.slice(0, 3);
   if (!productData) {
   return <h3 style={{ textAlign: "center" }}>Loading...</h3>;
@@ -162,7 +177,7 @@ function ProductDetail() {
             <div className="col-md-5 p-0 d-flex justify-content-center align-items-start">
               <div className="glass-image-frame">
                 {productData.Cover_Photo ? (
-                  <img src={productData.Cover_Photo} alt={productData.Product_Name} />
+                  <img src={productData.Cover_Photo} alt={productData.name} />
                 ) : (
                   <div className="no-image-placeholder">No images available.</div>
                 )}
@@ -175,13 +190,13 @@ function ProductDetail() {
               
               <ul className="glass-specs-list">
                 <li><strong>Author:</strong> {productData.author}</li>
-                <li><strong>Publisher:</strong> {productData.Publisher}</li>
-                <li><strong>Language:</strong> {productData.Language}</li>
-                <li><strong>Pages:</strong> {productData.Number_of_Pages}</li>
-                <li><strong>Duration:</strong> {productData.Time_Duration}</li>
+                <li><strong>Publisher:</strong> {productData.publisher}</li>
+                <li><strong>Language:</strong> {productData.language}</li>
+                <li><strong>Pages:</strong> {productData.pages}</li>
+                <li><strong>Duration:</strong> {productData.duration}</li>
               </ul>
 
-              <p className="glass-desc">{productData.Product_Description}</p>
+              <p className="glass-desc">{productData.description}</p>
               
               <h4 className="glass-price">Price: Rs. {Number(productData.price).toFixed(2)}</h4>
 

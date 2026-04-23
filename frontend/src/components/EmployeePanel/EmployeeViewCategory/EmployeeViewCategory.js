@@ -8,44 +8,35 @@ import "./EmployeeViewCategory.css";
 function EmployeeViewCategory() {
 
   const [categories, setCategories] = useState([]);
-  const navigate = useNavigate();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const navigate = useNavigate();
 
-  // ✅ Load categories from localStorage
-  useEffect(() => {
-    const storedCategories =
-      JSON.parse(localStorage.getItem("categories")) || [];
-    setCategories(storedCategories);
-  }, []);
-
-  const handleEdit = (category) => {
-    navigate("/admin/add-category", { state: { category } });
-  };
-
-  // ✅ Delete locally
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
-
-      const updatedCategories = categories.filter(
-        (category) => category.Category_ID !== id
-      );
-
-      setCategories(updatedCategories);
-      localStorage.setItem(
-        "categories",
-        JSON.stringify(updatedCategories)
-      );
-
-      console.log("Category deleted:", id);
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/category/");
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      const data = await response.json();
+      setCategories(data.data || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      setCategories([]);
     }
   };
 
-  const handleSidebarToggle = () =>
-    setIsSidebarCollapsed(!isSidebarCollapsed);
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+
+
+
+
+  const handleSidebarToggle = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
-
       <div className={`top-main-dashboard-navbar ${isSidebarCollapsed ? "collapsed" : ""}`}>
         <EmployeeNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
@@ -55,66 +46,60 @@ function EmployeeViewCategory() {
       </div>
 
       <div className={`dashboard-main-content ${isSidebarCollapsed ? "expanded" : ""}`}>
+        <div className="section admin-panel">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2>Category Management</h2>
 
-        <div className="admin-view-book-type-container">
-          <h1 className="admin-view-book-type-title">
-            Category List
-          </h1>
+          </div>
 
-          <table className="admin-view-book-type-table">
-            <thead>
-              <tr>
-                <th>Category ID</th>
-                <th>Category Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {categories.length > 0 ? (
-                categories.map((category) => (
-                  <tr key={category.Category_ID}>
-                    <td>{category.Category_ID}</td>
-                    <td>{category.Category_Name}</td>
-                    <td>{category.Category_Description}</td>
-                    <td>
-                      {category.IsActive === "1"
-                        ? "Active"
-                        : "Inactive"}
-                    </td>
-                    <td>
-                      <button
-                        className="admin-view-book-type-edit-btn"
-                        onClick={() => handleEdit(category)}
-                      >
-                        <i className="fa-solid fa-pen"></i>
-                      </button>
-
-                      <button
-                        className="admin-view-book-type-delete-btn"
-                        onClick={() =>
-                          handleDelete(category.Category_ID)
-                        }
-                      >
-                        <i className="fa-solid fa-trash-can"></i>
-                      </button>
+          {/* DATA TABLE SECTION */}
+          <div className="admin-table-wrapper glass-card">
+            <table className="admin-lux-table">
+              <thead>
+                <tr>
+                  <th>Category ID</th>
+                  <th>Category Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.length > 0 ? (
+                  categories.map((category) => (
+                    <tr key={category.Category_ID}>
+                      <td className="id-cell">#{category.Category_ID}</td>
+                      <td className="name-cell">{category.Category_Name}</td>
+                      <td className="desc-cell">{category.Category_Description}</td>
+                      <td>
+                        <span className={`status-badge ${category.IsActive === '1' ? 'optimal' : 'critical'}`}>
+                          <i className={`fa-solid ${category.IsActive === '1' ? 'fa-check-circle' : 'fa-xmark-circle'}`}></i>
+                          {category.IsActive === '1' ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+                      
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="empty-state-cell">
+                      <div className="empty-state-content">
+                        <i className="fa-solid fa-folder-open empty-icon"></i>
+                        <p>No categories found in the system.</p>
+                      </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="admin-view-book-type-no-data">
-                    No categories found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-
       </div>
     </div>
   );

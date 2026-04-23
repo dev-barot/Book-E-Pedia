@@ -15,19 +15,19 @@ const EmployeeNavbar = ({ onToggleSidebar }) => {
     e.preventDefault();
     const term = searchTerm.toLowerCase();
 
-    if (term.includes("order")) {
+    if (term.includes("order") || term.includes("manage order")) {
       navigate("/employee/manage-orders");
-    } else if (term.includes("categor")) {
+    } else if (term.includes("categor") || term.includes("view categor")) {
       navigate("/employee/manage-categories");
-    } else if (term.includes("booktype") || term.includes("type")) {
+    } else if (term.includes("booktype") || term.includes("type") || term.includes("book type")) {
       navigate("/employee/manage-booktype");
-    } else if (term.includes("product") || term.includes("book")) {
+    } else if (term.includes("product") || term.includes("book") || term.includes("manage product")) {
       navigate("/employee/manage-products");
-    } else if (term.includes("profile")) {
+    } else if (term.includes("profile") || term.includes("my profile") || term.includes("account")) {
       navigate("/employee/profile");
-    } else if (term.includes("password")) {
+    } else if (term.includes("password") || term.includes("change password") || term.includes("forget")) {
       navigate("/employee/forget-password");
-    } else if (term.includes("dashboard") || term.includes("home")) {
+    } else if (term.includes("dashboard") || term.includes("home") || term.includes("main")) {
       navigate("/employee/dashboard");
     }
 
@@ -45,7 +45,7 @@ const EmployeeNavbar = ({ onToggleSidebar }) => {
           <input
             type="text"
             className="form-control admin-search-input"
-            placeholder="Search (e.g. orders, products)"
+            placeholder="Search modules (e.g. orders)"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

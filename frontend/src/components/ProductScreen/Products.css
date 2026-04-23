@@ -91,3 +91,195 @@
   color: white;
   box-shadow: 0 10px 25px rgba(26, 75, 132, 0.3);
 }
+
+/* =====================================
+   SIDEBAR LAYOUT & STYLING
+===================================== */
+.btn-filter-toggle {
+  background: white;
+  color: #1A4B84;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(26, 75, 132, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-filter-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(26, 75, 132, 0.2);
+}
+
+.shop-sidebar-lux {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 30px 25px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-title {
+  color: #1A4B84;
+  font-weight: 800;
+}
+
+.btn-clear-filters {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.btn-clear-filters:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-heading {
+  font-weight: 700;
+  color: #1f3b4d;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.sidebar-divider {
+  border-top: 1px solid rgba(26, 75, 132, 0.15);
+  margin: 20px 0;
+}
+
+/* LUXURY SELECT */
+.lux-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(26, 75, 132, 0.2);
+  border-radius: 12px;
+  padding: 12px 15px;
+  color: #1A4B84;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.lux-select:focus {
+  border-color: #1A4B84;
+  box-shadow: 0 0 0 3px rgba(26, 75, 132, 0.1);
+}
+
+/* LUXURY CHECKBOXES */
+.filter-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lux-checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #4b6b8a;
+  font-weight: 500;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.lux-checkbox-container:hover {
+  color: #1A4B84;
+}
+
+.lux-checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(26, 75, 132, 0.3);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.lux-checkbox-container:hover input ~ .checkmark {
+  background-color: white;
+  border-color: #1A4B84;
+}
+
+.lux-checkbox-container input:checked ~ .checkmark {
+  background-color: #1A4B84;
+  border-color: #1A4B84;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.lux-checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.lux-checkbox-container .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* EMPTY STATE */
+.empty-state-lux {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 60px 20px;
+  border: 1px dashed rgba(26, 75, 132, 0.3);
+}
+
+/* FULL WIDTH GRID TRANSITION */
+.full-width-grid {
+  max-width: 1200px;
+}
+
+/* ANIMATIONS */
+.fade-in-left {
+  animation: fadeInLeft 0.4s ease forwards;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

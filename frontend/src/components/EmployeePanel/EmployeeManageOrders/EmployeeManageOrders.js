@@ -6,117 +6,214 @@ import "./EmployeeManageOrders.css";
 
 function EmployeeManageOrders() {
   const [orders, setOrders] = useState([]);
-  const statusOptions = ["Pending", "Processing", "Shipped", "Completed"];
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  // ✅ Load Orders from localStorage
-  useEffect(() => {
-    const storedOrders =
-      JSON.parse(localStorage.getItem("orders")) || [];
-    setOrders(storedOrders);
-  }, []);
+  const statusOptions = ["Pending", "Processing", "Shipped", "Completed", "Cancelled"];
 
-  const handleStatusChange = (orderId, newStatus) => {
-    const updatedOrders = orders.map((order) =>
-      order.id === orderId
-        ? { ...order, Order_Status: newStatus }
-        : order
-    );
+  const getStatusIndex = (status) => statusOptions.indexOf(status);
 
-    setOrders(updatedOrders);
-    localStorage.setItem("orders", JSON.stringify(updatedOrders));
-
-    console.log(`Status updated to ${newStatus} for order ${orderId}`);
+  // 🔥 FETCH ORDERS (moved outside useEffect so reusable)
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/admin/orders/");
+      const data = await response.json();
+      setOrders(data.orders || []);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
   };
 
-  const handleSidebarToggle = () => {
-    // Optional toggle logic if needed
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  // 🔥 FIXED STATUS CHANGE FUNCTION
+  const handleStatusChange = async (orderId, newStatus) => {
+    const order = orders.find(o => o.MasterOrder_ID === orderId);
+
+    if (!order) return;
+
+    // 🚫 lock if completed/cancelled
+    if (order.Order_Status === "Completed" || order.Order_Status === "Cancelled") {
+      return;
+    }
+
+    try {
+      await fetch(`http://127.0.0.1:8000/api/admin/orders/${orderId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Order_Status: newStatus,
+        }),
+      });
+
+      fetchOrders(); // refresh from backend
+
+    } catch (err) {
+      console.error("Status update error:", err);
+    }
+  };
+
+  const handleSidebarToggle = () =>
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "Completed":
+        return "optimal";
+      case "Shipped":
+        return "neutral text-blue-500";
+      case "Processing":
+        return "neutral text-orange-500";
+      case "Pending":
+        return "critical";
+      case "Cancelled":
+        return "critical text-gray-500";
+      default:
+        return "neutral";
+    }
   };
 
   return (
-    <div className="dashboard-main-container">
+    <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
       <div className="top-main-dashboard-navbar">
         <EmployeeNavbar onToggleSidebar={handleSidebarToggle} />
       </div>
 
       <div className="sidebar-main-section">
-        <EmployeeSidebar />
+        <EmployeeSidebar isCollapsed={isSidebarCollapsed} />
       </div>
 
       <div className="dashboard-main-content">
-        <div className="admin-view-book-type-container">
-          <h1 className="admin-view-book-type-title">
-            Manage Orders
-          </h1>
+        <div className="section admin-panel">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h2>Order Fulfillment</h2>
+          </div>
 
-          <table className="admin-view-book-type-table">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Customer ID</th>
-                <th>Employee ID</th>
-                <th>Order Date</th>
-                <th>Total Quantity</th>
-                <th>Total Amount</th>
-                <th>Order Status</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {orders.length === 0 ? (
+          <div className="admin-table-wrapper glass-card">
+            <table className="admin-lux-table">
+              <thead>
                 <tr>
-                  <td colSpan="7">No orders available</td>
+                  <th>Order #</th>
+                  <th>Customer / Emp</th>
+                  <th>Date</th>
+                  <th>Stats</th>
+                  <th>Current Status</th>
+                  <th>Update Status</th>
                 </tr>
-              ) : (
-                orders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.id}</td>
-                    <td>{order.Cust_ID || "N/A"}</td>
-                    <td>{order.Emp_ID || "N/A"}</td>
-                    <td>
-                      {order.Order_DateTime
-                        ? new Date(
-                            order.Order_DateTime
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                    <td>{order.T_Quantity || 0}</td>
-                    <td>
-                      Rs.{" "}
-                      {parseFloat(order.T_Amount || 0).toFixed(
-                        2
-                      )}
-                    </td>
+              </thead>
 
-                    <td>
-                      {statusOptions.map((status) => (
-                        <div key={status}>
-                          <input
-                            type="radio"
-                            name={`status-${order.id}`}
-                            value={status}
-                            checked={
-                              order.Order_Status === status
-                            }
-                            onChange={() =>
-                              handleStatusChange(
-                                order.id,
-                                status
-                              )
-                            }
-                          />
-                          <label>{status}</label>
-                        </div>
-                      ))}
-                    </td>
+              <tbody>
+                {orders.length === 0 ? (
+                  <tr>
+                    <td colSpan="6">No orders available</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  orders.map((order) => {
+                    const currentIndex = getStatusIndex(order.Order_Status);
+                    const isOrderLocked =
+                      order.Order_Status === "Completed" ||
+                      order.Order_Status === "Cancelled";
+
+                    return (
+                      <tr key={order.MasterOrder_ID}>
+                        <td>#{order.MasterOrder_ID}</td>
+
+                        <td>
+                          <div><strong>Cust:</strong> {order.Cust_ID}</div>
+                          <div><strong>Emp:</strong> {order.Emp_ID}</div>
+                        </td>
+
+                        <td>
+                          {new Date(order.Order_DateTime).toLocaleString()}
+                        </td>
+
+                        <td>
+                          <div>Qty: {order.T_Quantity}</div>
+                          <div>₹{order.T_Amount}</div>
+                        </td>
+
+                        <td>
+                          <span className={`status-badge ${getStatusBadgeClass(order.Order_Status)}`}>
+                            {order.Order_Status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <div className="status-progress-container">
+                            {statusOptions.map((status) => {
+                              const optionIndex = getStatusIndex(status);
+
+                              const isCompletedStep = optionIndex < currentIndex;
+                              const isCurrentStep = optionIndex === currentIndex;
+                              const isNextStep = optionIndex === currentIndex + 1;
+
+                              const isCancelledStep = status === "Cancelled";
+                              const isOrderCancelled = order.Order_Status === "Cancelled";
+
+                              let className = "status-step";
+
+                              if (isOrderCancelled) {
+                                className += status === "Cancelled"
+                                  ? " cancelled-active"
+                                  : " disabled";
+                              } else if (isCompletedStep) {
+                                className += " done";
+                              } else if (isCurrentStep) {
+                                className += " current";
+                              } else if (isNextStep) {
+                                className += " next";
+                              } else if (isCancelledStep) {
+                                className += " cancel-btn";
+                              } else {
+                                className += " disabled";
+                              }
+
+                              return (
+                                <div
+                                  key={status}
+                                  className={className}
+                                  onClick={() => {
+                                    if (isOrderLocked) return;
+
+                                    // 🔴 CANCEL anytime before completed
+                                    if (status === "Cancelled") {
+                                      handleStatusChange(order.MasterOrder_ID, "Cancelled");
+                                      return;
+                                    }
+
+                                    // ✅ only next step allowed
+                                    if (isNextStep) {
+                                      handleStatusChange(order.MasterOrder_ID, status);
+                                    }
+                                  }}
+                                >
+                                  {status}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+
+            </table>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
 export default EmployeeManageOrders;

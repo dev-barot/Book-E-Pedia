@@ -37,14 +37,19 @@ function CustomerOrders() {
         acc[id] = {
           MasterOrder_ID: id,
           Order_Status: item.Order_Status,
+          hasPhysical: false,
           products: []
         };
       }
 
+      const bookType = item.product_details?.Book_Type_Details;
+      const isPhysical = bookType?.Physical_Book === '1' || bookType?.physical === '1';
+      if (isPhysical) acc[id].hasPhysical = true;
+
       let oType = "Physical";
-      if (item.product_details?.Book_Type_Details?.Audio_Book === '1') oType = "Audio";
-      else if (item.product_details?.Book_Type_Details?.E_Book === '1') oType = "E-Book";
-      else if (item.product_details?.Book_Type_Details?.Video_Book === '1') oType = "Video";
+      if (bookType?.Audio_Book === '1') oType = "Audio";
+      else if (bookType?.E_Book === '1') oType = "E-Book";
+      else if (bookType?.Video_Book === '1') oType = "Video";
 
       acc[id].products.push({
         id: item.product_details?.Product_ID,
@@ -60,6 +65,7 @@ function CustomerOrders() {
       return acc;
     }, {})
   );
+
   const toggleOrderDetails = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
@@ -93,6 +99,10 @@ function CustomerOrders() {
                 0
               );
 
+              // If it's a digital-only order, the status from backend might be "Completed"
+              // but we ensure it looks consistent here.
+              const currentStatus = order.Order_Status;
+
               return (
                 <div
                   className="order-glass-card"
@@ -100,8 +110,8 @@ function CustomerOrders() {
                 >
                   <div className="order-card-header">
                     <h3 className="order-id-lux">Order #{order.MasterOrder_ID}</h3>
-                    <span className={`order-status-badge status-${order.Order_Status.toLowerCase()}`}>
-                      {order.Order_Status}
+                    <span className={`order-status-badge status-${currentStatus.toLowerCase()}`}>
+                      {currentStatus}
                     </span>
                   </div>
 
@@ -140,12 +150,14 @@ function CustomerOrders() {
                     </p>
 
                     <div className="order-actions-lux">
-                      <button
-                        className="btn-track-lux"
-                        onClick={() => toggleOrderDetails(order.MasterOrder_ID)}
-                      >
-                        <i className="fas fa-truck-fast me-2"></i> Track Order
-                      </button>
+                      {order.hasPhysical && order.Order_Status !== 'Cancelled' && (
+                        <button
+                          className="btn-track-lux"
+                          onClick={() => toggleOrderDetails(order.MasterOrder_ID)}
+                        >
+                          <i className="fas fa-truck-fast me-2"></i> Track Order
+                        </button>
+                      )}
 
                       <NavLink
                         to="/invoice"
@@ -157,21 +169,32 @@ function CustomerOrders() {
                     </div>
                   </div>
 
-                  {expandedOrder === order.MasterOrder_ID && (
+                  {expandedOrder === order.MasterOrder_ID && order.hasPhysical && (
                     <div className="order-tracking-glass p-4 mt-3">
                       <h5 className="tracking-title-lux mb-3">Shipment Status</h5>
                       <div className="progress-track-lux">
-                        <div className={`step ${order.Order_Status !== 'Pending' ? 'active' : ''}`}>
+                        {/* Step 1: Placed (Always active if not cancelled) */}
+                        <div className={`step ${order.Order_Status !== 'Cancelled' ? 'active' : ''}`}>
+                          <i className="fas fa-clipboard-list"></i>
+                          <span>Placed</span>
+                        </div>
+
+                        {/* Step 2: Processing */}
+                        <div className={`step ${['Processing', 'Shipped', 'Completed'].includes(order.Order_Status) ? 'active' : ''}`}>
                           <i className="fas fa-box"></i>
                           <span>Processing</span>
                         </div>
-                        <div className={`step ${order.Order_Status === 'Shipped' || order.Order_Status === 'Delivered' ? 'active' : ''}`}>
+
+                        {/* Step 3: Shipped */}
+                        <div className={`step ${['Shipped', 'Completed'].includes(order.Order_Status) ? 'active' : ''}`}>
                           <i className="fas fa-truck-moving"></i>
                           <span>Shipped</span>
                         </div>
-                        <div className={`step ${order.Order_Status === 'Delivered' ? 'active' : ''}`}>
+
+                        {/* Step 4: Completed */}
+                        <div className={`step ${order.Order_Status === 'Completed' ? 'active' : ''}`}>
                           <i className="fas fa-check-circle"></i>
-                          <span>Delivered</span>
+                          <span>Completed</span>
                         </div>
                       </div>
                     </div>

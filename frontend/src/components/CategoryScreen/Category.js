@@ -54,7 +54,7 @@ function Category() {
                 key={category.Category_ID}
               >
                 <Link
-                  to={`/category/${category.Category_Name}/${category.Category_ID}`}
+                  to={`/products?category=${encodeURIComponent(category.Category_Name)}`}
                   style={{ textDecoration: "none" }}
                 >
                   <div className="card-lux-inner">
