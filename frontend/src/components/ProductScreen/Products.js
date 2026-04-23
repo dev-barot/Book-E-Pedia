@@ -72,7 +72,7 @@ const Products = () => {
   return (
     <div className="shop-lux-page">
       <div className="container-fluid px-4 px-lg-5 py-5">
-        
+
         <div className="text-center mb-5">
           <span className="badge-lux mb-3">Premium Collection</span>
           <h1 className="shop-title">
@@ -92,7 +92,7 @@ const Products = () => {
                   id: product.id,
                   name: product.name,
                   price: product.price,
-                  image: product.cover_photo ? `http://127.0.0.1:8000${product.cover_photo}` : img1, // fallback image
+                  image: product.cover_photo ? product.cover_photo : img1, // fallback image
                   author: product.author,
                   description: product.description
                 }}
