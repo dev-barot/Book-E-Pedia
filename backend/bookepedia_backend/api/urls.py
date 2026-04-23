@@ -89,9 +89,7 @@ urlpatterns = [
     path('employee-forgot-password/', employee_forgot_password_request),
     path('employee-reset-password-confirm/', employee_reset_password_confirm),
 ]
-
-# ✅ KEEP THEIR HEALTH CHECK
-def api_home(request):
-    return JsonResponse({
-        "message": "API is working 🚀"
-    })
+# def api_home(request):
+#     return JsonResponse({
+#         "message": "API is working 🚀"
+#     })
