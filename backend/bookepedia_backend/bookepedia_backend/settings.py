@@ -38,7 +38,7 @@ RAZORPAY_KEY_SECRET = 'mbZXbUmaBUdOokl94fj1e70J'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["bookepedia-backend.onrender.com"]
 
 
 # Application definition
