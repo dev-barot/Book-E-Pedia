@@ -64,7 +64,8 @@ class TBL_Employee_Details(models.Model):
     Salary = models.DecimalField(max_digits=9, decimal_places=2)
     Designation = models.CharField(max_length=25)
 
-    Emp_Photo = models.ImageField(upload_to=employee_profile_pic_path, null=True, blank=True)
+    # Emp_Photo = models.ImageField(upload_to=employee_profile_pic_path, null=True, blank=True)
+    Emp_Photo = CloudinaryField("image", null=True, blank=True)
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 
     def __str__(self):
@@ -84,7 +85,8 @@ class TBL_Category_Details(models.Model):
 
     Category_ID = models.AutoField(primary_key=True)
     Category_Name = models.CharField(max_length=25, unique=True)
-    Category_Photo = models.ImageField(upload_to=category_pic_path)
+    # Category_Photo = models.ImageField(upload_to=category_pic_path)
+    Category_Photo = CloudinaryField("image", null=True, blank=True)
     Category_Description = models.CharField(max_length=250)
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 
@@ -111,9 +113,12 @@ class TBL_BookType(models.Model):
     Video_Book = models.CharField(max_length=1, default='0')
 
     # 🔥 RESTORED MEDIA FIELDS
-    Audio_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
-    Video_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
-    E_Book_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
+    # Audio_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
+    Audio_File = CloudinaryField("file", null=True, blank=True)
+    # Video_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
+    Video_File = CloudinaryField("file", null=True, blank=True)
+    # E_Book_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
+    E_Book_File = CloudinaryField("file", null=True, blank=True)
 
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 
