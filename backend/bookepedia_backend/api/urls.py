@@ -1,4 +1,5 @@
 from django.urls import path
+from django.http import JsonResponse
 from .views import (
     category_list_create,
     category_detail,
@@ -83,6 +84,14 @@ urlpatterns = [
     path('get_report_data/<str:report_type>/', get_report_data),
     path('forgot-password/', forgot_password_request),
     path('reset-password-confirm/', reset_password_confirm),
+
+    # ✅ KEEP YOUR EMPLOYEE RESET FEATURES
     path('employee-forgot-password/', employee_forgot_password_request),
     path('employee-reset-password-confirm/', employee_reset_password_confirm),
 ]
+
+# ✅ KEEP THEIR HEALTH CHECK
+def api_home(request):
+    return JsonResponse({
+        "message": "API is working 🚀"
+    })

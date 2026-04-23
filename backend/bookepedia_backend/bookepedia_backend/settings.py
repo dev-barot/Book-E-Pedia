@@ -11,6 +11,15 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
+import cloudinary
+from dotenv import load_dotenv 
+load_dotenv()
+cloudinary.config(
+    cloud_name=os.getenv("CLOUD_NAME"),
+    api_key=os.getenv("API_KEY"),
+    api_secret=os.getenv("API_SECRET")
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,9 +36,9 @@ RAZORPAY_KEY_ID = 'rzp_test_SdnTwk4YH73sBq'
 RAZORPAY_KEY_SECRET = 'mbZXbUmaBUdOokl94fj1e70J'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["bookepedia-backend.onrender.com"]
 
 
 # Application definition
@@ -54,6 +63,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'bookepedia_backend.urls'
@@ -78,15 +88,37 @@ WSGI_APPLICATION = 'bookepedia_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.getenv("DATABASE_NAME", "book_e_pedia"),
+#         "USER": os.getenv("DATABASE_USER", "postgres"),
+#         "PASSWORD": os.getenv("DATABASE_PASSWORD", "admin"),
+#         "HOST": os.getenv("DATABASE_HOST", "127.0.0.1"),
+#         "PORT": os.getenv("DATABASE_PORT", "5432"),
+#     }
+# }
+# DATABASES = {
+#     'default': dj_database_url.parse(
+#         "postgresql://postgres:Book-e-pedia@2026@db.pkrucxnjjbvdhldzkqan.supabase.co:5432/postgres"
+#     )
+# }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "book_e_pedia",
+#         "USER": "postgres",
+#         "PASSWORD": "Book-e-pedia@2026",
+#         "HOST": "postgresql://postgres.pkrucxnjjbvdhldzkqan:Book-e-pedia@2026@aws-1-ap-south-1.pooler.supabase.com:5432/postgres",
+#         "PORT": "5432",
+#     }
+# }
+import dj_database_url
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DATABASE_NAME", "book_e_pedia"),
-        "USER": os.getenv("DATABASE_USER", "postgres"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD", "admin"),
-        "HOST": os.getenv("DATABASE_HOST", "127.0.0.1"),
-        "PORT": os.getenv("DATABASE_PORT", "5432"),
-    }
+    'default': dj_database_url.parse(
+        "postgresql://postgres.pkrucxnjjbvdhldzkqan:Book-e-pedia@2026@aws-1-ap-south-1.pooler.supabase.com:6543/postgres"
+    )
 }
 
 # Password validation
@@ -123,7 +155,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CORS_ALLOW_ALL_ORIGINS = True
 X_FRAME_OPTIONS = 'ALLOWALL'
 print("SETTINGS LOADED")

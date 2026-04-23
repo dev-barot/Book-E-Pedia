@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import EmailValidator, RegexValidator
 import datetime
+from cloudinary.models import CloudinaryField
 
 # Customer Details Model (Ported for Login/Registration only)
 class TBL_Customer_Details(models.Model):
@@ -37,7 +38,7 @@ class TBL_Customer_Details(models.Model):
 
     class Meta:
         db_table = 'tbl_customer_details'  # exact DB table name
-        managed = False
+        # managed = False
 
 
 
@@ -91,7 +92,7 @@ class TBL_Category_Details(models.Model):
         return self.Category_Name
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'bookapp_tbl_category_details'
 
 
@@ -162,8 +163,10 @@ class TBL_Product_Details(models.Model):
 
     Product_Description = models.TextField()
 
-    Cover_Photo = models.ImageField(upload_to=product_photo_path, null=True, blank=True)
-    Back_Photo = models.ImageField(upload_to=product_photo_path, null=True, blank=True)
+    # Cover_Photo = models.ImageField(upload_to=product_photo_path, null=True, blank=True)
+    # Back_Photo = models.ImageField(upload_to=product_photo_path, null=True, blank=True)
+    Cover_Photo = CloudinaryField("image", null=True, blank=True)
+    Back_Photo = CloudinaryField("image", null=True, blank=True)
 
     IsActive = models.BooleanField(default=True)
 
@@ -199,7 +202,7 @@ class TBL_Cart_Details(models.Model):
 
     class Meta:
         db_table = 'bookapp_tbl_cart_details'  
-        managed = False
+        # managed = False
 
 class TBL_MasterOrder_Details(models.Model):
     ORDER_STATUS_CHOICES = [
@@ -237,7 +240,7 @@ class TBL_MasterOrder_Details(models.Model):
 
     class Meta:
         db_table = 'bookapp_tbl_masterorder_details'
-        managed = False
+        # managed = False
 
     def __str__(self):
         return f"Order {self.MasterOrder_ID} - Customer {self.Cust_ID_id}"
@@ -270,7 +273,7 @@ class TBL_Order_Details(models.Model):
 
     class Meta:
         db_table = 'bookapp_tbl_order_details'
-        managed = False
+        # managed = False
 
     def __str__(self):
         return f"OrderDetail {self.Order_ID}"
@@ -300,7 +303,7 @@ class TBL_Payment(models.Model):
 
     class Meta:
         db_table = 'bookapp_tbl_payment'
-        managed = False
+        # managed = False
 
     def __str__(self):
         return f"Payment {self.Transaction_ID}"
@@ -333,7 +336,7 @@ class TBL_Feedback_Details(models.Model):
     Feedback_DateTime = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = 'TBL_Feedback_Details'
-        managed = False
+        # managed = False
         ordering = ['-Feedback_DateTime']
 
     def __str__(self):
