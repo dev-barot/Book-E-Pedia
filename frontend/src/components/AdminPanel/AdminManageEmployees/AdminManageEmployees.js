@@ -101,11 +101,11 @@ function AdminManageEmployees() {
                   </tr>
                 ) : (
                   employeeList.map((employee) => (
-                    <tr key={employee.id}>
+                    <tr key={employee.Emp_ID}>
                       <td>
-                        <div className="id-cell">#{employee.id}</div>
+                        <div className="id-cell">#{employee.Emp_ID}</div>
                         <div className="name-cell" style={{ marginTop: '4px' }}>
-                          {employee.fname} {employee.lname}
+                          {employee.Fname} {employee.Lname}
                         </div>
                       </td>
                       <td>
@@ -113,12 +113,12 @@ function AdminManageEmployees() {
                           <i className="fa-regular fa-envelope" style={{ color: 'var(--color-text-muted)' }}></i> {employee.email}
                         </div>
                         <div style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <i className="fa-solid fa-phone"></i> {employee.phone}
+                          <i className="fa-solid fa-phone"></i> {employee.Phone_Number}
                         </div>
                       </td>
                       <td>
                         <span className="status-badge neutral" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.3)' }}>
-                          {employee.designation}
+                          {employee.Designation}
                         </span>
                       </td>
                       <td className="actions-cell">
@@ -131,7 +131,7 @@ function AdminManageEmployees() {
                         </button>
                         <button
                           className="icon-btn-lux delete"
-                          onClick={() => handleDelete(employee.id)}
+                          onClick={() => handleDelete(employee.Emp_ID)}
                           title="Remove Employee"
                         >
                           <i className="fa-solid fa-trash-can"></i>
