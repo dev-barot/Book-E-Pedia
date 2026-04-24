@@ -275,8 +275,8 @@ const handleChange = (e) => {
                 >
                   <option value="">-- Select Employee --</option>
                   {employees.map((emp) => (
-                    <option key={emp.id} value={emp.id}>
-                      {emp.id} - {emp.fname} {emp.lname}
+                    <option key={emp.Emp_ID} value={emp.Emp_ID}>
+                      {emp.Emp_ID} - {emp.Fname} {emp.Lname}
                     </option>
                   ))}
                 </select>
