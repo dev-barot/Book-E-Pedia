@@ -16,9 +16,10 @@ export const getMediaUrl = (path) => {
     // 1. Remove versioning which causes 401 on HTTPS
     url = url.replace(/\/v\d+\//, "/");
     
-    // 2. Ensure PDF files use 'upload' type directly if they are miscategorized
+    // 2. For PDFs, Cloudinary often works better with 'raw/upload' over HTTPS
+    // to avoid image-specific security headers or signature mismatches.
     if (url.endsWith(".pdf") && url.includes("/image/upload/")) {
-       // Keep as image/upload but ensure no signed params
+       url = url.replace("/image/upload/", "/raw/upload/");
     }
   }
 

@@ -39,27 +39,28 @@ function E_Book() {
             margin: "0 auto",
             borderRadius: "16px",
             overflow: "hidden",
-            background: "#fff",
-            boxShadow: "0 30px 60px rgba(0,0,0,0.12)",
-            border: "1px solid #e2e8f0"
+            background: "#333",
+            boxShadow: "0 30px 60px rgba(0,0,0,0.2)",
+            border: "1px solid #444"
           }}
         >
-          {/* Top Shield Overlay to protect toolbar */}
+          {/* Top Shield Overlay to block PDF.js toolbar buttons */}
           <div 
             style={{ 
               position: "absolute", 
               top: 0, 
-              left: 0, 
-              width: "100%", 
-              height: "56px", 
-              background: "transparent",
+              right: 0, 
+              width: "200px", 
+              height: "40px", 
+              background: "transparent", // or same as viewer bar
               zIndex: 100,
-              pointerEvents: "none"
+              pointerEvents: "auto" 
             }} 
+            onContextMenu={(e) => e.preventDefault()}
           />
           
           <iframe
-            src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`}
+            src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fileUrl)}`}
             title="E-Book Viewer"
             width="100%"
             height="850px"
