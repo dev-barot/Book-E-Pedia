@@ -69,7 +69,7 @@ const EmployeeSidebar = ({ isCollapsed }) => {
             <i className="fa-solid fa-key"></i> Change Password
           </NavLink>
 
-          <NavLink to="/" className="nav-link-title logout">
+          <NavLink to="/customer/logout" className="nav-link-title logout">
             <i className="fa-solid fa-arrow-right-from-bracket"></i> Log Out
           </NavLink>
 

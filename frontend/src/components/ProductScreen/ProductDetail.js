@@ -130,6 +130,14 @@ function ProductDetail() {
   const cartAddButtonHandler = async (e) => {
     e.preventDefault();
 
+    const custId = localStorage.getItem("customer_id");
+    if (!custId) {
+      alert("Please login to add to cart");
+      // navigate("/login"); // Need to import navigate or use window.location
+      window.location.href = "/login";
+      return;
+    }
+
     try {
       const res = await fetch(`${BASE_URL}/api/cart/add/`, {
         method: "POST",
@@ -137,7 +145,7 @@ function ProductDetail() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          cust_id: 1, // later replace with logged-in user
+          cust_id: custId,
           product_id: productData.id,
           quantity: 1,
         }),

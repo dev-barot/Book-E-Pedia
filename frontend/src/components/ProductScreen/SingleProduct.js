@@ -12,6 +12,12 @@ function SingleProduct({ product }) {
     e.preventDefault();
     e.stopPropagation();
 
+    const custId = localStorage.getItem("customer_id");
+    if (!custId) {
+      alert("Please login to add items to cart");
+      navigate("/login");
+      return;
+    }
     try {
       const res = await fetch(`${BASE_URL}/api/cart/add/`, {
         method: "POST",
@@ -19,7 +25,7 @@ function SingleProduct({ product }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          cust_id: 1,
+          cust_id: custId,
           product_id: product.id,
           quantity: 1,
         }),

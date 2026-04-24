@@ -79,7 +79,7 @@ const AdminSidebar = ({ isCollapsed }) => {
             <i className="fa-solid fa-chart-column"></i> View Reports
           </NavLink>
 
-          <NavLink to="/" className="nav-link-title logout">
+          <NavLink to="/customer/logout" className="nav-link-title logout">
             <i className="fa-solid fa-arrow-right-from-bracket"></i> Log Out
           </NavLink>
 

@@ -11,9 +11,10 @@ const CustomerCart = () => {
 
   useEffect(() => {
     const fetchCartAndProducts = async () => {
+      const customerId = localStorage.getItem("customer_id") || "1"; // Default to 1 if not logged in for viewing, but creation needs real ID
       try {
         const [cartRes, productsRes] = await Promise.all([
-          fetch(`${BASE_URL}/api/cart/1/`),
+          fetch(`${BASE_URL}/api/cart/${customerId}/`),
           fetch(`${BASE_URL}/api/products/`)
         ]);
         
@@ -136,6 +137,12 @@ const CustomerCart = () => {
 
   // Add similar book to cart
   const addToCart = async (book) => {
+    const customerId = localStorage.getItem("customer_id");
+    if (!customerId) {
+      alert("Please login to add items to cart");
+      navigate("/login");
+      return;
+    }
     try {
       const res = await fetch(`${BASE_URL}/api/cart/add/`, {
         method: "POST",
@@ -143,7 +150,7 @@ const CustomerCart = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          cust_id: 1,
+          cust_id: customerId,
           product_id: book.id,
           quantity: 1,
         }),
@@ -167,6 +174,12 @@ const CustomerCart = () => {
 
   // Checkout
   const handleProceedToPayment = async () => {
+    const customerId = localStorage.getItem("customer_id");
+    if (!customerId) {
+      alert("Please login to proceed");
+      navigate("/login");
+      return;
+    }
     setIsProcessing(true);
     try {
       const res = await fetch(`${BASE_URL}/api/order/create/`, {
@@ -174,7 +187,7 @@ const CustomerCart = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cust_id: 1 }),
+        body: JSON.stringify({ cust_id: customerId }),
       });
 
       const data = await res.json();
