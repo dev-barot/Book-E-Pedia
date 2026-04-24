@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "./AdminAddProducts.css";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminAddProducts() {
   const location = useLocation();
@@ -18,24 +19,24 @@ function AdminAddProducts() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productResponse = await fetch("http://127.0.0.1:8000/api/products/");
+        const productResponse = await fetch(`${BASE_URL}/api/products/`);
         if (!productResponse.ok) throw new Error("Failed to fetch products");
         const productData = await productResponse.json();
         const products = productData.data || [];
         const maxId = products.length > 0 ? Math.max(...products.map(p => p.Product_ID)) : 0;
         setNextProductId(maxId + 1);
 
-        const categoryResponse = await fetch("http://127.0.0.1:8000/api/category/");
+        const categoryResponse = await fetch(`${BASE_URL}/api/category/`);
         if (!categoryResponse.ok) throw new Error("Failed to fetch categories");
         const categoryData = await categoryResponse.json();
         setCategories(categoryData.data || []);
 
-        const bookTypeResponse = await fetch("http://127.0.0.1:8000/api/book-types/");
+        const bookTypeResponse = await fetch(`${BASE_URL}/api/book-types/`);
         if (!bookTypeResponse.ok) throw new Error("Failed to fetch book types");
         const bookTypeData = await bookTypeResponse.json();
         setBookTypes(bookTypeData.data || []);
 
-        const employeeResponse = await fetch("http://127.0.0.1:8000/api/employees/");
+        const employeeResponse = await fetch(`${BASE_URL}/api/employees/`);
         if (!employeeResponse.ok) throw new Error("Failed to fetch employees");
         const employeeData = await employeeResponse.json();
         setEmployees(employeeData.data || []);
@@ -169,8 +170,8 @@ const handleChange = (e) => {
       const productId = productToEdit?.id;
 
       const url = productId
-        ? `http://127.0.0.1:8000/api/products/${productId}/`
-        : `http://127.0.0.1:8000/api/products/`;
+        ? `${BASE_URL}/api/products/${productId}/`
+        : `${BASE_URL}/api/products/`;
 
       const method = productId ? "POST" : "POST";
 
@@ -380,7 +381,7 @@ const handleChange = (e) => {
                 />
                 {productToEdit && productToEdit.Cover_Image && (
                   <img
-                    src={`http://127.0.0.1:8000${productToEdit.Cover_Image}`}
+                    src={productToEdit.Cover_Image.startsWith('http') ? productToEdit.Cover_Image : `${BASE_URL}${productToEdit.Cover_Image}`}
                     alt="Cover"
                     style={{ width: "80px", height: "80px", objectFit: "cover" }}
                   />
@@ -397,7 +398,7 @@ const handleChange = (e) => {
                 />
                 {productToEdit && productToEdit.Back_Image && (
                   <img
-                    src={`http://127.0.0.1:8000${productToEdit.Back_Image}`}
+                    src={productToEdit.Back_Image.startsWith('http') ? productToEdit.Back_Image : `${BASE_URL}${productToEdit.Back_Image}`}
                     alt="Back"
                     style={{ width: "80px", height: "80px", objectFit: "cover" }}
                   />

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import "./Invoice.css";
+import { BASE_URL } from "../../../utils/config";
 
 const Invoice = () => {
   const location = useLocation();
@@ -11,7 +12,7 @@ const Invoice = () => {
   useEffect(() => {
     const cid = localStorage.getItem("customer_id");
     if (cid) {
-      fetch(`http://127.0.0.1:8000/api/customer/${cid}/`)
+      fetch(`${BASE_URL}/api/customer/${cid}/`)
         .then(res => res.json())
         .then(data => {
           if (data && data.Fname) {

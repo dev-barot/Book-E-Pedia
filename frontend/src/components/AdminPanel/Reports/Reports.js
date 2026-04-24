@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../AdminCommon.css";
 import "./Reports.css";
+import { BASE_URL } from "../../../utils/config";
 
 const columnNameMappings = {
   Order_ID: "Order ID",
@@ -70,7 +71,7 @@ const Reports = () => {
 
   const fetchReportData = () => {
     setIsLoading(true);
-    let url = `http://127.0.0.1:8000/api/get_report_data/${selectedReport}/`;
+    let url = `${BASE_URL}/api/get_report_data/${selectedReport}/`;
 
     const params = new URLSearchParams();
     if (isTemporal && startDate) params.append("start_date", startDate);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./CustomerCart.css";
 import { useNavigate, Link } from "react-router-dom";
+import { BASE_URL } from "../../../utils/config";
 
 const CustomerCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -12,8 +13,8 @@ const CustomerCart = () => {
     const fetchCartAndProducts = async () => {
       try {
         const [cartRes, productsRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/cart/1/"),
-          fetch("http://127.0.0.1:8000/api/products/")
+          fetch(`${BASE_URL}/api/cart/1/`),
+          fetch(`${BASE_URL}/api/products/`)
         ]);
         
         const cartData = await cartRes.json();
@@ -70,7 +71,7 @@ const CustomerCart = () => {
           name: p.name,
           author: p.author,
           price: p.price,
-          image: p.cover_photo ? `http://127.0.0.1:8000${p.cover_photo}` : "",
+          image: p.cover_photo ? (p.cover_photo.startsWith('http') ? p.cover_photo : `${BASE_URL}${p.cover_photo}`) : "",
         }));
 
         setSimilarBooks(formattedSimilar);
@@ -88,7 +89,7 @@ const CustomerCart = () => {
       if (quantity < 1) return;
 
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/cart/update/${cartId}/`, {
+        const res = await fetch(`${BASE_URL}/api/cart/update/${cartId}/`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -119,7 +120,7 @@ const CustomerCart = () => {
   const cartRemoveButtonHandler = async (cartId) => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/cart/remove/${cartId}/`,
+        `${BASE_URL}/api/cart/remove/${cartId}/`,
         { method: "DELETE" }
       );
 
@@ -136,7 +137,7 @@ const CustomerCart = () => {
   // Add similar book to cart
   const addToCart = async (book) => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/cart/add/", {
+      const res = await fetch(`${BASE_URL}/api/cart/add/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -168,7 +169,7 @@ const CustomerCart = () => {
   const handleProceedToPayment = async () => {
     setIsProcessing(true);
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/order/create/", {
+      const res = await fetch(`${BASE_URL}/api/order/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

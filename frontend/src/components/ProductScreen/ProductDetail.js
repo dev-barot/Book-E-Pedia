@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./ProductDetail.css";
+import { BASE_URL } from "../../utils/config";
 
 
 function ProductDetail() {
@@ -17,7 +18,7 @@ function ProductDetail() {
   const fetchFeedbacks = React.useCallback(async () => {
       try {
         const res = await fetch(
-          `http://127.0.0.1:8000/api/feedbacks/?product_id=${id}`
+          `${BASE_URL}/api/feedbacks/?product_id=${id}`
         );
         const data = await res.json();
 
@@ -37,8 +38,8 @@ function ProductDetail() {
   const fetchProductAndFormats = React.useCallback(async () => {
     try {
       const [resProducts, resBookTypes] = await Promise.all([
-        fetch("http://127.0.0.1:8000/api/products/"),
-        fetch("http://127.0.0.1:8000/api/book-types/")
+        fetch(`${BASE_URL}/api/products/`),
+        fetch(`${BASE_URL}/api/book-types/`)
       ]);
 
       const data = await resProducts.json();
@@ -58,7 +59,7 @@ function ProductDetail() {
           description: found.description,
           price: found.price,
           Cover_Photo: found.cover_photo
-            ? `http://127.0.0.1:8000${found.cover_photo}`
+            ? (found.cover_photo.startsWith('http') ? found.cover_photo : `${BASE_URL}${found.cover_photo}`)
             : null
         });
 
@@ -96,7 +97,7 @@ function ProductDetail() {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/feedback/add/", {
+      const res = await fetch(`${BASE_URL}/api/feedback/add/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,7 +131,7 @@ function ProductDetail() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/cart/add/", {
+      const res = await fetch(`${BASE_URL}/api/cart/add/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

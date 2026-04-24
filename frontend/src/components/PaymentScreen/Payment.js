@@ -140,6 +140,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Payment.css';
 import card from './card.png';
+import { BASE_URL } from "../../utils/config";
 
 function Payment() {
 const location = useLocation();
@@ -208,7 +209,7 @@ async function PayNowButton() {
 
       handler: async function (response) {
         // 2️⃣ Verify payment
-          await fetch("http://127.0.0.1:8000/api/payment/create/", {
+          await fetch(`${BASE_URL}/api/payment/create/`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import "./EmployeeAddBookType.css";
+import { BASE_URL } from "../../../utils/config";
 
 function EmployeeAddBookType() {
   const location = useLocation();
@@ -62,8 +63,8 @@ const handleSubmit = async (e) => {
 
     // 🔥 Decide API endpoint
     const url = bookToEdit
-      ? `http://127.0.0.1:8000/api/book-types/${bookToEdit.id}/`
-      : "http://127.0.0.1:8000/api/add-book-type/";
+      ? `${BASE_URL}/api/book-types/${bookToEdit.id}/`
+      : `${BASE_URL}/api/add-book-type/`;
 
     const response = await fetch(url, {
       method: "POST", // using POST for both (your backend supports it)

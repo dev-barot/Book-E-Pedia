@@ -3,6 +3,7 @@ import AdminSidebar from '../AdminSidebar/AdminSidebar';
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "../AdminCommon.css";
 import './AdminManageFeedback.css';
+import { BASE_URL } from "../../../utils/config";
 
 function AdminManageFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -12,7 +13,7 @@ function AdminManageFeedback() {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/feedbacks/'); // Update to your actual API endpoint
+        const response = await fetch(`${BASE_URL}/api/feedbacks/`); // Update to your actual API endpoint
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -33,7 +34,7 @@ function AdminManageFeedback() {
   // Handle delete feedback
   const handleDeleteFeedback = async (id) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/feedbacks/${id}/delete/`, {
+      const res = await fetch(`${BASE_URL}/api/feedbacks/${id}/delete/`, {
         method: "PUT"
       });
 

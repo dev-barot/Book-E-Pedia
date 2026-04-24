@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Category.css";
+import { BASE_URL } from "../../utils/config";
 
 function Category() {
   const [categories, setCategories] = useState([]);
@@ -9,7 +10,7 @@ function Category() {
   const limit = 8;
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/category/")
+    fetch(`${BASE_URL}/api/category/`)
       .then((res) => res.json())
       .then((data) => {
         const activeCategories = (data.data || []).filter(
@@ -62,7 +63,7 @@ function Category() {
                       <div className="icon-glow-backdrop"></div>
 
                       <img
-                        src={`http://127.0.0.1:8000${category.Category_Photo}`}
+                        src={category.Category_Photo.startsWith('http') ? category.Category_Photo : `${BASE_URL}${category.Category_Photo}`}
                         alt={category.Category_Name}
                       />
 

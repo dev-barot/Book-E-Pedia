@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CustomerSidebar from "../CustomerSidebar/CustomerSidebar";
 import "./CustomerProfile.css";
+import { BASE_URL } from "../../../utils/config";
 
 function CustomerProfile() {
   const [customer, setCustomer] = useState({
@@ -23,11 +24,10 @@ function CustomerProfile() {
   const [message, setMessage] = useState("");
 
   const customerId = localStorage.getItem("customer_id");
-  const baseUrl = "http://127.0.0.1:8000";
 
   useEffect(() => {
     if (customerId) {
-      fetch(`${baseUrl}/api/customer/${customerId}/`)
+      fetch(`${BASE_URL}/api/customer/${customerId}/`)
         .then(res => res.json())
         .then(data => {
           if (data && data.Cust_ID) {
@@ -59,7 +59,7 @@ function CustomerProfile() {
   };
 
   const handleSaveClick = () => {
-    fetch(`${baseUrl}/api/customer/${customerId}/`, {
+    fetch(`${BASE_URL}/api/customer/${customerId}/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

@@ -262,6 +262,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "./AdminManageBookType.css";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminManageBookType() {
   const [bookTypes, setBookTypes] = useState([]);
@@ -270,7 +271,7 @@ function AdminManageBookType() {
 
   const fetchBookTypes = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/book-types/");
+      const res = await fetch(`${BASE_URL}/api/book-types/`);
       const data = await res.json();
       setBookTypes(data.data || []);
     } catch (error) {
@@ -291,7 +292,7 @@ function AdminManageBookType() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/delete-book-type/${id}/`,
+        `${BASE_URL}/api/delete-book-type/${id}/`,
         {
           method: "DELETE",
         }

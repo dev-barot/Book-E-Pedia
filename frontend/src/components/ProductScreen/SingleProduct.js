@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SingleProduct.css";
+import { BASE_URL } from "../../utils/config";
 
 function SingleProduct({ product }) {
 
@@ -12,7 +13,7 @@ function SingleProduct({ product }) {
     e.stopPropagation();
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/cart/add/", {
+      const res = await fetch(`${BASE_URL}/api/cart/add/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

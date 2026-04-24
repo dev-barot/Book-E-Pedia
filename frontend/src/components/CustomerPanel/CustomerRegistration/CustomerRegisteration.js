@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CustomerRegisteration.css";
+import { BASE_URL } from "../../../utils/config";
 
 function CustomerRegisteration() {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ const submitHandler = async (event) => {
   if (!validate()) return;
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/register/", {
+    const response = await fetch(`${BASE_URL}/api/register/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

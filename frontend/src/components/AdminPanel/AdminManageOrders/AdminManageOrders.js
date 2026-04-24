@@ -3,6 +3,7 @@ import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "../AdminCommon.css";
 import "./AdminManageOrders.css";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminManageOrders() {
   const [orders, setOrders] = useState([]);
@@ -15,7 +16,7 @@ function AdminManageOrders() {
   // 🔥 FETCH ORDERS (moved outside useEffect so reusable)
   const fetchOrders = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/admin/orders/");
+      const response = await fetch(`${BASE_URL}/api/admin/orders/`);
       const data = await response.json();
       setOrders(data.orders || []);
     } catch (error) {
@@ -39,7 +40,7 @@ function AdminManageOrders() {
     }
 
     try {
-      await fetch(`http://127.0.0.1:8000/api/admin/orders/${orderId}/`, {
+      await fetch(`${BASE_URL}/api/admin/orders/${orderId}/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

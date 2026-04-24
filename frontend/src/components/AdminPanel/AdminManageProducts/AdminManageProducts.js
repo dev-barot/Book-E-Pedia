@@ -5,6 +5,7 @@ import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "../AdminCommon.css";
 import "./AdminManageProducts.css";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminManageProducts() {
   const [productList, setProductList] = useState([]);
@@ -13,7 +14,7 @@ function AdminManageProducts() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/products/");
+      const response = await fetch(`${BASE_URL}/api/products/`);
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
       console.log("Raw response from /api/products/:", data);
@@ -44,7 +45,7 @@ function AdminManageProducts() {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/delete-product/${productId}/`,
+          `${BASE_URL}/api/delete-product/${productId}/`,
           {
             method: "DELETE",
           }
@@ -137,7 +138,7 @@ function AdminManageProducts() {
                           }}
                         >
                           <img
-                            src={`http://127.0.0.1:8000${product.cover_photo}`}
+                            src={product.cover_photo.startsWith('http') ? product.cover_photo : `${BASE_URL}${product.cover_photo}`}
                             alt="Cover"
                             style={{
                               width: "100%",

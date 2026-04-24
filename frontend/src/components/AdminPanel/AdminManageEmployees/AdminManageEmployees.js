@@ -4,6 +4,7 @@ import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "../AdminCommon.css";
 import "./AdminManageEmployees.css";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminManageEmployees() {
   const [employeeList, setEmployeeList] = useState([]);
@@ -12,7 +13,7 @@ function AdminManageEmployees() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/employees/");
+      const response = await fetch(`${BASE_URL}/api/employees/`);
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
@@ -36,7 +37,7 @@ function AdminManageEmployees() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/employees/${id}/`, {
+        const response = await fetch(`${BASE_URL}/api/employees/${id}/`, {
           method: 'DELETE',
         });
         if (!response.ok) {

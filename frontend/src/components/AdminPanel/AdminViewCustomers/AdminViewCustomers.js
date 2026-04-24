@@ -3,6 +3,7 @@ import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "../AdminCommon.css";
 import "./AdminViewCustomers.css";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminViewCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -16,7 +17,7 @@ function AdminViewCustomers() {
   const handleDeactivate = async (custId) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/customers/deactivate/${custId}/`,
+        `${BASE_URL}/api/customers/deactivate/${custId}/`,
         {
           method: "PUT",
         }
@@ -42,7 +43,7 @@ function AdminViewCustomers() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/customers/");
+        const response = await fetch(`${BASE_URL}/api/customers/`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

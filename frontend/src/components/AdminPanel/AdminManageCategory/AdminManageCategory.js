@@ -4,6 +4,7 @@ import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import "../AdminCommon.css";
 import "./AdminManageCategory.css";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminManageCategory() {
   const [categories, setCategories] = useState([]);
@@ -12,7 +13,7 @@ function AdminManageCategory() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/category/");
+      const response = await fetch(`${BASE_URL}/api/category/`);
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
@@ -35,7 +36,7 @@ function AdminManageCategory() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/category/${id}/`, {
+        const response = await fetch(`${BASE_URL}/api/category/${id}/`, {
           method: 'DELETE',
         });
         if (!response.ok) {

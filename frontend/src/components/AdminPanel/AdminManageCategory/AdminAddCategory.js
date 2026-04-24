@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import './AdminAddCategory.css';
+import { BASE_URL } from "../../../utils/config";
 
 function AdminAddCategory() {
   const location = useLocation();
@@ -64,8 +65,8 @@ function AdminAddCategory() {
 
     try {
       const url = categoryToEdit 
-        ? `http://127.0.0.1:8000/api/category/${categoryToEdit.Category_ID}/` // Added /api/
-        : 'http://127.0.0.1:8000/api/category/'; // Added /api/
+        ? `${BASE_URL}/api/category/${categoryToEdit.Category_ID}/` // Added /api/
+        : `${BASE_URL}/api/category/`; // Added /api/
       const method = 'POST';
 
       const response = await fetch(url, {
@@ -129,7 +130,7 @@ function AdminAddCategory() {
               {categoryToEdit && categoryToEdit.Category_Photo && (
                 <div>
                   <img
-                    src={`http://127.0.0.1:8000${categoryToEdit.Category_Photo}`}
+                    src={categoryToEdit.Category_Photo.startsWith('http') ? categoryToEdit.Category_Photo : `${BASE_URL}${categoryToEdit.Category_Photo}`}
                     alt={categoryToEdit.Category_Name}
                     className="category-photo-preview"
                   />

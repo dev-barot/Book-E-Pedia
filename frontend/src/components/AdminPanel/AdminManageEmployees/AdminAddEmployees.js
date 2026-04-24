@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import './AdminAddEmployees.css';
+import { BASE_URL } from "../../../utils/config";
 
 function AdminAddEmployees() {
   const location = useLocation();
@@ -16,7 +17,7 @@ function AdminAddEmployees() {
     if (!employeeToEdit) {
       const fetchMaxEmpId = async () => {
         try {
-          const response = await fetch("http://127.0.0.1:8000/api/employees/");
+          const response = await fetch(`${BASE_URL}/api/employees/`);
           if (!response.ok) throw new Error("Failed to fetch employees");
           const data = await response.json();
           const employees = data.data || [];
@@ -78,8 +79,8 @@ function AdminAddEmployees() {
 
     try {
       const url = employeeToEdit
-        ? `http://127.0.0.1:8000/api/employees/${employeeToEdit.Emp_ID}/`
-        : "http://127.0.0.1:8000/api/employees/";
+        ? `${BASE_URL}/api/employees/${employeeToEdit.Emp_ID}/`
+        : `${BASE_URL}/api/employees/`;
       const method = "POST"; // Use POST for both add and edit due to FormData parsing limitations with PUT in Django
 
       const response = await fetch(url, {
@@ -235,7 +236,7 @@ function AdminAddEmployees() {
                 <input type="file" name="Emp_Photo" onChange={handleChange} />
                 {employeeToEdit && employeeToEdit.Emp_Photo && (
                   <img
-                    src={`http://127.0.0.1:8000${employeeToEdit.Emp_Photo}`}
+                    src={employeeToEdit.Emp_Photo.startsWith('http') ? employeeToEdit.Emp_Photo : `${BASE_URL}${employeeToEdit.Emp_Photo}`}
                     alt="Employee"
                     className="employee-photo-preview"
                     style={{ width: "80px", height: "80px", objectFit: "cover" }}

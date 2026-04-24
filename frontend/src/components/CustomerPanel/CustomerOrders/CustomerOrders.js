@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import CustomerSidebar from "../CustomerSidebar/CustomerSidebar";
 import "./CustomerOrders.css";
+import { BASE_URL } from "../../../utils/config";
 // Importing the local dummy images matching the original file
 import p1 from "./download(1).jpeg";
 
@@ -9,12 +10,11 @@ function CustomerOrders() {
   const [orderItems, setOrderItems] = useState([]);
   const [expandedOrder, setExpandedOrder] = useState(null);
 
-  const baseUrl = "http://127.0.0.1:8000";
   const customerId = localStorage.getItem("customer_id");
 
   useEffect(() => {
     if (customerId) {
-      fetch(`${baseUrl}/api/customer/${customerId}/orders`)
+      fetch(`${BASE_URL}/api/customer/${customerId}/orders`)
         .then(res => res.json())
         .then(data => {
           if (data && Array.isArray(data.data)) {
@@ -58,7 +58,7 @@ function CustomerOrders() {
         price: parseFloat(item.Product_Price) || 0,
         orderType: oType,
         image: item.product_details?.Cover_Photo
-          ? `${baseUrl}${item.product_details.Cover_Photo}`
+          ? (item.product_details.Cover_Photo.startsWith('http') ? item.product_details.Cover_Photo : `${BASE_URL}${item.product_details.Cover_Photo}`)
           : p1
       });
 

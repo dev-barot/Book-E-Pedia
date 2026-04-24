@@ -4,6 +4,7 @@ import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
 import "./EmployeeManageBookType.css";
+import { BASE_URL } from "../../../utils/config";
 
 function EmployeeManageBookType() {
   const [bookTypes, setBookTypes] = useState([]);
@@ -12,7 +13,7 @@ function EmployeeManageBookType() {
 
   const fetchBookTypes = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/book-types/");
+      const res = await fetch(`${BASE_URL}/api/book-types/`);
       const data = await res.json();
       setBookTypes(data.data || []);
     } catch (error) {
@@ -33,7 +34,7 @@ function EmployeeManageBookType() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/delete-book-type/${id}/`,
+        `${BASE_URL}/api/delete-book-type/${id}/`,
         {
           method: "DELETE",
         }

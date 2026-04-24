@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import "./EmployeeProfile.css";
+import { BASE_URL } from "../../../utils/config";
 
 function EmployeeProfile() {
   const [employee, setEmployee] = useState({
@@ -25,11 +26,10 @@ function EmployeeProfile() {
   const [imagePreview, setImagePreview] = useState(null);
 
   const employeeId = localStorage.getItem("employee_id");
-  const baseUrl = "http://127.0.0.1:8000";
 
   useEffect(() => {
     if (employeeId) {
-      fetch(`${baseUrl}/api/employees/${employeeId}/`)
+      fetch(`${BASE_URL}/api/employees/${employeeId}/`)
         .then(res => res.json())
         .then(data => {
           if (data && data.Emp_ID) {
@@ -90,7 +90,7 @@ function EmployeeProfile() {
       }
     }
 
-    fetch(`${baseUrl}/api/employees/${employeeId}/`, {
+    fetch(`${BASE_URL}/api/employees/${employeeId}/`, {
       method: "PUT",
       body: formData,
     })

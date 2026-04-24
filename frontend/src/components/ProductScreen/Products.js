@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Products.css";
 import SingleProduct from "./SingleProduct";
+import { BASE_URL } from "../../utils/config";
 
 import img1 from "./alchemist.jpeg";
 
@@ -37,8 +38,8 @@ const Products = () => {
     const fetchData = async () => {
       try {
         const [resProducts, resBookTypes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/products/"),
-          fetch("http://127.0.0.1:8000/api/book-types/")
+          fetch(`${BASE_URL}/api/products/`),
+          fetch(`${BASE_URL}/api/book-types/`)
         ]);
         
         const productsData = await resProducts.json();
@@ -274,7 +275,7 @@ const Products = () => {
                       id: product.id,
                       name: product.name,
                       price: product.price,
-                      image: product.cover_photo ? `http://127.0.0.1:8000${product.cover_photo}` : img1,
+                      image: product.cover_photo ? (product.cover_photo.startsWith('http') ? product.cover_photo : `${BASE_URL}${product.cover_photo}`) : img1,
                       author: product.author,
                       description: product.description
                     }}

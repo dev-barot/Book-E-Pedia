@@ -4,16 +4,14 @@ import "./Home.css";
 
 // Assets imported exactly as in the original to prevent missing file errors
 import heroGemini from "./Gemini-removebg-preview.png";
-
 import bestbook1 from "./download (1).jpeg";
-
 import bookCollection from "./create-an-image-of-e-book-for-the-bookstore-websit (1).png";
 import audiobookImg from "./create-an-image-of-audio-book-for-the-bookstore-we.png";
 import videobookImg from "./create-an-image-of-video-book-for-the-bookstore-we.png";
 import physicalbookImg from "./create-an-image-of-e-book-for-the-bookstore-websit.png";
-
 import bookShelf from "./Realistic_Digital_Bookshelf_With_Colorful_Books_And_Signboard_1__1_-removebg-preview (1).png";
 
+import { BASE_URL } from "../../utils/config";
 
 function Home() {
   const navigate = useNavigate();
@@ -22,7 +20,7 @@ function Home() {
   const [featuredCategories, setFeaturedCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/category/")
+    fetch(`${BASE_URL}/api/category/`)
       .then((res) => res.json())
       .then((data) => {
         const activeCategories = (data.data || []).filter(
@@ -34,7 +32,7 @@ function Home() {
         console.error("Error fetching categories:", err);
       });
 
-    fetch("http://127.0.0.1:8000/api/products/")
+    fetch(`${BASE_URL}/api/products/`)
       .then((res) => res.json())
       .then((data) => {
         const activeProducts = (data.data || []).filter(
@@ -144,7 +142,7 @@ function Home() {
                 >
                   <div className="cat-icon-wrapper">
                     <img
-                      src={`http://127.0.0.1:8000${cat.Category_Photo}`}
+                      src={cat.Category_Photo.startsWith('http') ? cat.Category_Photo : `${BASE_URL}${cat.Category_Photo}`}
                       alt={cat.Category_Name}
                     />
                   </div>
@@ -166,7 +164,7 @@ function Home() {
             {trendingBooks.map((book) => (
               <div className="product-card-lux" key={`bs-${book.id}`}>
                 <div className="product-image-container">
-                  <img src={book.cover_photo ? `http://127.0.0.1:8000${book.cover_photo}` : bestbook1} alt={book.name} />
+                  <img src={book.cover_photo ? (book.cover_photo.startsWith('http') ? book.cover_photo : `${BASE_URL}${book.cover_photo}`) : bestbook1} alt={book.name} />
                   <div className="product-overlay">
                     <button className="btn-add-cart-lux" onClick={() => addToCart(book)}>
                       <i className="fa-solid fa-cart-plus me-2"></i> Add to Cart

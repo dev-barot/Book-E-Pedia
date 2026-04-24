@@ -3,6 +3,7 @@ import "./AdminDashboard.css";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar } from "recharts";
+import { BASE_URL } from "../../../utils/config";
 
 function AdminDashboard() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -34,12 +35,12 @@ function AdminDashboard() {
     const fetchDashboardData = async () => {
       try {
         const [countsRes, ordersRes, productsRes, feedbacksRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/admin/dashboard-counts/"),
-          fetch("http://127.0.0.1:8000/api/admin/orders/"),
-          fetch("http://127.0.0.1:8000/api/products/"),
-          fetch("http://127.0.0.1:8000/api/feedbacks/")
+          fetch(`${BASE_URL}/api/admin/dashboard-counts/`),
+          fetch(`${BASE_URL}/api/admin/orders/`),
+          fetch(`${BASE_URL}/api/products/`),
+          fetch(`${BASE_URL}/api/feedbacks/`)
         ]);
-        const trendingRes = await fetch("http://127.0.0.1:8000/api/admin/trending-books/");
+        const trendingRes = await fetch(`${BASE_URL}/api/admin/trending-books/`);
         const trendingData = await trendingRes.json();
 
         const tBooks = trendingData.books || [];
@@ -58,7 +59,7 @@ function AdminDashboard() {
           setFulfillmentRate(dData.fulfillment_rate || 0);
         }
 
-        const lowStockRes = await fetch("http://127.0.0.1:8000/api/admin/low-stock/");
+        const lowStockRes = await fetch(`${BASE_URL}/api/admin/low-stock/`);
         const lowStockData = await lowStockRes.json();
         setLowStock(lowStockData.products || []);
 
@@ -394,7 +395,7 @@ function AdminDashboard() {
                 lowStock.map((item, index) => (
                   <div key={index} className="low-stock-item" style={{ display: "flex", gap: "15px", alignItems: "center", padding: "10px 0", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                     <img
-                      src={item.image ? `http://127.0.0.1:8000${item.image}` : "https://via.placeholder.com/40x55"}
+                      src={item.image ? (item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`) : "https://via.placeholder.com/40x55"}
                       alt={item.name}
                       style={{ width: "40px", height: "55px", borderRadius: "4px", objectFit: "cover" }}
                     />

@@ -3,6 +3,7 @@ import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
 import "./EmployeeViewCategory.css";
+import { BASE_URL } from "../../../utils/config";
 
 function EmployeeViewCategory() {
 
@@ -12,7 +13,7 @@ function EmployeeViewCategory() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/category/");
+      const response = await fetch(`${BASE_URL}/api/category/`);
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
