@@ -8,6 +8,7 @@ export const getMediaUrl = (path) => {
     url = `${BASE_URL}${path}`;
   }
 
-  // Force HTTPS for all media to prevent "Mixed Content" blocks on Vercel
-  return url.replace("http://", "https://");
+  // Robust HTTPS conversion to prevent "Mixed Content" blocks on Vercel
+  // This will catch 'http://' at the start of the string regardless of case
+  return url.replace(/^http:\/\//i, "https://");
 };
