@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
@@ -7,6 +8,14 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { BASE_URL } from "../../../utils/config";
 
 function EmployeeDashboard() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("employee_login") !== "true") {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [dashboardData, setDashboardData] = useState({
     total_customers: 0,

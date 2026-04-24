@@ -1228,7 +1228,8 @@ def get_order_details(request, order_id):
                     "product_name": item.Product_ID.Product_Name,
                     "price": str(item.Product_Price),
                     "quantity": item.Product_Quantity,
-                    "total": str(item.T_amount)
+                    "total": str(item.T_amount),
+                    "image": item.Product_ID.Cover_Photo.url if item.Product_ID.Cover_Photo else ""
                 })
 
             return JsonResponse({

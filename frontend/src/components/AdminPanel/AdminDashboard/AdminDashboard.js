@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
@@ -7,6 +8,14 @@ import { BASE_URL } from "../../../utils/config";
 // Cache buster: v1.0.2
 
 function AdminDashboard() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("admin_login") !== "true") {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [dashboardData, setDashboardData] = useState({
     total_customers: 0,

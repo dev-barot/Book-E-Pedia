@@ -1,144 +1,141 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import './Payment.css';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import "./Payment.css";
 import { BASE_URL } from "../../utils/config";
 
-function Payment() {
-  const location = useLocation();
+const Payment = () => {
+  const { orderId } = useParams();
   const navigate = useNavigate();
-
-  const orderId = location.state?.orderId;
-  const totalAmount = location.state?.total || "0.00";
-
-  const [payMethod, setPayMethod] = useState('razorpay'); // Default to razorpay
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("razorpay");
+
+  const customerId = localStorage.getItem("customer_id");
 
   useEffect(() => {
-    if (!orderId) {
-      alert("Invalid order. Please try again.");
-      navigate('/cart');
+    // Redirect if not logged in
+    if (!customerId) {
+      navigate("/login");
+      return;
     }
-  }, [orderId, navigate]);
 
-  const loadRazorpay = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/order/${orderId}/`);
+        if (response.data.bool) {
+          setOrderDetails(response.data);
+        } else {
+          setError("Order not found or access denied.");
+        }
+      } catch (err) {
+        console.error("Fetch order error:", err);
+        setError("Failed to load order details.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  async function handlePayment() {
-    if (payMethod !== 'razorpay') {
-      alert("Currently only Razorpay is supported.");
+    fetchOrderDetails();
+  }, [orderId, customerId, navigate]);
+
+  const handlePayment = async () => {
+    if (paymentMethod !== "razorpay") {
+      alert("Only Razorpay is supported right now.");
       return;
     }
 
     setIsProcessing(true);
-    const res = await loadRazorpay();
-
-    if (!res) {
-      alert("Razorpay SDK failed to load. Please check your internet connection.");
-      setIsProcessing(false);
-      return;
-    }
-
     try {
-      const options = {
-        key: "rzp_test_SdnTwk4YH73sBq",
-        amount: Math.round(parseFloat(totalAmount) * 100),
-        currency: "INR",
-        name: "Book-E-Pedia",
-        description: `Payment for Order #${orderId}`,
-        image: "https://book-e-pedia.vercel.app/logo.png", // Replace with your actual logo if available
-        handler: async function (response) {
-          try {
-            // Verify payment on backend
-            const verifyRes = await fetch(`${BASE_URL}/api/payment/create/`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ 
-                order_id: orderId,
-                payment_id: response.razorpay_payment_id 
-              }),
-            });
-
-            const verifyData = await verifyRes.json();
-            
-            if (verifyData.bool) {
-                alert("Payment Successful! 🎉");
-                navigate("/customer/dashboard");
-            } else {
-                alert("Payment verification failed. Please contact support.");
-                setIsProcessing(false);
-            }
-          } catch (verifyErr) {
-            console.error("Verification error:", verifyErr);
-            alert("Payment successful, but verification failed. Redirecting to dashboard...");
-            navigate("/customer/dashboard");
-          }
-        },
-        prefill: {
-          name: localStorage.getItem("customer_username") || "",
-          email: "",
-          contact: ""
-        },
-        theme: {
-          color: "#3b82f6",
-        },
-      };
-
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
-      
-      paymentObject.on('payment.failed', function (response){
-          alert("Payment Failed: " + response.error.description);
-          setIsProcessing(false);
+      // Direct payment confirmation for test mode
+      const response = await axios.post(`${BASE_URL}/api/payment/create/`, {
+        order_id: orderId,
       });
 
+      if (response.data.bool) {
+        alert("Payment Successful! Your order is confirmed.");
+        navigate("/customer/dashboard");
+      } else {
+        alert("Payment Failed: " + response.data.msg);
+      }
     } catch (err) {
-      console.error(err);
-      alert("Payment failed to initialize");
+      console.error("Payment error:", err);
+      alert("Something went wrong during payment.");
+    } finally {
       setIsProcessing(false);
     }
+  };
+
+  if (loading) {
+    return (
+      <div className="payment-lux-bg">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="payment-lux-bg">
+        <div className="payment-summary-card text-center">
+          <h2 className="text-danger">Error</h2>
+          <p>{error}</p>
+          <Link to="/cart" className="btn btn-primary mt-3">Back to Cart</Link>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="payment-lux-bg">
       <div className="payment-lux-container">
         
-        {/* Left: Summary */}
+        {/* LEFT PANEL: Order Summary */}
         <div className="payment-summary-card">
           <div className="payment-summary-header">
-            <h2>Complete Payment</h2>
-            <p>Securely finalize your purchase and unlock your library.</p>
+            <h2>Order Summary</h2>
+            <p>Order ID: #{orderId}</p>
           </div>
-          
-          <div className="payment-order-id-pills">
-            ORDER ID: #{orderId}
+
+          <div className="payment-product-list">
+            {orderDetails?.items?.map((item, index) => (
+              <div className="payment-product-item" key={index}>
+                <img 
+                  src={item.image ? (item.image.startsWith("http") ? item.image : `${BASE_URL}${item.image}`) : "https://via.placeholder.com/150"} 
+                  alt={item.product_name} 
+                  className="payment-item-img" 
+                />
+                <div className="payment-item-info">
+                  <span className="payment-item-name">{item.product_name}</span>
+                  <span className="payment-item-qty">Qty: {item.quantity}</span>
+                </div>
+                <div className="payment-item-price">
+                  ₹{item.total}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="payment-total-section">
             <div className="payment-total-row">
               <span className="payment-total-label">Grand Total</span>
-              <span className="payment-total-amount">Rs. {Number(totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              <span className="payment-total-amount">₹{orderDetails?.total_amount}</span>
             </div>
           </div>
         </div>
 
-        {/* Right: Payment Methods */}
+        {/* RIGHT PANEL: Payment Methods */}
         <div className="payment-methods-card">
           <h3>Payment Methods</h3>
           
           <div className="payment-option-list">
-            
             <div 
-              className={`payment-option-item ${payMethod === 'razorpay' ? 'selected' : ''}`}
-              onClick={() => setPayMethod('razorpay')}
+              className={`payment-option-item ${paymentMethod === "razorpay" ? "selected" : ""}`}
+              onClick={() => setPaymentMethod("razorpay")}
             >
               <div className="payment-option-radio">
                 <div className="payment-option-radio-inner"></div>
@@ -151,19 +148,16 @@ function Payment() {
             </div>
 
             <div 
-              className={`payment-option-item ${payMethod === 'card' ? 'selected' : 'disabled'}`}
-              style={{ opacity: 0.5, cursor: 'not-allowed' }}
+              className="payment-option-item disabled" 
+              style={{ opacity: 0.6, cursor: "not-allowed" }}
             >
-              <div className="payment-option-radio">
-                <div className="payment-option-radio-inner"></div>
-              </div>
+              <div className="payment-option-radio"></div>
               <div className="payment-option-info">
                 <span className="payment-option-title">Direct Card (Coming Soon)</span>
                 <span className="payment-option-desc">Pay directly with Visa/Mastercard</span>
               </div>
               <i className="fa-solid fa-building-columns payment-option-icon"></i>
             </div>
-
           </div>
 
           <button 
@@ -173,30 +167,33 @@ function Payment() {
           >
             {isProcessing ? (
               <>
-                <i className="fas fa-spinner fa-spin"></i> Processing...
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Processing...
               </>
             ) : (
               <>
-                <i className="fa-solid fa-shield-halved"></i> Pay Rs. {totalAmount}
+                <i className="fa-solid fa-shield-halved"></i>
+                Pay ₹{orderDetails?.total_amount}
               </>
             )}
           </button>
 
           <div className="payment-secure-badge">
             <i className="fa-solid fa-lock"></i>
-            <span>SSL Secured & Encrypted Payment</span>
+            SSL Secured & Encrypted Payment
           </div>
 
           <div className="mt-4 text-center">
-             <Link to="/cart" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '0.9rem' }}>
-                ‹ Back to Cart
-             </Link>
+            <Link to="/cart">
+              <i className="fa-solid fa-chevron-left me-2"></i>
+              Back to Cart
+            </Link>
           </div>
         </div>
 
       </div>
     </div>
   );
-}
+};
 
 export default Payment;

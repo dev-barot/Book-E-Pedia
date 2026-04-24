@@ -52,7 +52,10 @@ function CustomerDashboard() {
   }, [customerId]);
 
   useEffect(() => {
-    if (!customerId) return;
+    if (!customerId) {
+      navigate("/login");
+      return;
+    }
 
     const init = async () => {
       try {
