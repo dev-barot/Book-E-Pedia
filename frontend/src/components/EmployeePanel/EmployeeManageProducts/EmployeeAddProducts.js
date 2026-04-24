@@ -12,7 +12,7 @@ const location = useLocation();
   const [nextProductId, setNextProductId] = useState(null);
   const [categories, setCategories] = useState([]); // Fetch categories dynamically
   const [bookTypes, setBookTypes] = useState([]); // Fetch book types dynamically
-  const [employees, setEmployees] = useState([]);
+
 
   // Fetch max Product_ID, categories, and book types on mount
   useEffect(() => {
@@ -35,20 +35,13 @@ const location = useLocation();
         const bookTypeData = await bookTypeResponse.json();
         setBookTypes(bookTypeData.data || []);
 
-        const employeeResponse = await fetch("http://127.0.0.1:8000/api/employees/");
-        if (!employeeResponse.ok) throw new Error("Failed to fetch employees");
-        const employeeData = await employeeResponse.json();
-        setEmployees(employeeData.data || []);
       } catch (error) {
         console.error("Error fetching data:", error);
         setNextProductId(1);
         setCategories([]);
         setBookTypes([]);
-        setEmployees([]);
-        console.log("Categories:", categories);
-        console.log("Book Types:", bookTypes);
-        console.log("Employees:", employees);
       }
+
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -267,22 +260,6 @@ const handleChange = (e) => {
                 </select>
                 {errors.Book_ID && <p className="error-text">*{errors.Book_ID}</p>}
               </div>
-              <div className="admin-add-product-field">
-                <label htmlFor="Emp_ID">Employee</label>
-               <select
-                  name="Emp_ID"
-                  value={formData.Emp_ID}
-                  onChange={handleChange}
-                >
-                  <option value="">-- Select Employee --</option>
-                  {employees.map((emp) => (
-                    <option key={emp.id} value={emp.id}>
-                      {emp.id} - {emp.fname} {emp.lname}
-                    </option>
-                  ))}
-                </select>
-                {errors.Emp_ID && <p className="error-text">*{errors.Emp_ID}</p>}
-              </div>
               <div className="admin-add-product-field admin-add-product-description">
                 <label htmlFor="Product_Description">Product Description</label>
                 <textarea
@@ -430,4 +407,5 @@ const handleChange = (e) => {
     </div>
   );
 }
+
 export default EmployeeAddProducts;
