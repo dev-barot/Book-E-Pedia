@@ -7,6 +7,7 @@ function E_Book() {
   const { state } = useLocation();
 
   const fileUrl = getMediaUrl(state?.eBookFileUrl);
+  console.log("DEBUG: E-Book Component v1.0.5-https");
   console.log("EBOOK URL:", fileUrl);
 
   const product = state?.productDetails || {};
