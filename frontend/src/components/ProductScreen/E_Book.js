@@ -18,24 +18,37 @@ function E_Book() {
       <h1>{product.Product_Name || "E-Book"}</h1>
         
       {fileUrl ? (
-        <div style={{ width: "80%", margin: "0 auto" }}>
-          <div style={{ marginBottom: "20px" }}>
-            <a 
-              href={fileUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="btn btn-outline-primary"
-            >
-              <i className="fa-solid fa-up-right-from-square me-2"></i>
-              Open PDF in New Tab
-            </a>
-          </div>
+        <div 
+          className="ebook-viewer-wrapper" 
+          style={{ 
+            position: "relative", 
+            width: "90%", 
+            margin: "0 auto",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.15)"
+          }}
+        >
+          {/* Protective Overlay to prevent some interactions */}
+          <div 
+            style={{ 
+              position: "absolute", 
+              top: 0, 
+              left: 0, 
+              width: "100%", 
+              height: "60px", // Covers the top bar of some viewers
+              zIndex: 10,
+              cursor: "default"
+            }} 
+            onContextMenu={(e) => e.preventDefault()}
+          />
+          
           <iframe
-            src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`}
+            src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true&a=v&chrome=false`}
             title="E-Book Viewer"
             width="100%"
-            height="800px"
-            style={{ border: "none", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
+            height="850px"
+            style={{ border: "none" }}
           />
         </div>
       ) : (

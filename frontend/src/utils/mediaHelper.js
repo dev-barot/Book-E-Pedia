@@ -9,6 +9,12 @@ export const getMediaUrl = (path) => {
   }
 
   // Robust HTTPS conversion to prevent "Mixed Content" blocks on Vercel
-  // This will catch 'http://' at the start of the string regardless of case
-  return url.replace(/^http:\/\//i, "https://");
+  url = url.replace(/^http:\/\//i, "https://");
+
+  // Remove Cloudinary versioning (e.g., /v123456789/) which can cause 401/signature issues over HTTPS
+  if (url.includes("res.cloudinary.com")) {
+    url = url.replace(/\/v\d+\//, "/");
+  }
+
+  return url;
 };
