@@ -113,12 +113,10 @@ class TBL_BookType(models.Model):
     Video_Book = models.CharField(max_length=1, default='0')
 
     # 🔥 RESTORED MEDIA FIELDS
-    # Audio_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
-    Audio_File = CloudinaryField("file", null=True, blank=True)
-    # Video_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
-    Video_File = CloudinaryField("file", null=True, blank=True)
-    # E_Book_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
-    E_Book_File = CloudinaryField("file", null=True, blank=True)
+    # 🔥 FIXED: Use 'video' resource_type for Audio/Video to allow up to 100MB (vs 10MB for raw)
+    Audio_File = CloudinaryField(resource_type="video", null=True, blank=True)
+    Video_File = CloudinaryField(resource_type="video", null=True, blank=True)
+    E_Book_File = CloudinaryField(resource_type="auto", null=True, blank=True)
 
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 
@@ -346,4 +344,4 @@ class TBL_Feedback_Details(models.Model):
 
     def __str__(self):
         return f"Feedback {self.Feedback_ID} - Product {self.Product_ID_id}"
-
+
