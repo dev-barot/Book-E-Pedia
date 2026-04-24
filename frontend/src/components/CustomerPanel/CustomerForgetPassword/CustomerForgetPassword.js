@@ -79,41 +79,37 @@ function CustomerForgetPassword() {
         </div>
 
         <div className="cust-fp-form-container">
-          <h1>Forgot Your Password?</h1>
+          <h1>Forgot Password?</h1>
           <p>
-            Enter your email address and we'll send you a reset link.
+            No worries! Enter your email and we'll send you a secure link to reset it.
           </p>
 
           <input
             type="email"
-            placeholder="Email Address"
+            placeholder="name@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
           <button onClick={handleResetRequest} disabled={isSending}>
-            {isSending ? "Sending..." : "Send Reset Link"}
+            {isSending ? "Sending Link..." : "Send Reset Link"}
           </button>
 
-          {message && <p className="success-message">{message}</p>}
+          {message && <div className="success-message">{message}</div>}
           {devResetLink && (
-            <p className="success-message">
+            <div className="success-message">
               Dev reset link:{" "}
               <a href={devResetLink} target="_blank" rel="noreferrer">
                 Open reset page
               </a>
-            </p>
+            </div>
           )}
-          {error && <p className="error-message">{error}</p>}
+          {error && <div className="error-message">{error}</div>}
 
-          <p>
-            <span
-              style={{ cursor: "pointer", color: "blue" }}
-              onClick={() => navigate("/login")}
-            >
-              Back to login
-            </span>
-          </p>
+          <div className="back-to-login" onClick={() => navigate("/login")}>
+            <i className="fa-solid fa-arrow-left me-2"></i>
+            Back to login
+          </div>
         </div>
 
       </div>

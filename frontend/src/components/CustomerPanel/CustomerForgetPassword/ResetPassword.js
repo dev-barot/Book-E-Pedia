@@ -104,49 +104,52 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="reset-password-body">
-      <div className="reset-password-container">
-        <h1>Reset Your Password</h1>
-        <p>Enter your email and new password.</p>
+    <div className="cust-rp-body">
+      <div className="cust-rp-container">
+        <div className="cust-rp-header">
+          <h1>Set New Password</h1>
+          <p>Secure your account with a strong, memorable password.</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="reset-password-form">
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="reset-password-input"
-          />
+        <form onSubmit={handleSubmit} className="cust-rp-form">
+          <div className="cust-rp-input-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="New Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="reset-password-input"
-          />
+          <div className="cust-rp-input-group">
+            <label>New Password</label>
+            <input
+              type="password"
+              placeholder="Minimum 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
           <button
             type="submit"
-            className="reset-password-btn"
+            className="cust-rp-submit-btn"
             disabled={isResetting}
           >
-            {isResetting ? "Resetting..." : "Reset Password"}
+            {isResetting ? "Updating Password..." : "Update Password"}
           </button>
         </form>
 
-        {message && <p className="reset-password-success">{message}</p>}
-        {error && <p className="reset-password-error">{error}</p>}
+        {message && <div className="success-message">{message}</div>}
+        {error && <div className="error-message">{error}</div>}
 
-        <p>
-          <span
-            onClick={() => navigate("/login")}
-            className="reset-password-back-link"
-            style={{ cursor: "pointer" }}
-          >
-            Back to Login
-          </span>
-        </p>
+        <a href="/login" onClick={(e) => { e.preventDefault(); navigate("/login"); }} className="login-link">
+          <i className="fa-solid fa-arrow-left me-2"></i>
+          Back to Login
+        </a>
       </div>
     </div>
   );
