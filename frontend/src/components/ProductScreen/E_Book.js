@@ -19,11 +19,11 @@ function E_Book() {
         
       {fileUrl ? (
         <iframe
-          src={`${fileUrl}#toolbar=0`}
+          src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`}
           title="E-Book Viewer"
           width="80%"
-          height="500px"
-          style={{ border: "none" }}
+          height="800px"
+          style={{ border: "none", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
         />
       ) : (
         <p>No e-book available</p>
