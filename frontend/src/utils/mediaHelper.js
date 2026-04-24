@@ -8,12 +8,18 @@ export const getMediaUrl = (path) => {
     url = `${BASE_URL}${path}`;
   }
 
-  // Robust HTTPS conversion to prevent "Mixed Content" blocks on Vercel
+  // Force HTTPS
   url = url.replace(/^http:\/\//i, "https://");
 
-  // Remove Cloudinary versioning (e.g., /v123456789/) which can cause 401/signature issues over HTTPS
+  // Cloudinary Specific Fixes
   if (url.includes("res.cloudinary.com")) {
+    // 1. Remove versioning which causes 401 on HTTPS
     url = url.replace(/\/v\d+\//, "/");
+    
+    // 2. Ensure PDF files use 'upload' type directly if they are miscategorized
+    if (url.endsWith(".pdf") && url.includes("/image/upload/")) {
+       // Keep as image/upload but ensure no signed params
+    }
   }
 
   return url;

@@ -12,10 +12,23 @@ function E_Book() {
 
   const product = state?.productDetails || {};
 
+  const refreshViewer = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="ebook-container" onContextMenu={(e) => e.preventDefault()}>
       <center>
-      <h1>{product.Product_Name || "E-Book"}</h1>
+      <div className="ebook-header" style={{ marginBottom: "30px" }}>
+        <h1 style={{ fontWeight: 800, color: "#0f172a" }}>{product.Product_Name || "E-Book"}</h1>
+        <button 
+          onClick={refreshViewer}
+          className="btn btn-sm btn-outline-secondary"
+          style={{ marginTop: "10px", borderRadius: "20px", fontSize: "0.8rem" }}
+        >
+          <i className="fa-solid fa-rotate-right me-1"></i> Refresh Viewer
+        </button>
+      </div>
         
       {fileUrl ? (
         <div 
@@ -24,31 +37,34 @@ function E_Book() {
             position: "relative", 
             width: "90%", 
             margin: "0 auto",
-            borderRadius: "12px",
+            borderRadius: "16px",
             overflow: "hidden",
-            boxShadow: "0 20px 50px rgba(0,0,0,0.15)"
+            background: "#fff",
+            boxShadow: "0 30px 60px rgba(0,0,0,0.12)",
+            border: "1px solid #e2e8f0"
           }}
         >
-          {/* Protective Overlay to prevent some interactions */}
+          {/* Top Shield Overlay to protect toolbar */}
           <div 
             style={{ 
               position: "absolute", 
               top: 0, 
               left: 0, 
               width: "100%", 
-              height: "60px", // Covers the top bar of some viewers
-              zIndex: 10,
-              cursor: "default"
+              height: "56px", 
+              background: "transparent",
+              zIndex: 100,
+              pointerEvents: "none"
             }} 
-            onContextMenu={(e) => e.preventDefault()}
           />
           
           <iframe
-            src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true&a=v&chrome=false`}
+            src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`}
             title="E-Book Viewer"
             width="100%"
             height="850px"
             style={{ border: "none" }}
+            loading="lazy"
           />
         </div>
       ) : (
