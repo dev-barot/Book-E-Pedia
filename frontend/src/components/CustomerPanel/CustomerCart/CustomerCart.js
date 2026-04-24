@@ -166,6 +166,7 @@ const CustomerCart = () => {
 
   // Checkout
   const handleProceedToPayment = async () => {
+    setIsProcessing(true);
     try {
       const res = await fetch("http://127.0.0.1:8000/api/order/create/", {
         method: "POST",
@@ -179,6 +180,7 @@ const CustomerCart = () => {
 
       if (!data.bool) {
         alert(data.msg || "Order creation failed");
+        setIsProcessing(false);
         return;
       }
 
@@ -195,8 +197,10 @@ const CustomerCart = () => {
     } catch (err) {
       console.error(err);
       alert("Something went wrong");
+      setIsProcessing(false);
     }
   };
+
     
 
   return (

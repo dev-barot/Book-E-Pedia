@@ -20,24 +20,7 @@ function CustomerDashboard() {
   // Helper for boolean flags
   const isTrue = (val) => val === true || val === "1";
 
-  useEffect(() => {
-    if (!customerId) return;
-
-    const init = async () => {
-      try {
-        await fetchCustomerDetails();
-        await fetchOrders();
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    init();
-  }, [customerId]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = React.useCallback(async () => {
     try {
       const res = await fetch(
         `${BASE_URL}/api/customer/${customerId}/orders`
@@ -54,9 +37,9 @@ function CustomerDashboard() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [customerId]);
 
-  const fetchCustomerDetails = async () => {
+  const fetchCustomerDetails = React.useCallback(async () => {
     try {
       const res = await fetch(
         `${BASE_URL}/api/customer/${customerId}`
@@ -66,7 +49,25 @@ function CustomerDashboard() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [customerId]);
+
+  useEffect(() => {
+    if (!customerId) return;
+
+    const init = async () => {
+      try {
+        await fetchCustomerDetails();
+        await fetchOrders();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
+  }, [customerId, fetchCustomerDetails, fetchOrders]);
+
 
   // Remove duplicate books
   const uniqueBooks = Array.from(

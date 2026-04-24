@@ -345,7 +345,8 @@ class TBL_Feedback_Details(models.Model):
         ordering = ['-Feedback_DateTime']
 
     def __str__(self):
-        return f"Feedback {self.Feedback_ID} - Product {self.Product_ID_id}"from django.db import models
+        return f"Feedback {self.Feedback_ID} - Product {self.Product_ID_id}"
+from django.db import models
 from django.core.validators import EmailValidator, RegexValidator
 import datetime
 from cloudinary.models import CloudinaryField
@@ -466,7 +467,6 @@ class TBL_BookType(models.Model):
     Video_File = CloudinaryField("file", null=True, blank=True)
     # E_Book_File = models.FileField(upload_to=booktype_file_path, null=True, blank=True)
     E_Book_File = CloudinaryField("file", null=True, blank=True)
-
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 
     def __str__(self):

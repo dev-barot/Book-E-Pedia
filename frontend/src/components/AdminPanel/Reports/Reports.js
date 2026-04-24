@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import AdminNavbar from "../AdminNavbar/AdminNavbar";
 import jsPDF from "jspdf";

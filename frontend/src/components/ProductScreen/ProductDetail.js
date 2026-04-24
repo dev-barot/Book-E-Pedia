@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./ProductDetail.css";
-import { Nav } from "react-bootstrap";
 
-import img1 from "./alchemist.jpeg";
-import img2 from "./harry.jpeg";
-import img3 from "./gatsby.jpeg";
-import img4 from "./epic.jpeg";
-import img5 from "./download(3).jpeg";
-import img6 from "./download(1).jpeg";
-import img7 from "./download (2).jpeg";
-import img8 from "./4f971bfe-2ea6-4ff7-8c5a-7eba039fa15c.jpg";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -22,7 +13,8 @@ function ProductDetail() {
   const [showForm, setShowForm] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [rating, setRating] = useState(0);
-  const fetchFeedbacks = async () => {
+
+  const fetchFeedbacks = React.useCallback(async () => {
       try {
         const res = await fetch(
           `http://127.0.0.1:8000/api/feedbacks/?product_id=${id}`
@@ -33,7 +25,8 @@ function ProductDetail() {
       } catch (err) {
         console.error("Feedback fetch error:", err);
       }
-  };
+  }, [id]);
+
   const [availability, setAvailability] = useState({
     "E-Book": false,
     "Physical Book": false,
@@ -41,54 +34,55 @@ function ProductDetail() {
     "Video Book": false,
   });
 
-  useEffect(() => {
-    const fetchProductAndFormats = async () => {
-      try {
-        const [resProducts, resBookTypes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/products/"),
-          fetch("http://127.0.0.1:8000/api/book-types/")
-        ]);
+  const fetchProductAndFormats = React.useCallback(async () => {
+    try {
+      const [resProducts, resBookTypes] = await Promise.all([
+        fetch("http://127.0.0.1:8000/api/products/"),
+        fetch("http://127.0.0.1:8000/api/book-types/")
+      ]);
 
-        const data = await resProducts.json();
-        const btData = await resBookTypes.json();
+      const data = await resProducts.json();
+      const btData = await resBookTypes.json();
 
-        const found = data.data.find(p => p.id === parseInt(id));
+      const found = data.data.find(p => p.id === parseInt(id));
 
-        if (found) {
-          setProductData({
-            id: found.id,
-            name: found.name,
-            author: found.author,
-            publisher: found.publisher,
-            language: found.language,
-            pages: found.pages,
-            duration: found.duration,
-            description: found.description,
-            price: found.price,
-            Cover_Photo: found.cover_photo
-              ? `http://127.0.0.1:8000${found.cover_photo}`
-              : null
+      if (found) {
+        setProductData({
+          id: found.id,
+          name: found.name,
+          author: found.author,
+          publisher: found.publisher,
+          language: found.language,
+          pages: found.pages,
+          duration: found.duration,
+          description: found.description,
+          price: found.price,
+          Cover_Photo: found.cover_photo
+            ? `http://127.0.0.1:8000${found.cover_photo}`
+            : null
+        });
+
+        // Match the format availability dynamically
+        const foundBt = (btData.data || []).find(bt => bt.id === found.book_id);
+        if (foundBt) {
+          setAvailability({
+            "E-Book": foundBt.ebook === "1" || foundBt.ebook === true,
+            "Physical Book": foundBt.physical === "1" || foundBt.physical === true,
+            "Audio book": foundBt.audio === "1" || foundBt.audio === true,
+            "Video Book": foundBt.video === "1" || foundBt.video === true,
           });
-
-          // Match the format availability dynamically
-          const foundBt = (btData.data || []).find(bt => bt.id === found.book_id);
-          if (foundBt) {
-            setAvailability({
-              "E-Book": foundBt.ebook === "1" || foundBt.ebook === true,
-              "Physical Book": foundBt.physical === "1" || foundBt.physical === true,
-              "Audio book": foundBt.audio === "1" || foundBt.audio === true,
-              "Video Book": foundBt.video === "1" || foundBt.video === true,
-            });
-          }
         }
-      } catch (err) {
-        console.error("Error fetching product details:", err);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching product details:", err);
+    }
+  }, [id]);
 
+  useEffect(() => {
     fetchProductAndFormats();
     fetchFeedbacks();
-  }, [id]);
+  }, [fetchProductAndFormats, fetchFeedbacks]);
+
 
   const handleAddFeedback = async () => {
     if (!newFeedback.trim()) return alert("Please enter a review.");

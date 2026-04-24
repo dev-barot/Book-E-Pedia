@@ -15,8 +15,6 @@ function AdminDashboard() {
   });
 
   const [recentOrders, setRecentOrders] = useState([]);
-  const [lowStockBooks, setLowStockBooks] = useState([]);
-  const [trendingBooks, setTrendingBooks] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
   const [fulfillmentRate, setFulfillmentRate] = useState(0);
   const [lowStock, setLowStock] = useState([]);
@@ -45,7 +43,7 @@ function AdminDashboard() {
         const trendingData = await trendingRes.json();
 
         const tBooks = trendingData.books || [];
-        setTrendingBooks(tBooks);
+        // setTrendingBooks(tBooks); // Removed unused state setter
 
         // Horizontal Bar Chart Aggregation
         setTrendingChartData(tBooks.slice(0, 5).map(b => ({
@@ -102,7 +100,7 @@ function AdminDashboard() {
         if (productsRes.ok) {
           const products = await productsRes.json();
           const pData = products.data || products || [];
-          setLowStockBooks([...pData].filter(p => p.Stock < 10 && p.Stock >= 0).sort((a, b) => a.Stock - b.Stock).slice(0, 3));
+          // setLowStockBooks([...pData].filter(p => p.Stock < 10 && p.Stock >= 0).sort((a, b) => a.Stock - b.Stock).slice(0, 3)); // Removed unused setter
 
           // Catalog Analytics Aggregation
           const catCounts = pData.reduce((acc, p) => {
