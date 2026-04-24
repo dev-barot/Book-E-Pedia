@@ -10,30 +10,8 @@ function AdminAddEmployees() {
   const navigate = useNavigate();
   const employeeToEdit = location.state?.employee;
 
-  const [nextEmpId, setNextEmpId] = useState(null); // Initialize as null until fetched
-
-  // Fetch the highest Emp_ID on mount
-  useEffect(() => {
-    if (!employeeToEdit) {
-      const fetchMaxEmpId = async () => {
-        try {
-          const response = await fetch(`${BASE_URL}/api/employees/`);
-          if (!response.ok) throw new Error("Failed to fetch employees");
-          const data = await response.json();
-          const employees = data.data || [];
-          const maxId = employees.length > 0 ? Math.max(...employees.map(e => e.Emp_ID)) : 0;
-          setNextEmpId(maxId + 1);
-        } catch (error) {
-          console.error("Error fetching max Emp_ID:", error);
-          setNextEmpId(1); // Fallback to 1 if fetch fails
-        }
-      };
-      fetchMaxEmpId();
-    }
-  }, [employeeToEdit]);
-
   const [formData, setFormData] = useState({
-    Emp_ID: employeeToEdit ? employeeToEdit.Emp_ID : nextEmpId,
+    Emp_ID: employeeToEdit ? employeeToEdit.Emp_ID : "",
     Emp_Type: employeeToEdit ? employeeToEdit.Emp_Type : "0",
     Fname: employeeToEdit ? employeeToEdit.Fname : "",
     Lname: employeeToEdit ? employeeToEdit.Lname : "",
@@ -51,12 +29,6 @@ function AdminAddEmployees() {
 
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (nextEmpId && !employeeToEdit) {
-      setFormData((prev) => ({ ...prev, Emp_ID: nextEmpId }));
-    }
-  }, [nextEmpId, employeeToEdit]);
-
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     setFormData({
@@ -73,7 +45,12 @@ function AdminAddEmployees() {
     const formDataToSend = new FormData();
     for (const key in formData) {
       if (formData[key] !== null) {
-        formDataToSend.append(key, formData[key]);
+        let value = formData[key];
+        // Ensure string-based fields are strings
+        if (key === "IsActive" || key === "Emp_Type") {
+          value = String(value);
+        }
+        formDataToSend.append(key, value);
       }
     }
 
@@ -89,17 +66,12 @@ function AdminAddEmployees() {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to save employee: ${response.status} - ${errorText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.msg || `Failed to save employee: ${response.status}`);
       }
 
       const data = await response.json();
       console.log("Employee saved:", data);
-
-      // Increment nextEmpId only on successful POST
-      if (!employeeToEdit) {
-        setNextEmpId((prevId) => prevId + 1);
-      }
 
       navigate("/admin/manage-employees");
     } catch (error) {
@@ -110,6 +82,10 @@ function AdminAddEmployees() {
 
   const validateForm = () => {
     const newErrors = {};
+
+    if (!formData.Emp_ID) newErrors.Emp_ID = "Employee ID is required.";
+    else if (isNaN(Number(formData.Emp_ID))) newErrors.Emp_ID = "Employee ID must be a number.";
+
     if (!formData.Fname.trim()) newErrors.Fname = "Please enter First Name.";
     else if (formData.Fname.length > 20) newErrors.Fname = "First name should not be more than 20 letters.";
 
@@ -163,6 +139,18 @@ function AdminAddEmployees() {
           <h1 className="admin-add-product-title">{employeeToEdit ? "Edit Employee" : "Add Employee"}</h1>
           <form onSubmit={handleSubmit} className="admin-add-product-form">
             <div className="form-row">
+              <div className="admin-add-product-field">
+                <label>Employee ID:</label>
+                <input 
+                  type="text" 
+                  name="Emp_ID" 
+                  value={formData.Emp_ID} 
+                  onChange={handleChange} 
+                  disabled={!!employeeToEdit}
+                  placeholder="Enter unique ID (e.g. 101)"
+                />
+                {errors.Emp_ID && <p className="admin-manage-emp-error">{errors.Emp_ID}</p>}
+              </div>
               <div className="admin-add-product-field">
                 <label>Employee Type:</label>
                 <select name="Emp_Type" value={formData.Emp_Type} onChange={handleChange}>

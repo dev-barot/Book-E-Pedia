@@ -381,9 +381,7 @@ def get_categories(request):
             for category in categories:
                 image_url = ""
                 if category.Category_Photo:
-                    image_url = request.build_absolute_uri(
-                        category.Category_Photo.url
-                    )
+                    image_url = category.Category_Photo.url
 
                 data.append({
                     "id": category.Category_ID,
@@ -529,9 +527,9 @@ def get_book_types(request):
                 "video": book.Video_Book,
 
                 # 🔥 FILE URLS
-                "audio_file": request.build_absolute_uri(book.Audio_File.url) if book.Audio_File else None,
-                "video_file": request.build_absolute_uri(book.Video_File.url) if book.Video_File else None,
-                "ebook_file": request.build_absolute_uri(book.E_Book_File.url) if book.E_Book_File else None,
+                "audio_file": book.Audio_File.url if book.Audio_File else None,
+                "video_file": book.Video_File.url if book.Video_File else None,
+                "ebook_file": book.E_Book_File.url if book.E_Book_File else None,
 
                 "is_active": book.IsActive
             })
@@ -807,13 +805,8 @@ def get_employees(request):
                 "Address": emp.Address,
                 "Salary": emp.Salary,
                 "Designation": emp.Designation,
-                "Emp_Photo": request.FILES.get("Emp_Photo"),
+                "Emp_Photo": emp.Emp_Photo.url if emp.Emp_Photo else None,
                 "IsActive": emp.IsActive,
-                "id": emp.Emp_ID,
-                "fname": emp.Fname,
-                "lname": emp.Lname,
-                "designation": emp.Designation,
-                "phone": emp.Phone_Number
             }
             for emp in employees
         ]
@@ -822,7 +815,15 @@ def get_employees(request):
 
     elif request.method == "POST":
         try:
+            emp_id = request.POST.get("Emp_ID")
+            if not emp_id:
+                return JsonResponse({"bool": False, "msg": "Employee ID is required"}, status=400)
+            
+            if TBL_Employee_Details.objects.filter(Emp_ID=emp_id).exists():
+                return JsonResponse({"bool": False, "msg": "Employee ID already exists"}, status=400)
+
             emp = TBL_Employee_Details.objects.create(
+                Emp_ID=emp_id,
                 Emp_Type=request.POST.get("Emp_Type", "0"),
                 Fname=request.POST.get("Fname"),
                 Lname=request.POST.get("Lname"),
@@ -894,7 +895,7 @@ def employee_detail(request, id):
             emp.Salary = request.POST.get("Salary", emp.Salary)
             emp.Designation = request.POST.get("Designation", emp.Designation)
 
-            emp.IsActive = request.POST.get("IsActive", "1") == "1"  # ✅ fixed
+            emp.IsActive = request.POST.get("IsActive", emp.IsActive)
 
             if "Emp_Photo" in request.FILES:
                 emp.Emp_Photo = request.FILES.get("Emp_Photo")
@@ -906,7 +907,7 @@ def employee_detail(request, id):
             return JsonResponse({"bool": False, "msg": str(e)}, status=500)
 
     elif request.method == "DELETE":
-        emp.IsActive = False  # ✅ fixed
+        emp.IsActive = '0'  # ✅ fixed
         emp.save()
         return JsonResponse({"bool": True, "msg": "Employee deleted successfully"})
 
@@ -1004,7 +1005,7 @@ def get_cart(request, cust_id):
                     "quantity": item.Product_Quantity,
                     "total": str(item.Total_Amount),
                     "stock": item.Product_ID.Stock, 
-                    "image": request.build_absolute_uri(item.Product_ID.Cover_Photo.url) if item.Product_ID.Cover_Photo else ""
+                    "image": item.Product_ID.Cover_Photo.url if item.Product_ID.Cover_Photo else ""
                 })
 
             return JsonResponse({
