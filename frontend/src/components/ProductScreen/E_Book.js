@@ -18,13 +18,26 @@ function E_Book() {
       <h1>{product.Product_Name || "E-Book"}</h1>
         
       {fileUrl ? (
-        <iframe
-          src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`}
-          title="E-Book Viewer"
-          width="80%"
-          height="800px"
-          style={{ border: "none", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
-        />
+        <div style={{ width: "80%", margin: "0 auto" }}>
+          <div style={{ marginBottom: "20px" }}>
+            <a 
+              href={fileUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn btn-outline-primary"
+            >
+              <i className="fa-solid fa-up-right-from-square me-2"></i>
+              Open PDF in New Tab
+            </a>
+          </div>
+          <iframe
+            src={`https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`}
+            title="E-Book Viewer"
+            width="100%"
+            height="800px"
+            style={{ border: "none", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
+          />
+        </div>
       ) : (
         <p>No e-book available</p>
       )}
