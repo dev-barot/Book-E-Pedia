@@ -69,7 +69,7 @@ function CustomerDashboard() {
     };
 
     init();
-  }, [customerId, fetchCustomerDetails, fetchOrders]);
+  }, [customerId, fetchCustomerDetails, fetchOrders, navigate]);
 
 
   // Remove duplicate books
