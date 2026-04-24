@@ -13,14 +13,12 @@ export const getMediaUrl = (path) => {
 
   // Cloudinary Specific Fixes
   if (url.includes("res.cloudinary.com")) {
-    // 1. Remove versioning which causes 401 on HTTPS
+    // 1. Remove versioning (e.g., /v123456789/)
+    // This is the CRITICAL fix for 401 errors on Cloudinary HTTPS links.
     url = url.replace(/\/v\d+\//, "/");
     
-    // 2. For PDFs, Cloudinary often works better with 'raw/upload' over HTTPS
-    // to avoid image-specific security headers or signature mismatches.
-    if (url.endsWith(".pdf") && url.includes("/image/upload/")) {
-       url = url.replace("/image/upload/", "/raw/upload/");
-    }
+    // 2. Ensure we use 'image/upload' for PDFs on this account as 'raw' 404s.
+    // We already have 'image/upload' in the original path usually.
   }
 
   return url;
