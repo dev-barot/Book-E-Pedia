@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import "./Payment.css";
 import { BASE_URL } from "../../utils/config";
 
@@ -24,9 +23,10 @@ const Payment = () => {
 
     const fetchOrderDetails = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/order/${orderId}/`);
-        if (response.data.bool) {
-          setOrderDetails(response.data);
+        const response = await fetch(`${BASE_URL}/api/order/${orderId}/`);
+        const data = await response.json();
+        if (data.bool) {
+          setOrderDetails(data);
         } else {
           setError("Order not found or access denied.");
         }
@@ -50,15 +50,20 @@ const Payment = () => {
     setIsProcessing(true);
     try {
       // Direct payment confirmation for test mode
-      const response = await axios.post(`${BASE_URL}/api/payment/create/`, {
-        order_id: orderId,
+      const response = await fetch(`${BASE_URL}/api/payment/create/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ order_id: orderId }),
       });
+      const data = await response.json();
 
-      if (response.data.bool) {
+      if (data.bool) {
         alert("Payment Successful! Your order is confirmed.");
         navigate("/customer/dashboard");
       } else {
-        alert("Payment Failed: " + response.data.msg);
+        alert("Payment Failed: " + data.msg);
       }
     } catch (err) {
       console.error("Payment error:", err);
