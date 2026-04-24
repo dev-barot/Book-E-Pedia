@@ -4,13 +4,7 @@ import "./Products.css";
 import SingleProduct from "./SingleProduct";
 
 import img1 from "./alchemist.jpeg";
-import img2 from "./harry.jpeg";
-import img3 from "./gatsby.jpeg";
-import img4 from "./epic.jpeg";
-import img5 from "./download(3).jpeg";
-import img6 from "./download(1).jpeg";
-import img7 from "./download (2).jpeg";
-import img8 from "./4f971bfe-2ea6-4ff7-8c5a-7eba039fa15c.jpg";
+
 
 const Products = () => {
   const [products, setProducts] = useState([]);

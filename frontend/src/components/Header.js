@@ -7,8 +7,9 @@ import { CartContext, UserContext } from '../Context';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext);
-  const { cartData, setCartData } = useContext(CartContext);
+  const { setUser } = useContext(UserContext);
+  const { cartData } = useContext(CartContext);
+
 
   const cartItems = cartData ? cartData.length : 0;
 

@@ -4,24 +4,8 @@ import "./Home.css";
 
 // Assets imported exactly as in the original to prevent missing file errors
 import heroGemini from "./Gemini-removebg-preview.png";
-import rightShelfImage from "./right_shelf.png";
-
-import entertainmentBook from "./entertainment-book-icon (1).png";
-import technologyBook from "./technology-book-icon-removebg-preview.png";
-import adventureBook from "./adventure-book-icon-removebg-preview.png";
-import horrorBook from "./horror-book-icon-removebg-preview.png";
-import comicBook from "./comic-book-icon-removebg-preview.png";
-import scienceBook from "./science-book-icon-removebg-preview.png";
-import fictionBook from "./fiction-book-icon-removebg-preview.png";
-import sportsBook from "./sports-book-icon-removebg-preview.png";
-import motivationalBook from "./motivational-book-icon-removebg-preview.png";
-import mythologyBook from "./mythology-book-icon-removebg-preview.png";
 
 import bestbook1 from "./download (1).jpeg";
-import bestbook2 from "./download (2).jpeg";
-import bestbook3 from "./download.jpeg";
-import bestbook4 from "./img.jpeg";
-import bestbook5 from "./p1.jpeg";
 
 import bookCollection from "./create-an-image-of-e-book-for-the-bookstore-websit (1).png";
 import audiobookImg from "./create-an-image-of-audio-book-for-the-bookstore-we.png";
@@ -29,6 +13,7 @@ import videobookImg from "./create-an-image-of-video-book-for-the-bookstore-we.p
 import physicalbookImg from "./create-an-image-of-e-book-for-the-bookstore-websit.png";
 
 import bookShelf from "./Realistic_Digital_Bookshelf_With_Colorful_Books_And_Signboard_1__1_-removebg-preview (1).png";
+
 
 function Home() {
   const navigate = useNavigate();

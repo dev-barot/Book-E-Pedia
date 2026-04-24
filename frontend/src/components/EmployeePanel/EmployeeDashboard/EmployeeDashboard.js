@@ -16,8 +16,6 @@ function EmployeeDashboard() {
   });
 
   const [recentOrders, setRecentOrders] = useState([]);
-  const [lowStockBooks, setLowStockBooks] = useState([]);
-  const [trendingBooks, setTrendingBooks] = useState([]);
   const [fulfillmentRate, setFulfillmentRate] = useState(0);
   const [lowStock, setLowStock] = useState([]);
 
@@ -44,7 +42,6 @@ function EmployeeDashboard() {
         const trendingData = await trendingRes.json();
 
         const tBooks = trendingData.books || [];
-        setTrendingBooks(tBooks);
 
         // Horizontal Bar Chart Aggregation
         setTrendingChartData(tBooks.slice(0, 5).map(b => ({
@@ -101,7 +98,6 @@ function EmployeeDashboard() {
         if (productsRes.ok) {
           const products = await productsRes.json();
           const pData = products.data || products || [];
-          setLowStockBooks([...pData].filter(p => p.Stock < 10 && p.Stock >= 0).sort((a, b) => a.Stock - b.Stock).slice(0, 3));
 
           // Catalog Analytics Aggregation
           const catCounts = pData.reduce((acc, p) => {
@@ -115,6 +111,7 @@ function EmployeeDashboard() {
             products: catCounts[k]
           })).sort((a, b) => b.products - a.products));
         }
+
 
       } catch (error) {
         console.error("Error fetching dashboard data:", error);

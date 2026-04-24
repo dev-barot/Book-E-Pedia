@@ -5,7 +5,6 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 // Assets
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-import book1 from "./components/ProductScreen/epic.jpeg";
 // Website Components
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -20,7 +19,7 @@ import CategoryProducts from "./components/CategoryScreen/CategoryProducts";
 import ProductDetail from './components/ProductScreen/ProductDetail';
 import AudioBook from "./components/ProductScreen/AudioBook";
 import VideoBook from "./components/ProductScreen/VideoBook";
-import E_Book from "./components/ProductScreen/E_Book";
+import EBook from "./components/ProductScreen/E_Book";
 import Payment from "./components/PaymentScreen/Payment";
 import Invoice from "./components/CustomerPanel/CustomerOrders/Invoice";
 import Entertainment from "./components/CategoryScreen/Entertainment";
@@ -154,7 +153,7 @@ function App() {
           <Route exact path='/product/:name/:id' element={<ProductDetail />} />
           <Route exact path='/audio-book' element={<AudioBook />} />
           <Route exact path='/video-book' element={<VideoBook />} />
-          <Route exact path='/e-book' element={<E_Book />} />
+          <Route exact path='/e-book' element={<EBook />} />
           <Route exact path='/invoice' element={<Invoice />} />
 
           {/* Customer */}

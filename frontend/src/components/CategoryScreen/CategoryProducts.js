@@ -5,7 +5,7 @@ import SingleProduct from "../ProductScreen/SingleProduct";
 
 function CategoryProducts() {
 
-  const { category_slug, Category_ID } = useParams();
+  const { Category_ID } = useParams();
 
   // Demo Product Data (Frontend Only)
   const allProducts = [

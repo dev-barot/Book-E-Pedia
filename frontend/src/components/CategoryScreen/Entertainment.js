@@ -5,7 +5,6 @@ import { Nav } from "react-bootstrap";
 // Import images
 import book2 from "./alchemist.jpeg";
 import book4 from "./epic.jpeg";
-import book6 from "./p1.jpeg";
 import book7 from "./mockingbird.jpeg";
 
 const books = [

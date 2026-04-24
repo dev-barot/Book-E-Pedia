@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import EmployeeSidebar from "../EmployeeSidebar/EmployeeSidebar";
 import EmployeeNavbar from "../EmployeeNavbar/EmployeeNavbar";
 import "./EmployeeForgetPassword.css";
@@ -13,8 +13,6 @@ function EmployeeForgetPassword() {
   const [isSending, setIsSending] = useState(false);
   const [devResetLink, setDevResetLink] = useState("");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleSidebarToggle = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);

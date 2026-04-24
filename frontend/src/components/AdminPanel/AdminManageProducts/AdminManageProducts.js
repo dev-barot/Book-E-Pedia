@@ -369,15 +369,6 @@ function AdminManageProducts() {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
 
-  const getBookTypes = (bookTypeDetails) => {
-    const types = [];
-    if (bookTypeDetails?.Physical_Book === "1") types.push("Physical");
-    if (bookTypeDetails?.Audio_Book === "1") types.push("Audio");
-    if (bookTypeDetails?.E_Book === "1") types.push("E-Book");
-    if (bookTypeDetails?.Video_Book === "1") types.push("Video");
-    return types.length > 0 ? types.join(", ") : "N/A";
-  };
-
   return (
     <div className={`dashboard-main-container ${isSidebarCollapsed ? "collapsed" : ""}`}>
       {/* Premium ambient animated background elements */}

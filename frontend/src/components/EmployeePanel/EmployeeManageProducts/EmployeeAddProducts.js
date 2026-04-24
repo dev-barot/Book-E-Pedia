@@ -51,6 +51,7 @@ const location = useLocation();
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productToEdit]);
 
   const [formData, setFormData] = useState({
@@ -80,12 +81,13 @@ const location = useLocation();
   }, [nextProductId, productToEdit]);
 
 const handleChange = (e) => {
-    const { name, value, type, files, checked } = e.target;
+    const { name, value, type, files } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "file" ? files[0] : value,
     }));
   };
+
 
   const validateForm = () => {
     let newErrors = {};

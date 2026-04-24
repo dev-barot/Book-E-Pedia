@@ -17,20 +17,6 @@ function EmployeeAddBookType() {
   IsActive: bookToEdit?.is_active || "1",
 });
 
-  // Handle Book_ID generation logic
-  const [nextBookId, setNextBookId] = useState(() => {
-    const storedId = parseInt(localStorage.getItem('nextBookId'), 10);
-    return isNaN(storedId) ? 1 : storedId;
-  });
-
-  const generateBookId = () => {
-    setNextBookId(prevId => {
-      const newId = prevId + 1;
-      localStorage.setItem('nextBookId', newId);
-      return newId;
-    });
-  };
-
   useEffect(() => {
     if (!bookToEdit && !localStorage.getItem('nextBookId')) {
       localStorage.setItem('nextBookId', "1");
@@ -38,7 +24,7 @@ function EmployeeAddBookType() {
   }, [bookToEdit]);
 
 
-  const [errors, setErrors] = useState({});
+  const [errors] = useState({});
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -46,12 +32,6 @@ function EmployeeAddBookType() {
       ...prevData,
       [name]: type === 'file' ? files[0] : value,
     }));
-  };
-
-  const getCsrfToken = async () => {
-    const response = await fetch('http://127.0.0.1:8000/get-csrf-token/');
-    const data = await response.json();
-    return data.csrfToken;
   };
 
 const handleSubmit = async (e) => {
@@ -108,22 +88,6 @@ const handleSubmit = async (e) => {
   }
 };
 
-  
-  // Helper function to get CSRF token from cookies
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 

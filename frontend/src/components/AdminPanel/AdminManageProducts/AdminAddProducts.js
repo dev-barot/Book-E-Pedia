@@ -45,12 +45,10 @@ function AdminAddProducts() {
         setCategories([]);
         setBookTypes([]);
         setEmployees([]);
-        console.log("Categories:", categories);
-        console.log("Book Types:", bookTypes);
-        console.log("Employees:", employees);
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productToEdit]);
 
   const [formData, setFormData] = useState({
@@ -80,12 +78,13 @@ function AdminAddProducts() {
   }, [nextProductId, productToEdit]);
 
 const handleChange = (e) => {
-    const { name, value, type, files, checked } = e.target;
+    const { name, value, type, files } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "file" ? files[0] : value,
     }));
   };
+
 
   const validateForm = () => {
     let newErrors = {};
