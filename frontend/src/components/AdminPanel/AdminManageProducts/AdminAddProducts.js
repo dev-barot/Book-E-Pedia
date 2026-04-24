@@ -75,6 +75,7 @@ function AdminAddProducts() {
     if (nextProductId && !productToEdit) {
       setFormData((prev) => ({ ...prev, Product_ID: nextProductId }));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextProductId, productToEdit]);
 
 const handleChange = (e) => {
