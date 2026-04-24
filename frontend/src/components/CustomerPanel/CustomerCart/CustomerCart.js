@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./CustomerCart.css";
 import { useNavigate, Link } from "react-router-dom";
 import { BASE_URL } from "../../../utils/config";
+import { getMediaUrl } from "../../../utils/mediaHelper";
 
 const CustomerCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -32,7 +33,7 @@ const CustomerCart = () => {
             price: parseFloat(item.price),
             quantity: item.quantity,
             total: parseFloat(item.total),
-            image: item.image,
+            image: getMediaUrl(item.image),
             stock: item.stock
           }));
           setCartItems(formattedCart);
@@ -72,7 +73,7 @@ const CustomerCart = () => {
           name: p.name,
           author: p.author,
           price: p.price,
-          image: p.cover_photo ? (p.cover_photo.startsWith('http') ? p.cover_photo : `${BASE_URL}${p.cover_photo}`) : "",
+          image: getMediaUrl(p.cover_photo),
         }));
 
         setSimilarBooks(formattedSimilar);

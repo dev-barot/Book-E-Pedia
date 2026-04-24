@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import "./Products.css";
 import SingleProduct from "./SingleProduct";
 import { BASE_URL } from "../../utils/config";
+import { getMediaUrl } from "../../utils/mediaHelper";
 
 import img1 from "./alchemist.jpeg";
 
@@ -275,7 +276,7 @@ const Products = () => {
                       id: product.id,
                       name: product.name,
                       price: product.price,
-                      image: product.cover_photo ? (product.cover_photo.startsWith('http') ? product.cover_photo : `${BASE_URL}${product.cover_photo}`) : img1,
+                      image: getMediaUrl(product.cover_photo) || img1,
                       author: product.author,
                       description: product.description
                     }}

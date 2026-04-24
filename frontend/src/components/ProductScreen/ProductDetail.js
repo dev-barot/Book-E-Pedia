@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./ProductDetail.css";
 import { BASE_URL } from "../../utils/config";
+import { getMediaUrl } from "../../utils/mediaHelper";
 
 
 function ProductDetail() {
@@ -58,9 +59,7 @@ function ProductDetail() {
           duration: found.duration,
           description: found.description,
           price: found.price,
-          Cover_Photo: found.cover_photo
-            ? (found.cover_photo.startsWith('http') ? found.cover_photo : `${BASE_URL}${found.cover_photo}`)
-            : null
+          Cover_Photo: getMediaUrl(found.cover_photo)
         });
 
         // Match the format availability dynamically
