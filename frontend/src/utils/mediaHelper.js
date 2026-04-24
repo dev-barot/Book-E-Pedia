@@ -3,8 +3,11 @@ import { BASE_URL } from "./config";
 export const getMediaUrl = (path) => {
   if (!path) return null;
 
-  // Already full URL
-  if (path.startsWith("http")) return path;
+  let url = path;
+  if (!path.startsWith("http")) {
+    url = `${BASE_URL}${path}`;
+  }
 
-  return `${BASE_URL}${path}`;
+  // Force HTTPS for all media to prevent "Mixed Content" blocks on Vercel
+  return url.replace("http://", "https://");
 };
