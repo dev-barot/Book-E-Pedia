@@ -5,9 +5,6 @@ import { BASE_URL } from "../../utils/config";
 
 function Category() {
   const [categories, setCategories] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const limit = 8;
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/category/`)
@@ -24,14 +21,6 @@ function Category() {
       });
   }, []);
 
-  const totalResult = categories.length;
-  const totalPages = Math.ceil(totalResult / limit);
-
-  const startIndex = (currentPage - 1) * limit;
-  const currentCategories = categories.slice(
-    startIndex,
-    startIndex + limit
-  );
 
   return (
     <div className="category-lux-page">
@@ -48,8 +37,8 @@ function Category() {
         </div>
 
         <div className="category-lux-grid">
-          {currentCategories.length > 0 ? (
-            currentCategories.map((category) => (
+          {categories.length > 0 ? (
+            categories.map((category) => (
               <div
                 className="category-lux-card"
                 key={category.Category_ID}
@@ -88,26 +77,6 @@ function Category() {
             </div>
           )}
         </div>
-
-        {totalPages > 1 && (
-          <ul className="pagination-lux mt-5">
-            {[...Array(totalPages)].map((_, index) => (
-              <li
-                key={index}
-                className={`page-item ${
-                  currentPage === index + 1 ? "active" : ""
-                }`}
-              >
-                <button
-                  className="page-link"
-                  onClick={() => setCurrentPage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
   );

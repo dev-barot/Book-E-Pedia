@@ -23,10 +23,10 @@ function CustomerLogout() {
       setUser({ login: false });
     }
 
-    // Redirect to Home (or Login)
+    // Redirect to Login (standard behavior for the platform)
     setTimeout(() => {
-      navigate("/");
-    }, 800);
+      navigate("/login");
+    }, 500);
   }, [navigate, setUser]);
 
   return (

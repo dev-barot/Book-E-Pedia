@@ -90,7 +90,7 @@ const EmployeeNavbar = ({ onToggleSidebar }) => {
               <div className="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0 dropdown-menu-end-temp">
                 <Link to="/employee/profile" className="dropdown-item">My Profile</Link>
                 <Link to="/employee/forget-password" className="dropdown-item">Change Password</Link>
-                <Link to="/" className="dropdown-item">Log Out</Link>
+                <Link to="/customer/logout" className="dropdown-item">Log Out</Link>
               </div>
             )}
           </div>

@@ -137,24 +137,6 @@ const Products = () => {
     setSortOption("default");
   };
 
-  // Pagination logic
-  function changeUrl(dummyString) {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  var links = [];
-  var limit = 8;
-  var totalLinks = Math.ceil(totalResult / limit);
-
-  for (let i = 1; i <= totalLinks; i++) {
-    links.push(
-      <li className="page-item" key={i}>
-        <Link onClick={() => changeUrl()} to={`/products/?page=${i}`} className="page-link">
-          {i}
-        </Link>
-      </li>
-    );
-  }
 
   return (
     <div className="shop-lux-page">
@@ -269,7 +251,7 @@ const Products = () => {
           <div className={isSidebarOpen ? "col-lg-9 col-md-8" : "col-12"}>
             <div className={`shop-lux-list ${!isSidebarOpen ? 'full-width-grid' : ''}`}>
               {filteredProducts.length > 0 ? (
-                filteredProducts.slice(0, limit).map((product) => (
+                filteredProducts.map((product) => (
                   <SingleProduct
                     key={product.id}
                     product={{
@@ -292,12 +274,6 @@ const Products = () => {
                 </div>
               )}
             </div>
-
-            {totalLinks > 1 && (
-              <ul className="pagination-lux mt-5">
-                {links}
-              </ul>
-            )}
           </div>
         </div>
 

@@ -25,7 +25,10 @@ const Header = () => {
   };
 
   // Check if user is logged in (customer or admin)
-  const isLoggedIn = localStorage.getItem('customer_login') === 'true' || localStorage.getItem('admin_login') === 'true';
+  const isLoggedIn = 
+    localStorage.getItem('customer_login') === 'true' || 
+    localStorage.getItem('admin_login') === 'true' ||
+    localStorage.getItem('employee_login') === 'true';
 
   const [searchQuery, setSearchQuery] = React.useState('');
 

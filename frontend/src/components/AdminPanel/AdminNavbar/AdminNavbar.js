@@ -262,7 +262,7 @@ const AdminNavbar = ({ onToggleSidebar }) => {
                 <Link to="#" className="dropdown-item">
                   Change Password
                 </Link>
-                <Link to="#" className="dropdown-item">
+                <Link to="/customer/logout" className="dropdown-item">
                   Log Out
                 </Link>
               </div>
