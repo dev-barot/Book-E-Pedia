@@ -21,8 +21,8 @@ from .models import (
 logger = logging.getLogger(__name__)
 from django.http import FileResponse, HttpResponse
 from django.conf import settings
-import os
 import mimetypes
+import cloudinary.uploader
 from django.db.models import Sum
 from django.db.models import Count
 from django.views.static import serve
@@ -540,15 +540,32 @@ def get_book_types(request):
 def add_book_type(request):
     if request.method == "POST":
         try:
+            # 🔥 MANUAL CLOUDINARY UPLOADS
+            audio_file = request.FILES.get("Audio_File")
+            video_file = request.FILES.get("Video_File")
+            ebook_file = request.FILES.get("E_Book_File")
+
+            audio_upload = None
+            if audio_file:
+                audio_upload = cloudinary.uploader.upload(audio_file, resource_type="video")["public_id"]
+
+            video_upload = None
+            if video_file:
+                video_upload = cloudinary.uploader.upload(video_file, resource_type="video")["public_id"]
+
+            ebook_upload = None
+            if ebook_file:
+                ebook_upload = cloudinary.uploader.upload(ebook_file, resource_type="raw")["public_id"]
+
             book = TBL_BookType.objects.create(
                 Book_Name=request.POST.get("Book_Name"),
                 Physical_Book=request.POST.get("Physical_Book", "0"),
                 Audio_Book=request.POST.get("Audio_Book", "0"),
                 E_Book=request.POST.get("E_Book", "0"),
                 Video_Book=request.POST.get("Video_Book", "0"),
-                Audio_File=request.FILES.get("Audio_File"),
-                Video_File=request.FILES.get("Video_File"),
-                E_Book_File=request.FILES.get("E_Book_File"),
+                Audio_File=audio_upload,
+                Video_File=video_upload,
+                E_Book_File=ebook_upload,
                 IsActive='1'
             )
             return JsonResponse({
@@ -601,13 +618,16 @@ def update_book_type(request, id):
             book.Video_Book = request.POST.get("Video_Book", book.Video_Book)
 
             if request.FILES.get("Audio_File"):
-                book.Audio_File = request.FILES.get("Audio_File")
+                audio_upload = cloudinary.uploader.upload(request.FILES.get("Audio_File"), resource_type="video")
+                book.Audio_File = audio_upload["public_id"]
 
             if request.FILES.get("Video_File"):
-                book.Video_File = request.FILES.get("Video_File")
+                video_upload = cloudinary.uploader.upload(request.FILES.get("Video_File"), resource_type="video")
+                book.Video_File = video_upload["public_id"]
 
             if request.FILES.get("E_Book_File"):
-                book.E_Book_File = request.FILES.get("E_Book_File")
+                ebook_upload = cloudinary.uploader.upload(request.FILES.get("E_Book_File"), resource_type="raw")
+                book.E_Book_File = ebook_upload["public_id"]
 
             book.save()
 
