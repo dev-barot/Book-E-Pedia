@@ -113,10 +113,10 @@ class TBL_BookType(models.Model):
     Video_Book = models.CharField(max_length=1, default='0')
 
     # 🔥 RESTORED MEDIA FIELDS
-    # 🔥 FIXED: Use 'video' resource_type for Audio/Video to allow up to 100MB (vs 10MB for raw)
-    Audio_File = CloudinaryField(resource_type="video", null=True, blank=True)
-    Video_File = CloudinaryField(resource_type="video", null=True, blank=True)
-    E_Book_File = CloudinaryField(resource_type="raw", null=True, blank=True)
+    # 🔥 FIXED: Use positional arguments to strictly enforce resource types
+    Audio_File = CloudinaryField("video", null=True, blank=True)
+    Video_File = CloudinaryField("video", null=True, blank=True)
+    E_Book_File = CloudinaryField("raw", null=True, blank=True)
 
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 
