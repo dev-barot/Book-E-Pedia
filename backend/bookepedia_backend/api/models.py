@@ -113,10 +113,10 @@ class TBL_BookType(models.Model):
     Video_Book = models.CharField(max_length=1, default='0')
 
     # 🔥 RESTORED MEDIA FIELDS
-    # 🔥 FIXED: Use positional arguments to strictly enforce resource types
-    Audio_File = CloudinaryField("video", null=True, blank=True)
-    Video_File = CloudinaryField("video", null=True, blank=True)
-    E_Book_File = CloudinaryField("raw", null=True, blank=True)
+    # 🔥 FIXED: Use explicit keyword arguments for resource_type
+    Audio_File = CloudinaryField(null=True, blank=True, resource_type="audio")
+    Video_File = CloudinaryField(null=True, blank=True, resource_type="video")
+    E_Book_File = CloudinaryField(null=True, blank=True, resource_type="raw")
 
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 

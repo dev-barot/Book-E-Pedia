@@ -526,10 +526,10 @@ def get_book_types(request):
                 "ebook": book.E_Book,
                 "video": book.Video_Book,
 
-                # 🔥 FILE URLS
-                "audio_file": book.Audio_File.url if book.Audio_File else None,
-                "video_file": book.Video_File.url if book.Video_File else None,
-                "ebook_file": book.E_Book_File.url if book.E_Book_File else None,
+                # 🔥 FILE URLS - Explicitly set resource_type for safe URL generation
+                "audio_file": book.Audio_File.build_url(resource_type="video") if book.Audio_File else None,
+                "video_file": book.Video_File.build_url(resource_type="video") if book.Video_File else None,
+                "ebook_file": book.E_Book_File.build_url(resource_type="raw") if book.E_Book_File else None,
 
                 "is_active": book.IsActive
             })
