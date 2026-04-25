@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./Products.css";
 import SingleProduct from "./SingleProduct";
 import { BASE_URL } from "../../utils/config";
@@ -11,7 +11,7 @@ import img1 from "./alchemist.jpeg";
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [totalResult, setTotalResults] = useState(0);
+  const [, setTotalResults] = useState(0);
   
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -21,7 +21,7 @@ const Products = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedBookTypes, setSelectedBookTypes] = useState([]);
   const [sortOption, setSortOption] = useState("default");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [availableCategories, setAvailableCategories] = useState([]);
   const [bookTypesData, setBookTypesData] = useState([]);
@@ -143,7 +143,8 @@ const Products = () => {
       <div className="container-fluid px-4 px-lg-5 py-5">
         
         {/* Page Header */}
-        <div className="text-center mb-5 position-relative">
+        {/* Parallax Header Layer */}
+        <div className="shop-header-parallax text-center mb-5">
           <span className="badge-lux mb-3">
             {categoryParam ? `${categoryParam} Collection` : "Premium Collection"}
           </span>
@@ -159,20 +160,18 @@ const Products = () => {
               ? `Discover our curated selection of premium ${categoryParam} books. Find your next great read.`
               : `Discover a vast curated selection of premium books. From timeless classics to modern discoveries, find your next great read.`}
           </p>
-          
-          {/* Sidebar Toggle Button */}
-          <div className="d-flex justify-content-center mt-4">
-            <button 
-              className="btn-filter-toggle" 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <i className={`fa-solid ${isSidebarOpen ? 'fa-filter-circle-xmark' : 'fa-filter'}`}></i> 
-              {isSidebarOpen ? " Hide Filters" : " Show Filters"}
-            </button>
-          </div>
         </div>
 
-        <div className="row">
+        {/* Sticky Sidebar Toggle Button */}
+        <button 
+          className={`btn-filter-toggle-fixed ${isSidebarOpen ? 'active' : ''}`} 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <i className={`fa-solid ${isSidebarOpen ? 'fa-filter-circle-xmark' : 'fa-filter'}`}></i> 
+          <span>{isSidebarOpen ? " Hide Filters" : " Show Filters"}</span>
+        </button>
+
+        <div className="row products-content-layer">
           {/* Collapsible Sidebar */}
           {isSidebarOpen && (
             <div className="col-lg-3 col-md-4 mb-4 fade-in-left">

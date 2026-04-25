@@ -7,7 +7,29 @@
   color: #1f3b4d;
   background-color: #D3E8F9; /* Match Category and Home Base */
   min-height: 100vh;
-  padding: 40px 0 80px 0;
+  padding: 0; /* Remove top padding to let parallax work from top */
+  overflow-x: hidden;
+}
+
+/* PARALLAX LAYERING SYSTEM */
+.shop-header-parallax {
+  position: sticky;
+  top: 150px; /* Offset for main site header */
+  z-index: 1;
+  padding: 40px 20px;
+  pointer-events: none; /* Let clicks pass through to content behind/above */
+  transition: opacity 0.3s ease;
+}
+
+.products-content-layer {
+  position: relative;
+  z-index: 10;
+  background-color: #D3E8F9; /* Must match page background to hide text below */
+  padding-top: 100px; /* Space for the initial view of parallax text */
+  margin-top: 250px; /* Initial distance from top */
+  box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.05); /* Soft shadow on the overlap edge */
+  min-height: 100vh;
+  padding-bottom: 80px;
 }
 
 /* HEADINGS */
@@ -37,6 +59,7 @@
   color: #4b6b8a;
   max-width: 600px;
   line-height: 1.6;
+  margin: 0 auto;
 }
 
 .text-gradient {
@@ -56,61 +79,69 @@
   padding: 20px;
 }
 
-/* PAGINATION */
-.pagination-lux {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
-  gap: 12px;
-}
-
-.pagination-lux .page-item .page-link {
-  border: none;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(8px);
+/* FIXED FILTER TOGGLE BUTTON */
+.btn-filter-toggle-fixed {
+  position: fixed;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 999;
+  background: white;
   color: #1A4B84;
-  width: 45px; height: 45px;
+  border: 2px solid rgba(26, 75, 132, 0.1);
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  display: flex; justify-content: center; align-items: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: all 0.3s;
-  box-shadow: 0 5px 15px rgba(26, 75, 132, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(26, 75, 132, 0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  overflow: hidden;
 }
 
-.pagination-lux .page-item a:hover,
-.pagination-lux .page-item button:hover {
-  background: white;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(26, 75, 132, 0.1);
+.btn-filter-toggle-fixed i {
+  font-size: 1.4rem;
+  margin-bottom: 2px;
+  transition: transform 0.3s ease;
 }
 
-.pagination-lux .page-item.active .page-link {
-  background: linear-gradient(135deg, #1A4B84, #0d3159);
-  color: white;
-  box-shadow: 0 10px 25px rgba(26, 75, 132, 0.3);
-}
-
-/* =====================================
-   SIDEBAR LAYOUT & STYLING
-===================================== */
-.btn-filter-toggle {
-  background: white;
-  color: #1A4B84;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 30px;
-  font-weight: 700;
-  box-shadow: 0 4px 15px rgba(26, 75, 132, 0.1);
+.btn-filter-toggle-fixed span {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  max-width: 0;
+  opacity: 0;
+  white-space: nowrap;
   transition: all 0.3s ease;
 }
 
-.btn-filter-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(26, 75, 132, 0.2);
+.btn-filter-toggle-fixed:hover {
+  width: 150px;
+  border-radius: 30px;
+  background: #1A4B84;
+  color: white;
 }
 
+.btn-filter-toggle-fixed:hover span {
+  max-width: 100px;
+  opacity: 1;
+  margin-left: 8px;
+}
+
+.btn-filter-toggle-fixed:hover i {
+  transform: rotate(15deg);
+}
+
+.btn-filter-toggle-fixed.active {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+/* SIDEBAR LAYOUT & STYLING */
 .shop-sidebar-lux {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);

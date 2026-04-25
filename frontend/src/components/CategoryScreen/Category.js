@@ -26,7 +26,8 @@ function Category() {
     <div className="category-lux-page">
       <div className="container-fluid px-4 px-lg-5 py-5">
 
-        <div className="text-center mb-5">
+        {/* Parallax Header Layer */}
+        <div className="category-header-parallax text-center mb-5">
           <span className="badge-lux mb-3">Expansive Horizons</span>
           <h1 className="category-title">
             Browse Our <span className="text-gradient">Categories</span>
@@ -36,7 +37,7 @@ function Category() {
           </p>
         </div>
 
-        <div className="category-lux-grid">
+        <div className="category-lux-grid categories-content-layer">
           {categories.length > 0 ? (
             categories.map((category) => (
               <div

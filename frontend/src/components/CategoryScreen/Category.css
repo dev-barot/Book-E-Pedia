@@ -7,7 +7,29 @@
   color: #1f3b4d;
   background-color: #D3E8F9; /* Base Home Screen Aesthetic */
   min-height: 100vh;
-  padding: 40px 0 80px 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* PARALLAX LAYERING SYSTEM */
+.category-header-parallax {
+  position: sticky;
+  top: 150px; /* Offset for main site header */
+  z-index: 1;
+  padding: 40px 20px;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.categories-content-layer {
+  position: relative;
+  z-index: 10;
+  background-color: #D3E8F9; /* Must match page background to hide text below */
+  padding-top: 60px;
+  margin-top: 220px; /* Initial distance from top */
+  box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.05); /* Soft shadow on the overlap edge */
+  min-height: 100vh;
+  padding-bottom: 80px;
 }
 
 /* HEADINGS matching Home.css */
@@ -37,6 +59,7 @@
   color: #4b6b8a;
   max-width: 600px;
   line-height: 1.6;
+  margin: 0 auto;
 }
 
 .text-gradient {
@@ -178,40 +201,4 @@
 .btn-explore-category:hover {
   background: #D3E8F9;
   color: #1A4B84;
-}
-
-/* PAGINATION */
-.pagination-lux {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
-  gap: 12px;
-}
-
-.pagination-lux .page-item .page-link {
-  border: none;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(8px);
-  color: #1A4B84;
-  width: 45px; height: 45px;
-  border-radius: 50%;
-  display: flex; justify-content: center; align-items: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: all 0.3s;
-  box-shadow: 0 5px 15px rgba(26, 75, 132, 0.05);
-}
-
-.pagination-lux .page-item a:hover,
-.pagination-lux .page-item button:hover {
-  background: white;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(26, 75, 132, 0.1);
-}
-
-.pagination-lux .page-item.active .page-link {
-  background: linear-gradient(135deg, #1A4B84, #0d3159);
-  color: white;
-  box-shadow: 0 10px 25px rgba(26, 75, 132, 0.3);
 }
