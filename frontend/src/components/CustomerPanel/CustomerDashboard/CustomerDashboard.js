@@ -215,39 +215,36 @@ function CustomerDashboard() {
 
                       <div className="cust-book-lux-formats">
                         {hasAudio && (
-                          <NavLink
-                            to="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleAudioClick(item);
-                            }}
+                          <button
+                            className="format-badge audio"
+                            onClick={() => handleAudioClick(item)}
+                            title="Play Audio Book"
                           >
                             <i className="fa fa-headphones"></i>
-                          </NavLink>
+                            <span>Audio</span>
+                          </button>
                         )}
 
                         {hasVideo && (
-                          <NavLink
-                            to="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleVideoClick(item);
-                            }}
+                          <button
+                            className="format-badge video"
+                            onClick={() => handleVideoClick(item)}
+                            title="Watch Video Book"
                           >
                             <i className="fa-solid fa-file-video"></i>
-                          </NavLink>
+                            <span>Video</span>
+                          </button>
                         )}
 
                         {hasEBook && (
-                          <NavLink
-                            to="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleEBookClick(item);
-                            }}
+                          <button
+                            className="format-badge ebook"
+                            onClick={() => handleEBookClick(item)}
+                            title="Read E-Book"
                           >
-                            <i className="fa fa-book-reader"></i>
-                          </NavLink>
+                            <i className="fa-solid fa-book-open"></i>
+                            <span>E-Book</span>
+                          </button>
                         )}
                       </div>
                     </div>

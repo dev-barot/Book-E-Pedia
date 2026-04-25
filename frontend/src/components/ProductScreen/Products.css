@@ -14,17 +14,17 @@
 /* PARALLAX LAYERING SYSTEM */
 .shop-header-parallax-fixed {
   position: fixed;
-  top: 180px; /* Adjust based on navbar height to center nicely */
+  top: 160px; /* Reduced offset */
   left: 0;
   width: 100%;
   z-index: 1; /* BACKGROUND LAYER */
   text-align: center;
-  pointer-events: none; /* Let clicks pass through to content behind/above */
+  pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
 .parallax-spacer {
-  height: 400px; /* MUST MATCH the space you want for the text initially */
+  height: 300px; /* Reduced from 400px */
   width: 100%;
   background: transparent;
   pointer-events: none;

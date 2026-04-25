@@ -163,33 +163,78 @@
   margin-bottom: 20px;
 }
 
-/* ICONS */
+/* PREMIUM FORMAT BADGES */
 .cust-book-lux-formats {
   display: flex;
-  justify-content: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
-.format-icon-lux {
-  width: 38px;
-  height: 38px;
+.format-badge {
   display: flex;
-  justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.8);
-  color: #1A3B5C;
-  border-radius: 50%;
-  font-size: 1.1rem;
-  transition: all 0.3s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  text-decoration: none;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  width: 100%;
 }
 
-.format-icon-lux:hover {
-  background: #2980b9;
+.format-badge i {
+  font-size: 1.1rem;
+}
+
+.format-badge span {
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* Specific Badge Themes */
+.format-badge.audio {
+  background: rgba(255, 179, 0, 0.1);
+  color: #d19300;
+  border: 1px solid rgba(255, 179, 0, 0.2);
+}
+
+.format-badge.audio:hover {
+  background: #ffb300;
   color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(41, 128, 185, 0.3);
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(255, 179, 0, 0.2);
+}
+
+.format-badge.video {
+  background: rgba(239, 68, 68, 0.1);
+  color: #c53030;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.format-badge.video:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2);
+}
+
+.format-badge.ebook {
+  background: rgba(41, 128, 185, 0.1);
+  color: #1a4b84;
+  border: 1px solid rgba(41, 128, 185, 0.2);
+}
+
+.format-badge.ebook:hover {
+  background: #1a4b84;
+  color: white;
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(26, 75, 132, 0.2);
 }
 
 /* EMPTY LIBRARY */

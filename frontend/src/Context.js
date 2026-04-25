@@ -22,14 +22,14 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   // Update localStorage whenever user changes
-  const updateUser = (newUser) => {
+  const updateUser = React.useCallback((newUser) => {
     setUser(newUser);
     if (newUser) {
       localStorage.setItem('user', JSON.stringify(newUser));
     } else {
       localStorage.removeItem('user');
     }
-  };
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser: updateUser }}>
