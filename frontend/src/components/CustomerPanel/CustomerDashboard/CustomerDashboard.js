@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomerSidebar from "../CustomerSidebar/CustomerSidebar";
 import "./CustomerDashboard.css";
 import p1 from "./p1.jpeg";
