@@ -143,8 +143,8 @@ const Products = () => {
       <div className="container-fluid px-4 px-lg-5 py-5">
         
         {/* Page Header */}
-        {/* Parallax Header Layer */}
-        <div className="shop-header-parallax text-center mb-5">
+        {/* Fixed Parallax Background Layer */}
+        <div className="shop-header-parallax-fixed">
           <span className="badge-lux mb-3">
             {categoryParam ? `${categoryParam} Collection` : "Premium Collection"}
           </span>
@@ -162,15 +162,10 @@ const Products = () => {
           </p>
         </div>
 
-        {/* Sticky Sidebar Toggle Button */}
-        <button 
-          className={`btn-filter-toggle-fixed ${isSidebarOpen ? 'active' : ''}`} 
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          <i className={`fa-solid ${isSidebarOpen ? 'fa-filter-circle-xmark' : 'fa-filter'}`}></i> 
-          <span>{isSidebarOpen ? " Hide Filters" : " Show Filters"}</span>
-        </button>
+        {/* Spacer to show the fixed layer initially */}
+        <div className="parallax-spacer"></div>
 
+        {/* Content Layer that slides OVER the fixed text */}
         <div className="row products-content-layer">
           {/* Collapsible Sidebar */}
           {isSidebarOpen && (
@@ -275,6 +270,17 @@ const Products = () => {
             </div>
           </div>
         </div>
+
+        {/* Sticky Sidebar Toggle Button */}
+        <button 
+          className={`btn-filter-toggle-fixed ${isSidebarOpen ? 'active' : ''}`} 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <i className={`fa-solid ${isSidebarOpen ? 'fa-filter-circle-xmark' : 'fa-filter'}`}></i> 
+          <span>{isSidebarOpen ? " Hide Filters" : " Show Filters"}</span>
+        </button>
+      </div>
+    </div>
 
       </div>
     </div>

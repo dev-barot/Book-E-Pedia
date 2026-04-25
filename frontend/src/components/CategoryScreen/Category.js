@@ -26,8 +26,8 @@ function Category() {
     <div className="category-lux-page">
       <div className="container-fluid px-4 px-lg-5 py-5">
 
-        {/* Parallax Header Layer */}
-        <div className="category-header-parallax text-center mb-5">
+        {/* Fixed Parallax Background Layer */}
+        <div className="category-header-parallax-fixed">
           <span className="badge-lux mb-3">Expansive Horizons</span>
           <h1 className="category-title">
             Browse Our <span className="text-gradient">Categories</span>
@@ -37,6 +37,10 @@ function Category() {
           </p>
         </div>
 
+        {/* Spacer to show the fixed layer initially */}
+        <div className="parallax-spacer"></div>
+
+        {/* Content Layer that slides OVER the fixed text */}
         <div className="category-lux-grid categories-content-layer">
           {categories.length > 0 ? (
             categories.map((category) => (

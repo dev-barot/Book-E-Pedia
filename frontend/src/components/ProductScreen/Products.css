@@ -12,24 +12,31 @@
 }
 
 /* PARALLAX LAYERING SYSTEM */
-.shop-header-parallax {
-  position: sticky;
-  top: 150px; /* Offset for main site header */
-  z-index: 1;
-  padding: 40px 20px;
+.shop-header-parallax-fixed {
+  position: fixed;
+  top: 180px; /* Adjust based on navbar height to center nicely */
+  left: 0;
+  width: 100%;
+  z-index: 1; /* BACKGROUND LAYER */
+  text-align: center;
   pointer-events: none; /* Let clicks pass through to content behind/above */
   transition: opacity 0.3s ease;
 }
 
+.parallax-spacer {
+  height: 400px; /* MUST MATCH the space you want for the text initially */
+  width: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+
 .products-content-layer {
   position: relative;
-  z-index: 10;
-  background-color: #D3E8F9; /* Must match page background to hide text below */
-  padding-top: 100px; /* Space for the initial view of parallax text */
-  margin-top: 250px; /* Initial distance from top */
-  box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.05); /* Soft shadow on the overlap edge */
+  z-index: 10; /* FOREGROUND LAYER - OVERLAPS FIXED TEXT */
+  background-color: #D3E8F9; /* Solid color to cover the background text */
+  padding-top: 50px;
   min-height: 100vh;
-  padding-bottom: 80px;
+  box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.1); /* Visual depth edge */
 }
 
 /* HEADINGS */
