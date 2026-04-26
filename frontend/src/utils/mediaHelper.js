@@ -13,20 +13,19 @@ export const getMediaUrl = (path) => {
 
   // Cloudinary Specific Fixes
   if (url.includes("res.cloudinary.com")) {
-    console.log("DEBUG: Processing Cloudinary URL (v1.0.7)");
+    console.log("DEBUG: Processing Cloudinary URL (v1.0.8)");
     
     // 1. Remove versioning (e.g., /v123456789/)
     url = url.replace(/\/v\d+\//, "/");
     
-    // 2. TRIPLE-CHECK PDF PATH
-    // We try to ensure it uses a folder that exists. 
-    // If it's a PDF and has 'raw', we try 'image' first as it's most common.
-    if (url.toLowerCase().endsWith(".pdf")) {
-      if (url.includes("/raw/upload/")) {
-        url = url.replace("/raw/upload/", "/image/upload/");
-      } else if (url.includes("/files/upload/")) {
-        url = url.replace("/files/upload/", "/image/upload/");
-      }
+    // 2. SMART PDF HANDLING
+    // We force 'image/upload' and prevent double '.pdf' extensions
+    if (url.toLowerCase().includes(".pdf")) {
+      url = url.replace("/raw/upload/", "/image/upload/");
+      url = url.replace("/files/upload/", "/image/upload/");
+      
+      // If it has .pdf.pdf, fix it to just .pdf
+      url = url.replace(/\.pdf\.pdf$/i, ".pdf");
     }
   }
 
