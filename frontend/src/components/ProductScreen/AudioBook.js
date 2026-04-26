@@ -123,7 +123,7 @@ const AudioBook = () => {
                 {product.Product_Name || "Audiobook Title"}
               </h1>
               <p className="ab-author">
-                By {product.Author || "Unknown Author"}
+                By {product.author || "Unknown Author"}
               </p>
 
               <div className="ab-progress-section">
