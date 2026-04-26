@@ -24,7 +24,7 @@
 }
 
 .parallax-spacer {
-  height: 300px; /* Reduced from 400px */
+  height: 100px; /* Reduced from 300px */
   width: 100%;
   background: transparent;
   pointer-events: none;
@@ -34,7 +34,7 @@
   position: relative;
   z-index: 10; /* FOREGROUND LAYER - OVERLAPS FIXED TEXT */
   background-color: #D3E8F9; /* Solid color to cover the background text */
-  padding-top: 50px;
+  padding-top: 20px;
   min-height: 100vh;
   box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.1); /* Visual depth edge */
 }
