@@ -19,12 +19,9 @@ export const getMediaUrl = (path) => {
     url = url.replace(/\/v\d+\//, "/");
     
     // 2. SMART PDF HANDLING
-    // We force 'image/upload' and prevent double '.pdf' extensions
     if (url.toLowerCase().includes(".pdf")) {
-      url = url.replace("/raw/upload/", "/image/upload/");
-      url = url.replace("/files/upload/", "/image/upload/");
-      
-      // If it has .pdf.pdf, fix it to just .pdf
+      // If it's already an image upload, keep it. 
+      // If it's raw, it will likely 401, so we'll handle that in the viewer.
       url = url.replace(/\.pdf\.pdf$/i, ".pdf");
     }
   }
@@ -33,4 +30,12 @@ export const getMediaUrl = (path) => {
   url = url.replace(/([^:]\/)\/+/g, "$1");
 
   return url;
+};
+
+// NEW: Helper to wrap URLs in Google PDF Viewer for maximum compatibility
+export const getPdfViewerUrl = (url) => {
+  if (!url) return null;
+  // If it's already a viewer URL, don't double wrap
+  if (url.includes("docs.google.com/viewer")) return url;
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
 };
