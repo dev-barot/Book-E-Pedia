@@ -56,27 +56,66 @@ const Payment = () => {
       return;
     }
 
-    setIsProcessing(true);
-    try {
-      // Direct payment confirmation for test mode
-      const response = await fetch(`${BASE_URL}/api/payment/create/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ order_id: orderId }),
-      });
-      const data = await response.json();
+    if (!window.Razorpay) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
 
-      if (data.bool) {
-        alert("Payment Successful! Your order is confirmed.");
-        navigate("/customer/dashboard");
-      } else {
-        alert("Payment Failed: " + data.msg);
-      }
+    setIsProcessing(true);
+
+    try {
+      // Configuration for Razorpay Modal
+      const options = {
+        key: "rzp_test_p0y8W59I70E0Vw", // Replace with your actual Key ID from Razorpay Dashboard
+        amount: Math.round(orderDetails.total_amount * 100), // Amount is in currency subunits (paise)
+        currency: "INR",
+        name: "Book-E-Pedia",
+        description: `Payment for Order #${orderId}`,
+        image: "https://example.com/your_logo.png",
+        handler: async function (response) {
+          // This function runs AFTER successful payment in modal
+          try {
+            const confirmRes = await fetch(`${BASE_URL}/api/payment/create/`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                order_id: orderId,
+                payment_id: response.razorpay_payment_id 
+              }),
+            });
+            const data = await confirmRes.json();
+
+            if (data.bool) {
+              alert("Payment Successful! Your order is confirmed.");
+              navigate("/customer/dashboard");
+            } else {
+              alert("Payment confirmed by Razorpay but failed on our server: " + data.msg);
+            }
+          } catch (err) {
+            console.error("Backend confirmation error:", err);
+            alert("Payment successful but we couldn't update our records. Please contact support.");
+          }
+        },
+        prefill: {
+          name: localStorage.getItem("customer_username") || "",
+          email: "", // You can add email here if stored
+          contact: ""
+        },
+        theme: {
+          color: "#1A4B84"
+        }
+      };
+
+      const rzp1 = new window.Razorpay(options);
+      
+      rzp1.on('payment.failed', function (response) {
+        alert("Payment Failed: " + response.error.description);
+      });
+
+      rzp1.open();
     } catch (err) {
-      console.error("Payment error:", err);
-      alert("Something went wrong during payment.");
+      console.error("Razorpay error:", err);
+      alert("Something went wrong while opening the payment gateway.");
     } finally {
       setIsProcessing(false);
     }
