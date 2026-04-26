@@ -1,15 +1,14 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { getMediaUrl, getPdfViewerUrl } from "../../utils/mediaHelper";
+import { getMediaUrl } from "../../utils/mediaHelper";
 import "./E_Book.css";
 
 function E_Book() {
   const { state } = useLocation();
 
-  const rawUrl = getMediaUrl(state?.eBookFileUrl);
-  const fileUrl = getPdfViewerUrl(rawUrl);
+  const fileUrl = getMediaUrl(state?.eBookFileUrl);
   
-  console.log("DEBUG: E-Book Component v1.0.9-google-viewer");
+  console.log("DEBUG: E-Book Component v1.1.0-platform-exclusive");
   console.log("EBOOK URL:", fileUrl);
 
   const product = state?.productDetails || {};
