@@ -13,9 +13,18 @@ export const getMediaUrl = (path) => {
 
   // Cloudinary Specific Fixes
   if (url.includes("res.cloudinary.com")) {
+    console.log("DEBUG: Processing Cloudinary URL (v1.0.6)");
+    
     // 1. Remove versioning (e.g., /v123456789/)
-    // User confirmed this is the CRITICAL fix for 401 errors on this account.
+    // This is the CRITICAL fix for 401 errors on this account.
     url = url.replace(/\/v\d+\//, "/");
+    
+    // 2. AGGRESSIVE PDF PATH FIX
+    // PDFs in your account are stored as images. If the backend sends 'raw/upload', 
+    // it will ALWAYS 401 or 404. We force it to 'image/upload'.
+    if (url.toLowerCase().endsWith(".pdf") || path.toLowerCase().includes(".pdf")) {
+      url = url.replace("/raw/upload/", "/image/upload/");
+    }
   }
 
   // Cleanup: Ensure no double slashes after the domain (except after http://)
