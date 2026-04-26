@@ -1289,6 +1289,7 @@ def get_customer_orders(request, cust_id):
                     "product_details": {
                         "Product_ID": product.Product_ID,
                         "Product_Name": product.Product_Name,
+                        "Author": product.Author,
                         "Cover_Photo": product.Cover_Photo.url if product.Cover_Photo else None,
 
                         "Book_Type_Details": {
