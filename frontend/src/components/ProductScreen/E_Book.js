@@ -13,35 +13,11 @@ function E_Book() {
 
   const product = state?.productDetails || {};
 
-  const refreshViewer = () => {
-    window.location.reload();
-  };
-
-  const openInNewTab = () => {
-    window.open(fileUrl, "_blank");
-  };
-
   return (
     <div className="ebook-container" onContextMenu={(e) => e.preventDefault()}>
       <center>
       <div className="ebook-header" style={{ marginBottom: "30px" }}>
         <h1 style={{ fontWeight: 800, color: "#0f172a" }}>{product.Product_Name || "E-Book"}</h1>
-        <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "10px" }}>
-          <button 
-            onClick={refreshViewer}
-            className="btn btn-sm btn-outline-secondary"
-            style={{ borderRadius: "20px", fontSize: "0.8rem" }}
-          >
-            <i className="fa-solid fa-rotate-right me-1"></i> Refresh Viewer
-          </button>
-          <button 
-            onClick={openInNewTab}
-            className="btn btn-sm btn-primary"
-            style={{ borderRadius: "20px", fontSize: "0.8rem", background: "#2563eb", border: "none" }}
-          >
-            <i className="fa-solid fa-up-right-from-square me-1"></i> Open in New Tab
-          </button>
-        </div>
       </div>
         
       {fileUrl ? (

@@ -5,26 +5,31 @@
 .shop-lux-page {
   font-family: 'Inter', 'Segoe UI', sans-serif;
   color: #1f3b4d;
-  background-color: #D3E8F9; /* Match Category and Home Base */
+  background-color: #D3E8F9;
+  /* Match Category and Home Base */
   min-height: 100vh;
-  padding: 0; /* Remove top padding to let parallax work from top */
+  padding: 0;
+  /* Remove top padding to let parallax work from top */
   overflow-x: hidden;
 }
 
 /* PARALLAX LAYERING SYSTEM */
 .shop-header-parallax-fixed {
   position: fixed;
-  top: 160px; /* Reduced offset */
+  top: 160px;
+  /* Reduced offset */
   left: 0;
   width: 100%;
-  z-index: 1; /* BACKGROUND LAYER */
+  z-index: 1;
+  /* BACKGROUND LAYER */
   text-align: center;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
 .parallax-spacer {
-  height: 300px; /* Reduced from 400px */
+  height: 100px;
+  /* Reduced from 400px */
   width: 100%;
   background: transparent;
   pointer-events: none;
@@ -32,11 +37,14 @@
 
 .products-content-layer {
   position: relative;
-  z-index: 10; /* FOREGROUND LAYER - OVERLAPS FIXED TEXT */
-  background-color: #D3E8F9; /* Solid color to cover the background text */
+  z-index: 10;
+  /* FOREGROUND LAYER - OVERLAPS FIXED TEXT */
+  background-color: #D3E8F9;
+  /* Solid color to cover the background text */
   padding-top: 50px;
   min-height: 100vh;
-  box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.1); /* Visual depth edge */
+  box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.1);
+  /* Visual depth edge */
 }
 
 /* HEADINGS */
@@ -262,12 +270,12 @@
   transition: all 0.2s;
 }
 
-.lux-checkbox-container:hover input ~ .checkmark {
+.lux-checkbox-container:hover input~.checkmark {
   background-color: white;
   border-color: #1A4B84;
 }
 
-.lux-checkbox-container input:checked ~ .checkmark {
+.lux-checkbox-container input:checked~.checkmark {
   background-color: #1A4B84;
   border-color: #1A4B84;
 }
@@ -278,7 +286,7 @@
   display: none;
 }
 
-.lux-checkbox-container input:checked ~ .checkmark:after {
+.lux-checkbox-container input:checked~.checkmark:after {
   display: block;
 }
 
@@ -316,6 +324,7 @@
     opacity: 0;
     transform: translateX(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
