@@ -16,8 +16,12 @@ export const getMediaUrl = (path) => {
     // 1. Remove versioning (e.g., /v123456789/)
     // User confirmed this is the CRITICAL fix for 401 errors on this account.
     url = url.replace(/\/v\d+\//, "/");
-    
-    // 2. We use 'image/upload' for PDFs as 'raw' causes 404s/401s here.
+    // 2. Force 'image/upload' for PDFs
+    // If the backend is set to resource_type='raw', it generates 'raw/upload' links.
+    // However, PDFs are often better served (and were previously stored) as 'image/upload'.
+    if (url.endsWith(".pdf") && url.includes("/raw/upload/")) {
+      url = url.replace("/raw/upload/", "/image/upload/");
+    }
   }
 
   // Cleanup: Ensure no double slashes after the domain (except after http://)
