@@ -66,7 +66,7 @@ const Payment = () => {
     try {
       // Configuration for Razorpay Modal
       const options = {
-        key: "rzp_test_p0y8W59I70E0Vw", // Replace with your actual Key ID from Razorpay Dashboard
+        key: "rzp_test_Si241LgI0TOa0H", // Replace with your actual Key ID from Razorpay Dashboard
         amount: Math.round(orderDetails.total_amount * 100), // Amount is in currency subunits (paise)
         currency: "INR",
         name: "Book-E-Pedia",
