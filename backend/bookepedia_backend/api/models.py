@@ -116,7 +116,7 @@ class TBL_BookType(models.Model):
     # 🔥 FIXED: Use explicit keyword arguments for resource_type
     Audio_File = CloudinaryField(null=True, blank=True, resource_type="audio")
     Video_File = CloudinaryField(null=True, blank=True, resource_type="video")
-    E_Book_File = CloudinaryField(null=True, blank=True, resource_type="raw")
+    E_Book_File = CloudinaryField(null=True, blank=True, resource_type="auto")
 
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
 
