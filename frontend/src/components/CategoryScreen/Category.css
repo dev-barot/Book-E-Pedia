@@ -24,7 +24,7 @@
 }
 
 .parallax-spacer {
-  height: 100px; /* Reduced from 300px */
+  height: 220px; /* Adjusted to reveal subtitle */
   width: 100%;
   background: transparent;
   pointer-events: none;
