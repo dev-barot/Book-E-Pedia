@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import "./Payment.css";
 import { BASE_URL } from "../../utils/config";
 
 const Payment = () => {
-  const { orderId } = useParams();
+  const { orderId: paramId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  
+  // Try to get orderId from URL param first, then from navigation state
+  const orderId = paramId || location.state?.orderId;
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -22,6 +26,11 @@ const Payment = () => {
     }
 
     const fetchOrderDetails = async () => {
+      if (!orderId) {
+        setError("Order ID is missing. Please go back to cart and try again.");
+        setLoading(false);
+        return;
+      }
       try {
         const response = await fetch(`${BASE_URL}/api/order/${orderId}/`);
         const data = await response.json();

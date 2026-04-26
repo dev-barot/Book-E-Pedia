@@ -201,8 +201,13 @@ const CustomerCart = () => {
 
       const orderId = data.order_id;
 
-      // ✅ NAVIGATE TO PARAMETERIZED URL
-      navigate(`/payment/${orderId}`);
+      // ✅ NAVIGATE WITH BOTH URL PARAM AND STATE FOR MAXIMUM RELIABILITY
+      navigate(`/payment/${orderId}`, {
+        state: {
+          orderId: orderId,
+          total: subtotal,
+        },
+      });
 
     } catch (err) {
       console.error(err);
