@@ -142,7 +142,7 @@ function App() {
           <Route exact path='/contactus' element={<ContactForm />} />
           <Route exact path='/login' element={<Login />} />
           <Route exact path='/cart' element={<CustomerCart />} />
-          <Route exact path='/payment' element={<Payment />} />
+          <Route exact path='/payment/:orderId' element={<Payment />} />
 
           <Route exact path="/categories" element={<Categories />} />
           <Route exact path='/category/:category_slug/:Category_ID' element={<CategoryProducts />} />
