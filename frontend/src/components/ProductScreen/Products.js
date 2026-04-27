@@ -23,6 +23,8 @@ const Products = () => {
   const [selectedBookTypes, setSelectedBookTypes] = useState([]);
   const [sortOption, setSortOption] = useState("default");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const [availableCategories, setAvailableCategories] = useState([]);
   const [bookTypesData, setBookTypesData] = useState([]);
@@ -140,6 +142,18 @@ const Products = () => {
     setSelectedCategories([]);
     setSelectedBookTypes([]);
     setSortOption("default");
+    setCurrentPage(1);
+  };
+
+  // Pagination Logic
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 400, behavior: "smooth" });
   };
 
 
@@ -249,8 +263,8 @@ const Products = () => {
           {/* Product Grid */}
           <div className={isSidebarOpen ? "col-lg-9 col-md-8" : "col-12"}>
             <div className={`shop-lux-list ${!isSidebarOpen ? 'full-width-grid' : ''}`}>
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
+              {currentItems.length > 0 ? (
+                currentItems.map((product) => (
                   <SingleProduct
                     key={product.id}
                     product={{
@@ -273,15 +287,47 @@ const Products = () => {
                 </div>
               )}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="pagination-lux-wrapper mt-5 mb-5">
+                <button 
+                  className="page-nav-btn" 
+                  disabled={currentPage === 1}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  <i className="fa-solid fa-chevron-left"></i>
+                </button>
+                
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i + 1}
+                    className={`page-num-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+
+                <button 
+                  className="page-nav-btn" 
+                  disabled={currentPage === totalPages}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  <i className="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Sticky Sidebar Toggle Button */}
+        {/* Sticky Sidebar Toggle Button (Moved to Left) */}
         <button 
-          className={`btn-filter-toggle-fixed ${isSidebarOpen ? 'active' : ''}`} 
+          className={`btn-filter-toggle-fixed left-aligned ${isSidebarOpen ? 'active' : ''}`} 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          style={{ left: '40px', right: 'auto' }}
         >
-          <i className={`fa-solid ${isSidebarOpen ? 'fa-xmark' : 'fa-filter'}`}></i> 
+          <i className={`fa-solid ${isSidebarOpen ? 'fa-xmark' : 'fa-bars'}`}></i> 
           <span>{isSidebarOpen ? " Hide Filters" : " Show Filters"}</span>
         </button>
       </div>
