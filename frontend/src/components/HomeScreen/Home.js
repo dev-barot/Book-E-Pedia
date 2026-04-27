@@ -244,7 +244,7 @@ function Home() {
                   <li><i className="fa-solid fa-circle-check text-success me-2"></i> Premium pristine physical packaging</li>
                   <li><i className="fa-solid fa-circle-check text-success me-2"></i> 24/7 dedicated customer support</li>
                 </ul>
-                <Link to="/about" className="btn-outline-lux px-4 py-2">Learn More About Us</Link>
+                <Link to="/aboutus" className="btn-outline-lux px-4 py-2">Learn More About Us</Link>
               </div>
             </div>
           </div>

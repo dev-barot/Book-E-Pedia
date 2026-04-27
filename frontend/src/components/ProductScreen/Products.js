@@ -17,6 +17,7 @@ const Products = () => {
   const searchParams = new URLSearchParams(location.search);
   const categoryParam = searchParams.get("category");
   const searchParam = searchParams.get("search");
+  const formatParam = searchParams.get("format");
 
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedBookTypes, setSelectedBookTypes] = useState([]);
@@ -67,7 +68,11 @@ const Products = () => {
     if (categoryParam) {
       setSelectedCategories([categoryParam]);
     }
-  }, [categoryParam]);
+    if (formatParam) {
+      setSelectedBookTypes([formatParam]);
+      setIsSidebarOpen(true); // Open sidebar if a filter is active
+    }
+  }, [categoryParam, formatParam]);
 
   // 3. Apply Filters and Sorting
   useEffect(() => {

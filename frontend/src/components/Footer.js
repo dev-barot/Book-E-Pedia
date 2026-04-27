@@ -40,10 +40,10 @@ const Footer = () => {
           <div className="col-lg-2 col-md-6 mb-4 mb-md-0">
             <h5 className="footer-title-lux">Services</h5>
             <ul className="footer-links-lux">
-              <li><Link to="/products/physical">Physical Books</Link></li>
-              <li><Link to="/e-book">E-Books</Link></li>
-              <li><Link to="/audio-book">Audio Books</Link></li>
-              <li><Link to="/video-book">Video Books</Link></li>
+              <li><Link to="/products?format=physical">Physical Books</Link></li>
+              <li><Link to="/products?format=ebook">E-Books</Link></li>
+              <li><Link to="/products?format=audio">Audio Books</Link></li>
+              <li><Link to="/products?format=video">Video Books</Link></li>
             </ul>
           </div>
 
