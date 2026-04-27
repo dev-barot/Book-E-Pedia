@@ -41,10 +41,12 @@ from .views import (
     reset_password_confirm,
     forgot_password_request,
     employee_forgot_password_request,
-    employee_reset_password_confirm
+    employee_reset_password_confirm,
+    ping
 )
 
 urlpatterns = [
+    path('ping/', ping),
     path('register/', customer_register),
     path('login/', login_view),
     path('employee-login/', employee_login),

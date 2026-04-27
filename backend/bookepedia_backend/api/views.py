@@ -42,6 +42,7 @@ from rest_framework import status
 import secrets  # For generating the secure token
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.decorators.cache import cache_page
 
 def file_iterator(file_path, offset, length, chunk_size=8192):
     with open(file_path, 'rb') as f:
@@ -107,6 +108,11 @@ def serve_media(request, path):
 def to_bool(value):
     return str(value).lower() in ["true","1","yes"]
 @csrf_exempt
+def ping(request):
+    return JsonResponse({"status": "awake", "time": datetime.now().isoformat()})
+
+@cache_page(60 * 5)  # Cache for 5 minutes
+@csrf_exempt
 def get_products(request):
     # ======================
     # GET ALL PRODUCTS
@@ -127,8 +133,8 @@ def get_products(request):
                 "price": str(product.Product_Price),
                 "stock": product.Stock,
                 "description": product.Product_Description,
-                "cover_photo": product.Cover_Photo.url.replace("http://", "https://") if product.Cover_Photo else None,
-                "back_photo": product.Back_Photo.url.replace("http://", "https://") if product.Back_Photo else None,
+                "cover_photo": product.Cover_Photo.build_url(transformation=[{'quality': 'auto', 'fetch_format': 'auto'}]) if product.Cover_Photo else None,
+                "back_photo": product.Back_Photo.build_url(transformation=[{'quality': 'auto', 'fetch_format': 'auto'}]) if product.Back_Photo else None,
                 "category_id": product.Category_ID.Category_ID,
                 "category_name": product.Category_ID.Category_Name,
                 "book_id": product.Book_ID.Book_ID,
@@ -370,6 +376,7 @@ def add_category(request):
 
     return JsonResponse({"bool": False, "msg": "Invalid method"})
 
+@cache_page(60 * 5)  # Cache for 5 minutes
 @csrf_exempt
 def get_categories(request):
     if request.method == 'GET':
@@ -382,7 +389,7 @@ def get_categories(request):
             for category in categories:
                 image_url = ""
                 if category.Category_Photo:
-                    image_url = category.Category_Photo.url
+                    image_url = category.Category_Photo.build_url(transformation=[{'quality': 'auto', 'fetch_format': 'auto'}])
 
                 data.append({
                     "id": category.Category_ID,

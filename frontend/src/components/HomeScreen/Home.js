@@ -20,6 +20,9 @@ function Home() {
   const [featuredCategories, setFeaturedCategories] = useState([]);
 
   useEffect(() => {
+    // 🚀 HEARTBEAT: Wake up Render free tier early
+    fetch(`${BASE_URL}/api/ping/`).catch(() => {});
+
     fetch(`${BASE_URL}/api/category/`)
       .then((res) => res.json())
       .then((data) => {
