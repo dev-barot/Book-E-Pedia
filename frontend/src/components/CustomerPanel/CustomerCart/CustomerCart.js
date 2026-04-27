@@ -12,10 +12,11 @@ const CustomerCart = () => {
 
   useEffect(() => {
     const fetchCartAndProducts = async () => {
-      const customerId = localStorage.getItem("customer_id") || "1"; // Default to 1 if not logged in for viewing, but creation needs real ID
+      const customerId = localStorage.getItem("customer_id");
+      
       try {
         const [cartRes, productsRes] = await Promise.all([
-          fetch(`${BASE_URL}/api/cart/${customerId}/`),
+          customerId ? fetch(`${BASE_URL}/api/cart/${customerId}/`) : Promise.resolve({ ok: true, json: () => Promise.resolve({ bool: false }) }),
           fetch(`${BASE_URL}/api/products/`)
         ]);
         
