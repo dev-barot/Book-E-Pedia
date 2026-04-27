@@ -140,10 +140,8 @@ function App() {
           <Route exact path='/' element={<Home />} />
           <Route exact path='/aboutus' element={<AboutUs />} />
           <Route exact path='/contactus' element={<ContactForm />} />
-          <Route exact path='/login' element={<Login />} />
           <Route exact path='/cart' element={<CustomerCart />} />
           <Route exact path='/payment/:orderId?' element={<Payment />} />
-
           <Route exact path="/categories" element={<Categories />} />
           <Route exact path='/category/:category_slug/:Category_ID' element={<CategoryProducts />} />
           <Route exact path="/products/Entertainment" element={<Entertainment />} />
@@ -157,7 +155,15 @@ function App() {
           <Route exact path='/invoice' element={<Invoice />} />
 
           {/* Customer */}
-          <Route exact path='/register' element={<CustomerRegisteration />} />
+          <Route exact path='/register' element={
+            localStorage.getItem('customer_login') === 'true' ? <CustomerDashboard /> : <CustomerRegisteration />
+          } />
+          <Route exact path='/login' element={
+            localStorage.getItem('customer_login') === 'true' ? <CustomerDashboard /> :
+            localStorage.getItem('admin_login') === 'true' ? <AdminDashboard /> :
+            localStorage.getItem('employee_login') === 'true' ? <EmployeeDashboard /> :
+            <Login />
+          } />
           <Route exact path='/customer/dashboard' element={<CustomerDashboard />} />
           <Route exact path='/customer/orders' element={<CustomerOrders />} />
           <Route exact path="/customer/profile" element={<CustomerProfile />} />
