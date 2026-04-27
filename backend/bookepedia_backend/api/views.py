@@ -112,6 +112,7 @@ def ping(request):
     return JsonResponse({"status": "awake", "time": datetime.now().isoformat()})
 
 @csrf_exempt
+@cache_page(60 * 5)
 def api_init(request):
     """
     Combined API to fetch categories and products in one go to reduce network roundtrips.
@@ -141,8 +142,8 @@ def api_init(request):
                 "IsActive": cat.IsActive
             })
 
-        # 2. Get Products
-        products = TBL_Product_Details.objects.filter(IsActive=True).order_by('-Product_ID')[:20]
+        # 2. Get Products (Optimized with select_related)
+        products = TBL_Product_Details.objects.select_related('Category_ID', 'Book_ID').filter(IsActive=True).order_by('-Product_ID')[:20]
         prod_data = []
         for p in products:
             cover = None
@@ -173,14 +174,14 @@ def api_init(request):
             "message": str(e)
         }, status=500)
 
-@cache_page(60 * 5)  # Cache for 5 minutes
+@cache_page(60 * 5)
 @csrf_exempt
 def get_products(request):
     # ======================
     # GET ALL PRODUCTS
     # ======================
     if request.method == "GET":
-        products = TBL_Product_Details.objects.filter(IsActive=True)
+        products = TBL_Product_Details.objects.select_related('Category_ID', 'Book_ID').filter(IsActive=True)
 
         data = []
         for product in products:
@@ -450,7 +451,7 @@ def add_category(request):
 
     return JsonResponse({"bool": False, "msg": "Invalid method"})
 
-@cache_page(60 * 5)  # Cache for 5 minutes
+@cache_page(60 * 5)
 @csrf_exempt
 def get_categories(request):
     if request.method == 'GET':

@@ -43,7 +43,8 @@ from .views import (
     employee_forgot_password_request,
     employee_reset_password_confirm,
     ping,
-    contact_us
+    contact_us,
+    api_init
 )
 
 urlpatterns = [
@@ -92,6 +93,7 @@ urlpatterns = [
     path('employee-forgot-password/', employee_forgot_password_request),
     path('employee-reset-password-confirm/', employee_reset_password_confirm),
     path('contact-us/', contact_us),
+    path('init/', api_init),
 ]
 # def api_home(request):
 #     return JsonResponse({
