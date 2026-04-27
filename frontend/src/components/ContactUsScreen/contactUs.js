@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { BASE_URL } from "../../utils/config";
 import "./contactUs.css"; // Import your CSS file for styling
 
 const ContactForm = () => {
@@ -22,12 +22,14 @@ const ContactForm = () => {
     setIsLoading(true);
     
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/contact-us/", 
-        formData
-      );
+      const response = await fetch(`${BASE_URL}/api/contact-us/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
       
-      if (response.data.bool) {
+      if (data.bool) {
         alert(`Message Sent Successfully!\nThank you, ${formData.name}`);
         setFormData({ name: "", email: "", subject: "", message: "" }); // Clear the form
       } else {
