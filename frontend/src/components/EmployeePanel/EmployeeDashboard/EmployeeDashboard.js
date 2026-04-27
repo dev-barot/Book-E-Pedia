@@ -7,6 +7,7 @@ import "../EmployeeCommon.css";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar } from "recharts";
 import { BASE_URL } from "../../../utils/config";
 
+// Cache buster: v1.0.1
 function EmployeeDashboard() {
   const navigate = useNavigate();
 
