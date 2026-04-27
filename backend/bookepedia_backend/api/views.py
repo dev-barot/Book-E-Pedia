@@ -2051,3 +2051,40 @@ def employee_reset_password_confirm(request):
             {'bool': False, 'msg': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+@api_view(['POST'])
+def contact_us(request):
+    try:
+        data = request.data
+        name = data.get('name')
+        email = data.get('email')
+        subject = data.get('subject')
+        message = data.get('message')
+
+        if not all([name, email, subject, message]):
+            return Response(
+                {'bool': False, 'msg': 'All fields are required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        email_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+        
+        send_mail(
+            subject=f"Contact Us: {subject}",
+            message=email_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=['bookepedia.business@gmail.com'],
+            fail_silently=False,
+        )
+
+        return Response({
+            'bool': True,
+            'msg': 'Message sent successfully'
+        })
+
+    except Exception as e:
+        logger.error(f"Contact Us email error: {str(e)}")
+        return Response(
+            {'bool': False, 'msg': 'Failed to send message'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

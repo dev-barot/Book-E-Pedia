@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./contactUs.css"; // Import your CSS file for styling
 
 const ContactForm = () => {
@@ -9,15 +10,35 @@ const ContactForm = () => {
     message: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-    alert(`Message Sent Successfully!\nThank you, ${formData.name}`);
-    setFormData({ name: "", email: "", subject: "", message: "" }); // Clear the form
+    setIsLoading(true);
+    
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/contact-us/", 
+        formData
+      );
+      
+      if (response.data.bool) {
+        alert(`Message Sent Successfully!\nThank you, ${formData.name}`);
+        setFormData({ name: "", email: "", subject: "", message: "" }); // Clear the form
+      } else {
+        alert("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("An error occurred while sending the message. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -69,7 +90,9 @@ const ContactForm = () => {
             required
           ></textarea>
 
-          <button type="submit">Send Message</button>
+          <button type="submit" disabled={isLoading}>
+            {isLoading ? "Sending..." : "Send Message"}
+          </button>
         </form>
 
         <div className="contact-us-info">

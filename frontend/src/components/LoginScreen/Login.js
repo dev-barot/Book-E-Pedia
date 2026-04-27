@@ -26,7 +26,7 @@ function Login() {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const adminEmail = "admin";
+    const adminEmail = "bookepedia.business@gmail.com";
     const adminPassword = "admin123";
 
     // Admin login stays local

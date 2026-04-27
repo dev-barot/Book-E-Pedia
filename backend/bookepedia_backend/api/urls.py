@@ -42,7 +42,8 @@ from .views import (
     forgot_password_request,
     employee_forgot_password_request,
     employee_reset_password_confirm,
-    ping
+    ping,
+    contact_us
 )
 
 urlpatterns = [
@@ -90,6 +91,7 @@ urlpatterns = [
     # ✅ KEEP YOUR EMPLOYEE RESET FEATURES
     path('employee-forgot-password/', employee_forgot_password_request),
     path('employee-reset-password-confirm/', employee_reset_password_confirm),
+    path('contact-us/', contact_us),
 ]
 # def api_home(request):
 #     return JsonResponse({
