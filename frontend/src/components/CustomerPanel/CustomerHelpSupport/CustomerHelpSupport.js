@@ -77,6 +77,24 @@ function CustomerHelpSupport() {
           ))}
         </div>
 
+        {/* Still Need Help Section */}
+        <div className="hs-contact-section-lux mt-5">
+          <div className="hs-contact-card-lux">
+            <h2 className="hs-contact-title-lux">Still have questions?</h2>
+            <p className="hs-contact-text-lux">Can't find what you're looking for? Our support team is here to help you.</p>
+            <div className="hs-contact-methods-lux">
+              <div className="hs-method-lux">
+                <i className="fas fa-envelope"></i>
+                <span>bookepedia.business@gmail.com</span>
+              </div>
+              <div className="hs-method-lux">
+                <i className="fas fa-phone"></i>
+                <span>+91-9924184931</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

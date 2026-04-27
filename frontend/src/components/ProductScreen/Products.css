@@ -309,6 +309,22 @@
   border: 1px dashed rgba(26, 75, 132, 0.3);
 }
 
+.btn-outline-lux {
+  background: transparent;
+  color: #1A4B84;
+  border: 2px solid #1A4B84;
+  padding: 10px 50px; /* Increased horizontal length */
+  border-radius: 30px;
+  font-weight: 700;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.btn-outline-lux:hover {
+  background: #1A4B84;
+  color: white;
+}
+
 /* FULL WIDTH GRID TRANSITION */
 .full-width-grid {
   max-width: 1200px;

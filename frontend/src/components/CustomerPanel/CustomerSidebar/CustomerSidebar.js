@@ -28,7 +28,7 @@ function CustomerSidebar() {
 
         <li>
           <Link to="/customer/profile" className={`sidebar-link-lux ${isActive('/customer/profile')}`}>
-            <i className="fa fa-cog sidebar-icon-lux"></i> <span>Profile Settings</span>
+            <span>Profile Settings</span>
           </Link>
         </li>
 

@@ -200,7 +200,7 @@ function CustomerDashboard() {
           </div>
 
           <div className="cust-profile-avatar-lux">
-            <img src={p1} alt="Profile Avatar" />
+            <i className="fa-solid fa-circle-user"></i>
           </div>
         </div>
 

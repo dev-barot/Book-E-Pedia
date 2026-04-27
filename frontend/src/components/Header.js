@@ -48,8 +48,11 @@ const Header = () => {
             <br></br>
             <ul>
               <li><i className="fas fa-phone"> </i> +91-9924184931</li>
-              <li><i className="fas fa-envelope"> </i> bookepedia.business@gmail.com</li>
-              <li><i className="fas fa-map-marker-alt"> </i> Ahmedabad</li>
+              <li>
+                <a href="mailto:bookepedia.business@gmail.com" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <i className="fas fa-envelope"> </i> bookepedia.business@gmail.com
+                </a>
+              </li>
             </ul>
           </div>
           <div className="link-right">
@@ -84,7 +87,10 @@ const Header = () => {
       {/* Navbar (Link for pages) */}
       <div className="header">
         <nav className="navbar">
-          <div className="logo">Book-E-Pedia</div>
+          <div className="logo">
+            <i className="fa-solid fa-book-open-reader me-2"></i>
+            <span>Book-E-Pedia</span>
+          </div>
           <ul className="nav-links">
             <li>
               <NavLink 

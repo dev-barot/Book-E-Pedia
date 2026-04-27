@@ -15,7 +15,7 @@ const Footer = () => {
               <span>Book-E-Pedia</span>
             </div>
             <p className="footer-text-lux pe-lg-4">
-              Your ultimate luxurious destination for immersive reading. Explore our endless collection of e-books, physical books, and audiobooks.
+              Your ultimate luxurious destination for immersive reading. Explore our endless collection of e-books, physical books, video books and audiobooks.
             </p>
           </div>
 

@@ -83,10 +83,12 @@ margin-right: auto;
 }
 
 .main-top-bar .logo {
-font-size:2rem;
-font-weight: bolder;
-font-stretch:extra-expanded;
-color:#000000;
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bolder;
+  font-stretch: extra-expanded;
+  color: #000000;
 }
 
 .main-top-bar .nav-links {
