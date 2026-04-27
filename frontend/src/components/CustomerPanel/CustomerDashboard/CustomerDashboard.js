@@ -14,6 +14,7 @@ function CustomerDashboard() {
   const [orderItems, setOrderItems] = useState([]);
   const [totalOrders, setTotalOrders] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [missingAddress, setMissingAddress] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,6 +47,9 @@ function CustomerDashboard() {
       );
       const data = await res.json();
       setCustomerName(data.Fname || "User");
+      // Check if address is incomplete
+      const hasAddress = data.Building && data.Street && data.City && data.State && data.Country && data.Pincode;
+      setMissingAddress(!hasAddress);
     } catch (err) {
       console.error(err);
     }
@@ -142,6 +146,39 @@ function CustomerDashboard() {
       <CustomerSidebar />
 
       <div className="cust-lux-main">
+        {/* ── Missing Address Banner ── */}
+        {missingAddress && (
+          <div style={{
+            background: "linear-gradient(135deg, #fff3cd, #ffeaa0)",
+            border: "1px solid #f0ad4e",
+            borderRadius: "12px",
+            padding: "14px 20px",
+            marginBottom: "24px",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            boxShadow: "0 4px 15px rgba(240,173,78,0.2)"
+          }}>
+            <span style={{ fontSize: "1.6rem" }}>⚠️</span>
+            <div style={{ flex: 1 }}>
+              <strong style={{ color: "#856404", fontSize: "0.95rem" }}>Your delivery address is incomplete!</strong>
+              <p style={{ margin: 0, color: "#856404", fontSize: "0.85rem" }}>
+                Please add your address to place physical book orders.
+              </p>
+            </div>
+            <Link
+              to="/customer/profile"
+              style={{
+                background: "#1A4B84", color: "white",
+                padding: "8px 18px", borderRadius: "30px",
+                textDecoration: "none", fontWeight: 600, fontSize: "0.85rem",
+                whiteSpace: "nowrap"
+              }}
+            >
+              Update Profile
+            </Link>
+          </div>
+        )}
         {/* Profile */}
         <div className="cust-profile-glass mb-5">
           <div className="cust-profile-details">
