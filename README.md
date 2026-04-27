@@ -1,283 +1,63 @@
-<!-- # Book-E-Pedia 📚
+# Book-E-Pedia 📚✨
 
-A full-stack online bookstore built as a Software Engineering project. You can browse books, add them to cart, place orders, and manage everything through separate panels for customers, employees, and admins.
+[![Live Website](https://img.shields.io/badge/Live-Website-blue?style=for-the-badge&logo=vercel)](https://book-e-pedia.vercel.app/)
 
----
-
-## What is this?
-
-Book-E-Pedia is basically an e-commerce platform but specifically for books. We built this as part of our SE course. The idea was to cover the full software development lifecycle — from planning to a working product.
-
-It has three types of users:
-- **Customer** — browse, search, buy books
-- **Employee** — manage products, orders, categories
-- **Admin** — full control over everything (employees, customers, reports, feedback)
+**Book-E-Pedia** is a premium, full-stack digital ecosystem designed to bridge the gap between traditional physical reading and modern digital media consumption. Built with a sophisticated **Glassmorphism** aesthetic, it serves as an all-in-one platform for book lovers, offering seamless access to Physical Books, Audio Books, Video Books, and E-Books.
 
 ---
 
-## Features
-
-**For Customers**
-- Browse books by category or search by name
-- View detailed product pages with book info, formats available, and description
-- Add books to cart, update quantities, remove items
-- "You Might Also Like" recommendations in the cart
-- Multiple book formats — Physical Book, Audio Book, Video Book, E-Book
-- Checkout with order summary
-- View past orders and download invoice as PDF
-- Customer profile management
-- Forgot password with OTP flow
-- Help & Support page
-
-**For Employees**
-- Dashboard overview
-- Manage book types and products
-- View and manage orders
-
-**For Admins**
-- Full employee management (add, view)
-- Full product and category management
-- View all customers
-- Manage feedback
-- Generate reports
+## 🚀 Experience it Live
+The application is deployed and ready for exploration:
+👉 **[book-e-pedia.vercel.app](https://book-e-pedia.vercel.app/)**
 
 ---
 
-## Tech Stack
+## 🎯 What is Book-E-Pedia?
+In an era where content is fragmented across multiple platforms, **Book-E-Pedia** serves to solve the problem of media silos. It provides a unified platform where users don't just buy a book; they choose their preferred way to experience it. 
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 19, React Router v7 |
-| UI Library | Bootstrap 5, React Bootstrap, Reactstrap |
-| PDF Generation | jsPDF, jsPDF-AutoTable |
-| Styling | Vanilla CSS (custom design system) |
-| Backend | Django (Python) |
-| Version Control | Git + GitHub |
+### What it solves:
+- **Media Fragmentation**: No need for separate apps for audiobooks, PDFs, and video courses.
+- **Operational Complexity**: Provides a robust backend for staff to manage a diverse inventory of physical and digital assets.
+- **User Engagement**: Combines luxury design with high-performance media players to keep readers immersed.
 
 ---
 
-## Project Structure
+## 🏛️ System Modules & Entity Features
 
-```
-Book-E-Pedia/
-├── frontend/               # React app
-│   └── src/
-│       ├── components/
-│       │   ├── HomeScreen/
-│       │   ├── ProductScreen/      # Books, detail, audio, video, e-book
-│       │   ├── CategoryScreen/     # Categories + filtered views
-│       │   ├── CustomerPanel/      # Cart, orders, profile, dashboard
-│       │   ├── EmployeePanel/      # Employee dashboard and tools
-│       │   ├── AdminPanel/         # Admin dashboard and tools
-│       │   ├── PaymentScreen/
-│       │   ├── LoginScreen/
-│       │   └── ...
-│       ├── App.js          # All routes defined here
-│       └── Context.js      # Cart + User context (global state)
-│
-└── backend/                # Django backend
-    └── bookepedia_backend/
-```
+### 🛍️ Customer Module (The Shop)
+- **Immersive Catalog**: Browse a high-end storefront with dynamic filtering (Category, Format, Search).
+- **Integrated Media Suite**: Custom Audio/Video players and a secure E-Book reader.
+- **Personalized Commerce**: Smart cart with persistence, recommendations, and PDF invoicing.
+- **Account Hub**: Manage profile details, track orders, and access "Help & Support".
+
+### 🧑‍💼 Employee Module (Operational Tools)
+- **Analytics Dashboard**: Real-time insights into sales performance and fulfillment rates.
+- **Inventory Control**: Manage inventory and add new book titles across all media types.
+- **Order Fulfillment**: Track and process customer purchases from pending to completed.
+
+### 👑 Admin Module (Executive Control)
+- **Workforce Management**: Hire and manage platform employees.
+- **Risk Mitigation**: Automated **Low-Stock Alerts** with visual indicators.
+- **Platform Analytics**: Generate reports and track trending books for business decisions.
+- **System Configuration**: Global control over categories, booktypes, and settings.
 
 ---
 
-## Setup Guide
+## 🛠️ Tech Stack
 
-### Prerequisites
-
-Make sure you have these installed:
-- [Node.js](https://nodejs.org/) (v18 or above)
-- [Python](https://www.python.org/) (v3.10 or above)
-- Git
-
----
-
-### Frontend Setup
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/dev-barot/Book-E-Pedia.git
-cd Book-E-Pedia/frontend
-
-# 2. Install dependencies
-npm install
-
-# 3. Run the dev server
-npm start
-```
-
-App will open at `http://localhost:3000`
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React 19, React Router v7, Context API |
+| **Styling** | Vanilla CSS (Glassmorphism), Bootstrap 5, FontAwesome 6 |
+| **Backend** | Django (Python), Django REST Framework |
+| **Database** | PostgreSQL (Production), SQLite (Local) |
+| **Storage** | Cloudinary (Scalable Media Hosting) |
 
 ---
 
-### Backend Setup
+## 📂 Project Structure
 
-```bash
-# Go to backend folder
-cd Book-E-Pedia/backend/bookepedia_backend
-
-# Create a virtual environment (recommended)
-python -m venv venv
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # Mac/Linux
-
-# Install requirements
-pip install -r requirements.txt
-
-# Run migrations
-python manage.py migrate
-
-# Start the server
-python manage.py runserver
-```
-
-Backend runs at `http://localhost:8000`
-
----
-
-## How to Use
-
-1. Open `http://localhost:3000` in your browser
-2. Register as a customer or log in
-3. Browse books from the Shop or Category pages
-4. Add books to your cart and proceed to checkout
-5. Check your orders from the Customer Dashboard
-
-For admin access, log in with admin credentials and go to `/admin/dashboard`.
-
-For employee access, go to `/employee/dashboard`.
-
----
-
-## Pages / Routes
-
-| Route | Description |
-|-------|-------------|
-| `/` | Home page |
-| `/products` | All books |
-| `/categories` | Browse by category |
-| `/cart` | Shopping cart |
-| `/payment` | Checkout |
-| `/audio-book` | Audio books |
-| `/video-book` | Video books |
-| `/e-book` | E-Books |
-| `/register` | Customer registration |
-| `/customer/dashboard` | Customer panel |
-| `/employee/dashboard` | Employee panel |
-| `/admin/dashboard` | Admin panel |
-
----
-
-## Team
-
-This is a group Software Engineering project. Built with a lot of debugging, chai breaks, and last-minute commits. 😅
-
----
-
-## License
-
-This project is for educational purposes only. -->
-
-# Book-E-Pedia 📚
-
-A full-stack online bookstore built using React and Django. This project focuses on implementing a complete CRUD-based system with role-based management and a dynamic frontend powered by backend APIs.
-
----
-
-## What is this?
-
-Book-E-Pedia is an e-commerce-style web application for managing and browsing books. The system is built to demonstrate real-world software engineering concepts including:
-
-* Backend API design (Django)
-* Frontend integration (React)
-* Database modeling and relationships
-* Role-based data management
-* CRUD operations with soft delete logic
-
----
-
-## Current System Status 🚀
-
-The project has a **working core system** with dynamic data flow between frontend and backend.
-
-### ✅ Implemented Modules
-
-* Category Management
-* Book Type Management
-* Employee Management
-* Product Management
-* Dynamic Product Listing (Customer Side)
-* Product Detail Page
-* Cart Functionality (LocalStorage-based)
-
----
-
-## Features
-
-### 🛍️ Customer Side
-
-* View categories dynamically from backend
-* Browse products (books) fetched via API
-* View detailed product page
-* Add to cart (stored in local storage)
-* Clean UI with modern card-based layout
-
----
-
-### 🧑‍💼 Admin Panel
-
-* Manage Categories (Add / Edit / Soft Delete)
-* Manage Book Types (formats like Physical, Audio, etc.)
-* Manage Employees
-* Manage Products with:
-
-  * Category relation
-  * Book Type relation
-  * Employee relation
-  * Image upload (cover + back)
-* Soft Delete system (`IsActive` flag)
-
----
-
-### ⚙️ Backend (Django APIs)
-
-* REST-style endpoints for:
-
-  * `/api/category/`
-  * `/api/book-types/`
-  * `/api/employees/`
-  * `/api/products/`
-* Image upload handling (MEDIA folder)
-* Relational database structure
-* Clean separation via `api/urls.py`
-
----
-
-## Important Notes ⚠️
-
-* Media files (images) are **not committed** to GitHub
-* Some image paths may return 404 if not re-uploaded locally
-* Some legacy endpoints (dashboard, orders, feedback) are **not implemented yet**
-* Soft delete is used instead of hard delete
-
----
-
-## Tech Stack
-
-| Layer           | Technology       |
-| --------------- | ---------------- |
-| Frontend        | React            |
-| Routing         | React Router     |
-| Styling         | Custom CSS       |
-| Backend         | Django           |
-| Database        | SQLite (default) |
-| Version Control | Git + GitHub     |
-
----
-
-## Project Structure
-
-```
+```text
 Book-E-Pedia/
 ├── frontend/
 │   └── src/
@@ -304,85 +84,41 @@ Book-E-Pedia/
 
 ---
 
-## Setup Guide
+## 📡 API Structure
 
-### Prerequisites
+All APIs are routed through the `/api/` prefix.
 
-* Node.js (v18+)
-* Python (v3.10+)
-* Git
-
----
-
-### Frontend Setup
-
-```bash
-git clone https://github.com/dev-barot/Book-E-Pedia.git
-cd Book-E-Pedia/frontend
-
-npm install
-npm start
-```
-
-Frontend runs at:
-`http://localhost:3000`
+### Core Endpoints:
+- `/api/category/` — Manage book categories.
+- `/api/products/` — Fetch and manage book inventory.
+- `/api/book-types/` — Manage different media formats.
+- `/api/employees/` — Admin tool for staff management.
+- `/api/cart/<id>/` — Fetch user-specific shopping cart data.
+- `/api/admin/low-stock/` — Inventory monitoring and alerts.
+- `/api/admin/trending-books/` — Sales analytics for trending titles.
 
 ---
 
-### Backend Setup
+## ⚙️ Local Installation
 
+### 1. Backend Setup
 ```bash
-cd Book-E-Pedia/backend/bookepedia_backend
-
+cd backend/bookepedia_backend
 python -m venv venv
-venv\Scripts\activate
-
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
 python manage.py migrate
 python manage.py runserver
 ```
 
-Backend runs at:
-`http://localhost:8000`
-
----
-
-## API Structure
-
-All APIs are routed through:
-
-```
-/api/
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm start
 ```
 
-Example:
-
-* `/api/category/`
-* `/api/products/`
-* `/api/book-types/`
-* `/api/employees/`
-
 ---
 
-## Future Improvements
-
-* Order management system
-* Payment integration
-* Authentication & authorization system
-* Dashboard analytics
-* Image fallback handling
-* Pagination & filtering
-
----
-
-## Team
-
-Built as part of a Software Engineering project.
-A mix of debugging, refactoring, and surviving Git conflicts.
-
----
-
-## License
-
-Educational use only.
+## 📄 License
+This project is for **educational purposes only**. All rights reserved.
