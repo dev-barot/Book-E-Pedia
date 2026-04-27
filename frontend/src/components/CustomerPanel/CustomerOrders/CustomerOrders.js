@@ -94,10 +94,11 @@ function CustomerOrders() {
         {masterOrderCount > 0 ? (
           <div className="order-list-lux">
             {groupedOrders.map((order) => {
-              const totalAmount = order.products.reduce(
+              const subtotal = order.products.reduce(
                 (total, item) => total + item.price * item.quantity,
                 0
               );
+              const totalAmount = subtotal * 1.12;
 
               // If it's a digital-only order, the status from backend might be "Completed"
               // but we ensure it looks consistent here.

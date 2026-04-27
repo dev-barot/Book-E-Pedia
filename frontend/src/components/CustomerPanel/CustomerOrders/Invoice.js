@@ -54,7 +54,7 @@ const Invoice = () => {
     transactionId: `TXN-BP${orderData.MasterOrder_ID}0X99`,
     customerAddress: customerName,
     shippingAddress: customerName,
-    taxRate: 10,
+    taxRate: 12,
     items: orderData.products.map((p, index) => ({
       id: index + 1,
       description: p.name,
@@ -128,7 +128,7 @@ const Invoice = () => {
               <th>Unit Price</th>
               <th>Quantity</th>
               <th>Net Amount</th>
-              <th>Tax (10%)</th>
+              <th>Tax (12%)</th>
               <th>Total</th>
             </tr>
           </thead>

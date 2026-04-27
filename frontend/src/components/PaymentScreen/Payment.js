@@ -175,8 +175,16 @@ const Payment = () => {
 
           <div className="payment-total-section">
             <div className="payment-total-row">
-              <span className="payment-total-label">Grand Total</span>
-              <span className="payment-total-amount">₹{orderDetails?.total_amount}</span>
+              <span className="payment-total-label">Subtotal</span>
+              <span className="payment-total-amount">₹{(parseFloat(orderDetails?.total_amount) / 1.12).toFixed(2)}</span>
+            </div>
+            <div className="payment-total-row">
+              <span className="payment-total-label">Tax (12%)</span>
+              <span className="payment-total-amount">₹{(parseFloat(orderDetails?.total_amount) - (parseFloat(orderDetails?.total_amount) / 1.12)).toFixed(2)}</span>
+            </div>
+            <div className="payment-total-row mt-2" style={{ borderTop: '1px solid #eee', paddingTop: '10px' }}>
+              <span className="payment-total-label" style={{ fontWeight: 'bold' }}>Grand Total</span>
+              <span className="payment-total-amount" style={{ fontWeight: 'bold', color: '#1A4B84' }}>₹{parseFloat(orderDetails?.total_amount).toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -226,7 +234,7 @@ const Payment = () => {
             ) : (
               <>
                 <i className="fa-solid fa-shield-halved"></i>
-                Pay ₹{orderDetails?.total_amount}
+                Pay ₹{parseFloat(orderDetails?.total_amount).toFixed(2)}
               </>
             )}
           </button>

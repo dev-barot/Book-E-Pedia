@@ -173,6 +173,9 @@ const CustomerCart = () => {
     0
   );
 
+  const tax = subtotal * 0.12;
+  const totalAmount = subtotal + tax;
+
   // Checkout
   const handleProceedToPayment = async () => {
     const customerId = localStorage.getItem("customer_id");
@@ -220,7 +223,7 @@ const CustomerCart = () => {
       navigate(`/payment/${orderId}`, {
         state: {
           orderId: orderId,
-          total: subtotal,
+          total: totalAmount,
         },
       });
 
@@ -294,10 +297,14 @@ const CustomerCart = () => {
             <span>Subtotal</span>
             <span>Rs. {subtotal.toFixed(2)}</span>
           </div>
+          <div className="summary-row">
+            <span>Tax (12%)</span>
+            <span>Rs. {tax.toFixed(2)}</span>
+          </div>
           <div className="summary-divider" />
           <div className="summary-row summary-total">
             <span>Total</span>
-            <span>Rs. {subtotal.toFixed(2)}</span>
+            <span>Rs. {totalAmount.toFixed(2)}</span>
           </div>
           <button
             className="summary-checkout-btn"
