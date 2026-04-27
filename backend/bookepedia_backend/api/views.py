@@ -103,6 +103,7 @@ def serve_media(request, path):
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Expose-Headers"] = "Accept-Ranges, Content-Range, Content-Encoding, Content-Length"
 
+    response["Cache-Control"] = "public, max-age=86400"  # 24 hours browser cache
     return response
 
 def to_bool(value):
@@ -1495,6 +1496,7 @@ def update_order_status(request, order_id):
 from django.db.models import Sum
 from django.http import JsonResponse
 
+@cache_page(60 * 5)
 def get_trending_books(request):
     try:
         trending = (
@@ -1535,6 +1537,7 @@ def get_trending_books(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 
+@cache_page(60 * 5)
 def dashboard_counts(request):
     try:
         total_orders = TBL_MasterOrder_Details.objects.count()
@@ -1557,6 +1560,7 @@ def dashboard_counts(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+@cache_page(60 * 5)
 def get_low_stock_products(request):
     try:
         low_stock = TBL_Product_Details.objects.filter(Stock__lt=10)
