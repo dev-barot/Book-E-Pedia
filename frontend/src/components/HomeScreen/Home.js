@@ -21,31 +21,19 @@ function Home() {
 
   useEffect(() => {
     // 🚀 HEARTBEAT: Wake up Render free tier early
-    fetch(`${BASE_URL}/api/ping/`).catch(() => {});
+    fetch(`${BASE_URL}/ping/`).catch(() => {});
 
-    fetch(`${BASE_URL}/api/category/`)
+    // 🚀 COMBINED INIT: Fetch everything in one go
+    fetch(`${BASE_URL}/api/init/`)
       .then((res) => res.json())
       .then((data) => {
-        const activeCategories = (data.data || []).filter(
-          (cat) => cat.IsActive === "1"
-        );
-        setFeaturedCategories(activeCategories.slice(0, 10));
+        if (data.status === "success") {
+          setFeaturedCategories(data.categories.slice(0, 10));
+          setTrendingBooks(data.products.slice(0, 5));
+        }
       })
       .catch((err) => {
-        console.error("Error fetching categories:", err);
-      });
-
-    fetch(`${BASE_URL}/api/products/`)
-      .then((res) => res.json())
-      .then((data) => {
-        const activeProducts = (data.data || []).filter(
-          (p) => p.is_active === true || p.is_active === "1"
-        );
-        // Take top 5 for trending
-        setTrendingBooks(activeProducts.slice(0, 5));
-      })
-      .catch((err) => {
-        console.error("Error fetching trending books:", err);
+        console.error("Error during initialization:", err);
       });
   }, []);
   // Add to cart with login check

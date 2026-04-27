@@ -111,6 +111,55 @@ def to_bool(value):
 def ping(request):
     return JsonResponse({"status": "awake", "time": datetime.now().isoformat()})
 
+@cache_page(60 * 5)
+@csrf_exempt
+def api_init(request):
+    """
+    Combined API to fetch categories and products in one go to reduce network roundtrips.
+    """
+    from .models import TBL_Category_Details, TBL_Product_Details
+    
+    # 1. Get Categories
+    categories = TBL_Category_Details.objects.filter(IsActive='1')
+    cat_data = []
+    for cat in categories:
+        img = cat.Category_Photo.url if cat.Category_Photo else ""
+        if img and "cloudinary" in img and "f_auto" not in img:
+            img = img.replace("/upload/", "/upload/f_auto,q_auto/")
+            
+        cat_data.append({
+            "id": cat.Category_ID,
+            "name": cat.Category_Name,
+            "description": cat.Category_Description,
+            "image": img,
+            "Category_Name": cat.Category_Name, # Compatibility
+            "Category_Photo": img, # Compatibility
+            "IsActive": cat.IsActive
+        })
+
+    # 2. Get Products (limited to trending/top for home page)
+    products = TBL_Product_Details.objects.filter(IsActive=True).order_by('-Product_ID')[:20]
+    prod_data = []
+    for p in products:
+        cover = p.Cover_Photo.url if p.Cover_Photo else None
+        if cover and "cloudinary" in cover and "f_auto" not in cover:
+            cover = cover.replace("/upload/", "/upload/f_auto,q_auto/")
+            
+        prod_data.append({
+            "id": p.Product_ID,
+            "name": p.Product_Name,
+            "author": p.Author,
+            "price": str(p.Product_Price),
+            "cover_photo": cover,
+            "is_active": p.IsActive
+        })
+
+    return JsonResponse({
+        "categories": cat_data,
+        "products": prod_data,
+        "status": "success"
+    })
+
 @cache_page(60 * 5)  # Cache for 5 minutes
 @csrf_exempt
 def get_products(request):

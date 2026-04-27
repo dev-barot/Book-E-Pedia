@@ -2,9 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from api.views import add_to_cart, serve_media
+from api.views import add_to_cart, serve_media, ping, api_init
 
 urlpatterns = [
+    path('ping/', ping),
+    path('api/init/', api_init),
     path('media/<path:path>', serve_media),
 
     path('admin/', admin.site.urls),
