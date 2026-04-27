@@ -6,6 +6,8 @@ import "../../AdminPanel/AdminDashboard/AdminDashboard.css";
 import "../EmployeeCommon.css";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, BarChart, Bar } from "recharts";
 import { BASE_URL } from "../../../utils/config";
+import { getMediaUrl } from "../../../utils/mediaHelper";
+// Cache buster: v1.0.2
 
 // Cache buster: v1.0.1
 function EmployeeDashboard() {
@@ -397,7 +399,7 @@ function EmployeeDashboard() {
                 lowStock.map((item, index) => (
                   <div key={index} className="low-stock-item" style={{ display: "flex", gap: "15px", alignItems: "center", padding: "10px 0", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                     <img
-                      src={item.image ? (item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`) : "https://via.placeholder.com/40x55"}
+                      src={getMediaUrl(item.image) || "https://via.placeholder.com/40x55"}
                       alt={item.name}
                       style={{ width: "40px", height: "55px", borderRadius: "4px", objectFit: "cover" }}
                     />
