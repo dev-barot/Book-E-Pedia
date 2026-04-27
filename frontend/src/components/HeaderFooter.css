@@ -71,8 +71,8 @@ gap: 20px;
 }
 
 .main-top-bar .nav-links li {
-display: inline;
-/* padding-left: 10px; */
+display: flex;
+align-items: center;
 padding-right: 10px;
 }
 
@@ -81,6 +81,9 @@ font-size:120%;
 font-weight: bolder;
 text-decoration: none;
 color: #000000;
+display: flex;
+align-items: center;
+gap: 6px;
 }
 .active-link {
   border-bottom: 4px solid #1A4B84;
