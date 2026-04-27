@@ -238,14 +238,6 @@ const CustomerCart = () => {
       <div className="cart-inner">
 
       {/* Page Header */}
-      <div className="cart-page-header">
-        <h1 className="cart-page-title">Cart</h1>
-        <nav className="cart-breadcrumb">
-          <Link to="/">Home</Link>
-          <span> / </span>
-          <span>Cart</span>
-        </nav>
-      </div>
 
       {/* Main Two-Column Layout */}
       <div className="cart-layout">
@@ -323,7 +315,10 @@ const CustomerCart = () => {
         {/* Similar Books */}
         {similarBooks.length > 0 && (
           <div className="similar-books-section">
-            <h2 className="similar-books-title">📚 You Might Also Like</h2>
+            <h2 className="similar-books-title">
+              <i className="fa-solid fa-layer-group text-gradient me-2"></i>
+              You Might Also Like
+            </h2>
             <div className="similar-books-grid">
               {similarBooks.map((book) => (
                 <div

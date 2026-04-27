@@ -68,8 +68,13 @@ const Header = () => {
                 </li>
               )}
               <li>
-                <Nav.Link as={Link} to="/cart" style={{ textDecoration: 'none', color: 'white' }}>
-                  <i className="fas fa-shopping-cart"> </i>Cart{cartItems > 0 && ` (${cartItems})`}
+                <Nav.Link as={Link} to="/cart" style={{ textDecoration: 'none', color: 'white', position: 'relative' }}>
+                  <i className="fas fa-shopping-cart"></i> Cart
+                  {cartItems > 0 && (
+                    <span className="cart-badge-lux">
+                      {cartItems}
+                    </span>
+                  )}
                 </Nav.Link>
               </li>
             </ul>
