@@ -87,10 +87,10 @@ const Header = () => {
       {/* Navbar (Link for pages) */}
       <div className="header">
         <nav className="navbar">
-          <div className="logo">
+          <Link to="/" className="logo" style={{ textDecoration: 'none', color: 'inherit' }}>
             <i className="fa-solid fa-book-open-reader me-2"></i>
             <span>Book-E-Pedia</span>
-          </div>
+          </Link>
           <ul className="nav-links">
             <li>
               <NavLink 
