@@ -96,19 +96,29 @@ display: flex;
 }
 
 .main-top-bar .header .search-top-bar input{
-padding: 10px;
+padding: 10px 15px;
 border: 1px solid #1A4B84;
-border-radius: 5px 0 0 5px;
+border-right: none;
+border-radius: 0;
 background: white;
+width: 350px;
+font-size: 0.95rem;
 }
 
 .main-top-bar .header .search-top-bar button{
-padding: 10px;
-height:46px;
+padding: 10px 20px;
+height: 46px;
 border: 1px solid #1A4B84;
+border-radius: 0 8px 8px 0;
 background-color: #1A4B84;
 color: rgb(255, 255, 255);
 cursor: pointer;
+font-weight: 600;
+transition: background-color 0.3s;
+}
+
+.main-top-bar .header .search-top-bar button:hover {
+  background-color: #12345d;
 }
 
 .main-top-bar #hero {

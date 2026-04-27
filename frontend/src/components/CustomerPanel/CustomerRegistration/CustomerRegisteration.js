@@ -26,6 +26,7 @@ function CustomerRegisteration() {
     pincode: "",
   });
 
+  const [showAddress, setShowAddress] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
 
   const inputHandler = (event) => {
@@ -84,12 +85,14 @@ function CustomerRegisteration() {
       }
     }
 
-    if (!building || building.trim().length < 1) newErrors.building = "Building/Flat No is required.";
-    if (!street || street.trim().length < 2) newErrors.street = "Street name is required (min 2 chars).";
-    if (!city || city.trim().length < 2) newErrors.city = "City is required.";
-    if (!state || state.trim().length < 2) newErrors.state = "State is required.";
-    if (!country || country.trim().length < 2) newErrors.country = "Country is required.";
-    if (!/^\d{6}$/.test(pincode)) newErrors.pincode = "Pincode must be exactly 6 digits.";
+    if (showAddress) {
+      if (!building || building.trim().length < 1) newErrors.building = "Building/Flat No is required.";
+      if (!street || street.trim().length < 2) newErrors.street = "Street name is required (min 2 chars).";
+      if (!city || city.trim().length < 2) newErrors.city = "City is required.";
+      if (!state || state.trim().length < 2) newErrors.state = "State is required.";
+      if (!country || country.trim().length < 2) newErrors.country = "Country is required.";
+      if (!/^\d{6}$/.test(pincode)) newErrors.pincode = "Pincode must be exactly 6 digits.";
+    }
 
     setErrorMsg(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -162,7 +165,7 @@ function CustomerRegisteration() {
         onChange={inputHandler}
         maxLength={field.maxLength || undefined}
         minLength={field.minLength || undefined}
-        required
+        required={!addressFields.some(f => f.name === field.name)}
         style={field.type === "password" ? { paddingRight: "40px" } : {}}
       />
       {field.type === "password" && (
@@ -247,21 +250,26 @@ function CustomerRegisteration() {
             </div>
 
             {/* ── Address ── */}
-            <div style={{ width: "100%", margin: "16px 0 8px 0" }}>
+            <div 
+              className="address-toggle-header" 
+              onClick={() => setShowAddress(!showAddress)}
+              style={{ cursor: "pointer", transition: "all 0.3s ease" }}
+            >
               <p style={{
                 fontWeight: 700, color: "#1f4e79", fontSize: "0.95rem",
                 borderBottom: "2px solid #2f6da3", paddingBottom: "6px",
-                letterSpacing: "0.5px", textTransform: "uppercase"
+                letterSpacing: "0.5px", textTransform: "uppercase",
+                display: "flex", justifyContent: "space-between", alignItems: "center"
               }}>
-                📍 Address Details{" "}
-                <span style={{ fontSize: "0.75rem", fontWeight: 500, color: "#c0392b", textTransform: "none" }}>
-                  (required for physical book delivery)
-                </span>
+                <span>📍 Address Details (Optional)</span>
+                <span style={{ fontSize: "1.2rem" }}>{showAddress ? "−" : "+"}</span>
               </p>
             </div>
 
-            <div className="reg-user-details">
-              {addressFields.map(renderField)}
+            <div className={`address-fields-container ${showAddress ? "expanded" : "collapsed"}`}>
+              <div className="reg-user-details">
+                {addressFields.map(renderField)}
+              </div>
             </div>
 
             <button type="submit" className="reg-button">

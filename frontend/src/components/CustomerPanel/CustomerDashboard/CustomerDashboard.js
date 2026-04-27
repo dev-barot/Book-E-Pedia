@@ -194,7 +194,7 @@ function CustomerDashboard() {
               </span>
             </p>
 
-            <Link to="/profile/edit" className="btn-cust-lux mt-3">
+            <Link to="/customer/profile" className="btn-cust-lux mt-3">
               Edit Profile
             </Link>
           </div>

@@ -17,12 +17,6 @@ const Footer = () => {
             <p className="footer-text-lux pe-lg-4">
               Your ultimate luxurious destination for immersive reading. Explore our endless collection of e-books, physical books, and audiobooks.
             </p>
-            <div className="footer-social-lux mt-4">
-              <Link to="#" className="social-icon-lux"><i className="fab fa-facebook-f"></i></Link>
-              <Link to="#" className="social-icon-lux"><i className="fab fa-twitter"></i></Link>
-              <Link to="#" className="social-icon-lux"><i className="fab fa-instagram"></i></Link>
-              <Link to="#" className="social-icon-lux"><i className="fab fa-linkedin-in"></i></Link>
-            </div>
           </div>
 
           {/* Company Links */}
@@ -51,7 +45,18 @@ const Footer = () => {
           <div className="col-lg-2 col-md-6">
             <h5 className="footer-title-lux">Account</h5>
             <ul className="footer-links-lux">
-              <li><Link to="/login">Login / Register</Link></li>
+              <li>
+                <Link to={
+                  localStorage.getItem('customer_login') === 'true' ? "/customer/dashboard" : 
+                  localStorage.getItem('admin_login') === 'true' ? "/admin/dashboard" : 
+                  localStorage.getItem('employee_login') === 'true' ? "/employee/dashboard" : 
+                  "/login"
+                }>
+                  {localStorage.getItem('customer_login') === 'true' || 
+                   localStorage.getItem('admin_login') === 'true' || 
+                   localStorage.getItem('employee_login') === 'true' ? "My Dashboard" : "Login / Register"}
+                </Link>
+              </li>
               <li><Link to="/customer/profile">My Profile</Link></li>
               <li><Link to="/cart">Shopping Cart</Link></li>
               <li><Link to="/customer/orders">Purchase History</Link></li>

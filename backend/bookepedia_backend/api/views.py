@@ -287,8 +287,8 @@ def customer_register(request):
             pincode = data.get('pincode')
 
             # ===== Required field validation =====
-            if not all([fname, lname, email, number, pwd, pwd_confirm, gen, date_str, building, street, city, state, country, pincode]):
-                return JsonResponse({'bool': False, 'msg': 'All fields are required'})
+            if not all([fname, lname, email, number, pwd, pwd_confirm, gen, date_str]):
+                return JsonResponse({'bool': False, 'msg': 'Mandatory fields (Name, Email, Number, Password, Gender, DOB) are required'})
 
             # ===== Password match =====
             if pwd != pwd_confirm:

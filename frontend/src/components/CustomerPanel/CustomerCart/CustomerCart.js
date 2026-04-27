@@ -183,6 +183,21 @@ const CustomerCart = () => {
     }
     setIsProcessing(true);
     try {
+      // 1. Check if customer has full address
+      const profileRes = await fetch(`${BASE_URL}/api/customer/${customerId}/`);
+      const profileData = await profileRes.json();
+
+      const requiredFields = ["Building", "Street", "City", "State", "Country", "Pincode"];
+      const missingFields = requiredFields.filter(field => !profileData[field] || profileData[field].toString().trim() === "");
+
+      if (missingFields.length > 0) {
+        alert("Please complete your address details in your profile before proceeding to checkout.");
+        navigate("/customer/profile");
+        setIsProcessing(false);
+        return;
+      }
+
+      // 2. Proceed with order creation
       const res = await fetch(`${BASE_URL}/api/order/create/`, {
         method: "POST",
         headers: {
