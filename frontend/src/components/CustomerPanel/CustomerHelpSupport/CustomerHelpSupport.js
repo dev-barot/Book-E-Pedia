@@ -92,6 +92,11 @@ function CustomerHelpSupport() {
                 <span>+91-9924184931</span>
               </div>
             </div>
+            <div className="hs-ask-question-box mt-4">
+              <a href="/contactus" className="hs-ask-btn-lux">
+                <i className="fas fa-paper-plane me-2"></i> Ask a Question
+              </a>
+            </div>
           </div>
         </div>
 

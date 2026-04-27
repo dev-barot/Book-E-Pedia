@@ -1510,11 +1510,19 @@ def get_trending_books(request):
         data = []
         for item in trending:
             image_path = item["Product_ID__Cover_Photo"]
+            # If it's a cloudinary public_id or URL, we need to handle it
+            img_url = None
+            if image_path:
+                if str(image_path).startswith('http'):
+                    img_url = image_path
+                else:
+                    # Fallback to media path if it's a local file, otherwise it's likely a cloudinary ID
+                    img_url = f"https://res.cloudinary.com/{settings.CLOUDINARY_STORAGE['CLOUD_NAME']}/image/upload/{image_path}"
 
             data.append({
                 "product_id": item["Product_ID__Product_ID"],
                 "name": item["Product_ID__Product_Name"],
-                "image": f"/media/{image_path}" if image_path else None,
+                "image": img_url,
                 "total": item["total_ordered"]
             })
 
@@ -1556,7 +1564,7 @@ def get_low_stock_products(request):
                 "id": p.Product_ID,
                 "name": p.Product_Name,
                 "stock": p.Stock,
-                "image": f"/media/{p.Cover_Photo}" if p.Cover_Photo else None
+                "image": p.Cover_Photo.url if p.Cover_Photo else None
             }
             for p in low_stock
         ]

@@ -239,6 +239,26 @@
   font-size: 0.95rem;
 }
 
+.hs-ask-btn-lux {
+  display: inline-flex;
+  align-items: center;
+  background: #1A3B5C;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(26, 59, 92, 0.2);
+}
+
+.hs-ask-btn-lux:hover {
+  background: #2980b9;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(41, 128, 185, 0.3);
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .hs-header-lux {

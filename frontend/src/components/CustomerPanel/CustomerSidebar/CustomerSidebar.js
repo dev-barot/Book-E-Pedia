@@ -16,13 +16,13 @@ function CustomerSidebar() {
       <ul className="sidebar-list-lux">
         <li>
           <Link to="/customer/dashboard" className={`sidebar-link-lux ${isActive('/customer/dashboard')}`}>
-            <i className="fas fa-tachometer-alt sidebar-icon-lux"></i> <span>My Dashboard</span>
+            <span>My Dashboard</span>
           </Link>
         </li>
 
         <li>
           <Link to="/customer/orders" className={`sidebar-link-lux ${isActive('/customer/orders')}`}>
-            <i className="fa fa-book sidebar-icon-lux"></i> <span>Ordered Books</span>
+            <span>Ordered Books</span>
           </Link>
         </li>
 
@@ -34,13 +34,13 @@ function CustomerSidebar() {
 
         <li>
           <Link to="/customer/help-support" className={`sidebar-link-lux ${isActive('/customer/help-support')}`}>
-            <i className="fa fa-question-circle sidebar-icon-lux"></i> <span>Help & Support</span>
+            <span>Help & Support</span>
           </Link>
         </li>
 
         <li className="logout-item-lux">
           <Link to="/customer/logout" className="sidebar-link-lux logout-lux">
-            <i className="fa fa-sign-out-alt sidebar-icon-lux"></i> <span>Logout</span>
+            <span>Logout</span>
           </Link>
         </li>
       </ul>
