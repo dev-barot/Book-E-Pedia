@@ -100,7 +100,7 @@ const ContactForm = () => {
         <div className="contact-us-info">
           <p>For more information, feel free to reach us at:</p>
           <p>
-            Email:{" "}
+            Email:{"  bookepedia.business@gmail.com "}
             <a href="mailto:bookepedia.business@gmail.com">
 
             </a>
