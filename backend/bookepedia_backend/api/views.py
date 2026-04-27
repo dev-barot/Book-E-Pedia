@@ -1559,16 +1559,25 @@ def dashboard_counts(request):
 def get_low_stock_products(request):
     try:
         low_stock = TBL_Product_Details.objects.filter(Stock__lt=10)
+        cloud_name = os.getenv("CLOUD_NAME")
 
-        data = [
-            {
+        data = []
+        for p in low_stock:
+            img_url = None
+            if p.Cover_Photo:
+                # Manually construct the URL to be absolutely sure it's absolute
+                public_id = str(p.Cover_Photo)
+                if public_id.startswith('http'):
+                    img_url = public_id
+                else:
+                    img_url = f"https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}"
+
+            data.append({
                 "id": p.Product_ID,
                 "name": p.Product_Name,
                 "stock": p.Stock,
-                "image": p.Cover_Photo.build_url(transformation=[{'quality': 'auto', 'fetch_format': 'auto'}]) if p.Cover_Photo else None
-            }
-            for p in low_stock
-        ]
+                "image": img_url
+            })
 
         return JsonResponse({"products": data})
 
