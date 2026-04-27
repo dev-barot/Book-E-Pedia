@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from api.views import add_to_cart, serve_media, ping, api_init
 
 urlpatterns = [
-    path('ping/', ping),
+    path('ping/', ping), # Root level ping
+    path('api/ping/', ping), # API level ping for backward compatibility
     path('api/init/', api_init),
     path('media/<path:path>', serve_media),
 
