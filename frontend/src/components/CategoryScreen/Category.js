@@ -54,7 +54,6 @@ function Category() {
                 >
                   <div className="card-lux-inner">
                     <div className="cat-card-front">
-                      <div className="icon-glow-backdrop"></div>
 
                       <img
                         src={category.Category_Photo.startsWith('http') ? category.Category_Photo : `${BASE_URL}${category.Category_Photo}`}

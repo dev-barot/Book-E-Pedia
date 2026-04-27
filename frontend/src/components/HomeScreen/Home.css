@@ -254,19 +254,17 @@
 
 .cat-icon-wrapper {
   width: 100%;
-  height: 80px;
-  background: #f1f5f9;
-  border-radius: 50%;
-  margin: 50px auto 50px auto;
+  height: auto;
+  background: transparent;
+  margin: 20px auto 30px auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.3s;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .category-glass-card:hover .cat-icon-wrapper {
-  transform: scale(1.1) rotate(5deg);
-  background: var(--home-primary-light);
+  transform: scale(1.15) rotate(3deg);
 }
 
 .cat-icon-wrapper img {
