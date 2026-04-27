@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import './HeaderFooter.css'; 
+import './HeaderFooter.css';
 
 const Footer = () => {
   return (
     <footer className="footer-lux pb-4">
       <div className="container-xxl">
         <div className="row pt-5 pb-4 border-bottom border-light-subtle">
-          
+
           {/* Brand & Socials */}
           <div className="col-lg-4 col-md-6 mb-4 mb-lg-0">
             <div className="footer-brand-lux mb-4">
@@ -65,11 +65,6 @@ const Footer = () => {
           <div className="col-md-6 text-center text-md-start">
             <p className="footer-copyright-lux mb-0">
               &copy; {new Date().getFullYear()} Book-E-Pedia. All rights reserved.
-            </p>
-          </div>
-          <div className="col-md-6 text-center text-md-end mt-2 mt-md-0">
-            <p className="footer-copyright-lux mb-0">
-              Designed with <i className="fa-solid fa-heart text-danger mx-1"></i> for Readers
             </p>
           </div>
         </div>
