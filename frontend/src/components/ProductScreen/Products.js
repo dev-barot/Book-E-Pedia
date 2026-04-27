@@ -281,7 +281,7 @@ const Products = () => {
           className={`btn-filter-toggle-fixed ${isSidebarOpen ? 'active' : ''}`} 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
-          <i className={`fa-solid ${isSidebarOpen ? 'fa-filter-circle-xmark' : 'fa-filter'}`}></i> 
+          <i className={`fa-solid ${isSidebarOpen ? 'fa-xmark' : 'fa-filter'}`}></i> 
           <span>{isSidebarOpen ? " Hide Filters" : " Show Filters"}</span>
         </button>
       </div>

@@ -114,6 +114,16 @@ form .reg-input-box span.reg-details {
   box-shadow: 0 0 0 3px rgba(47, 109, 163, 0.2);
 }
 
+/* Remove number spinner */
+.reg-user-details .reg-input-box input[type="number"]::-webkit-inner-spin-button, 
+.reg-user-details .reg-input-box input[type="number"]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+.reg-user-details .reg-input-box input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 /* ===============================
    GENDER & DOB
 ================================ */

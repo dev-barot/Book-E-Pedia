@@ -29,12 +29,16 @@ color: rgb(255, 255, 255);
 margin-top: -60px;
 display: flex;
 list-style: none;
-justify-content:right;  
+justify-content: right;
+align-items: center;
 }
 .main-top-bar .home-container .link-right ul li{
 padding: 10px 20px;
 text-decoration: none;
 color: rgb(255, 255, 255);
+display: flex;
+align-items: center;
+gap: 5px;
 }
 
 

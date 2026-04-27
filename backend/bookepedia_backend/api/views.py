@@ -279,9 +279,15 @@ def customer_register(request):
             pwd_confirm = data.get('pwd_confirm')
             gen = data.get('gen')
             date_str = data.get('date')
+            building = data.get('building')
+            street = data.get('street')
+            city = data.get('city')
+            state = data.get('state')
+            country = data.get('country')
+            pincode = data.get('pincode')
 
             # ===== Required field validation =====
-            if not all([fname, lname, email, number, pwd, pwd_confirm, gen, date_str]):
+            if not all([fname, lname, email, number, pwd, pwd_confirm, gen, date_str, building, street, city, state, country, pincode]):
                 return JsonResponse({'bool': False, 'msg': 'All fields are required'})
 
             # ===== Password match =====
@@ -310,6 +316,12 @@ def customer_register(request):
                 Email=email,
                 Password=pwd,
                 Phone_Number=number,
+                Building=building,
+                Street=street,
+                City=city,
+                State=state,
+                Country=country,
+                Pincode=pincode,
             )
 
             return JsonResponse({

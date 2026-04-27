@@ -20,7 +20,7 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
     setIsLoading(true);
-    
+
     try {
       const response = await fetch(`${BASE_URL}/api/contact-us/`, {
         method: "POST",
@@ -28,7 +28,7 @@ const ContactForm = () => {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      
+
       if (data.bool) {
         alert(`Message Sent Successfully!\nThank you, ${formData.name}`);
         setFormData({ name: "", email: "", subject: "", message: "" }); // Clear the form
@@ -101,8 +101,8 @@ const ContactForm = () => {
           <p>For more information, feel free to reach us at:</p>
           <p>
             Email:{" "}
-            <a href="mailto:websupport@bookepedia.com">
-              websupport@bookepedia.com
+            <a href="mailto:bookepedia.business@gmail.com">
+
             </a>
           </p>
         </div>

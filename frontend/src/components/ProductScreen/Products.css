@@ -124,26 +124,23 @@
 }
 
 .btn-filter-toggle-fixed span {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 800;
   text-transform: uppercase;
-  max-width: 0;
-  opacity: 0;
   white-space: nowrap;
-  transition: all 0.3s ease;
+  display: none;
 }
 
 .btn-filter-toggle-fixed:hover {
-  width: 150px;
+  width: 160px;
   border-radius: 30px;
   background: #1A4B84;
   color: white;
+  transition: all 0.3s ease;
 }
 
 .btn-filter-toggle-fixed:hover span {
-  max-width: 100px;
-  opacity: 1;
-  margin-left: 8px;
+  display: inline;
 }
 
 .btn-filter-toggle-fixed:hover i {

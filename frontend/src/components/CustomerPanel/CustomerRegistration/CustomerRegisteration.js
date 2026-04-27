@@ -18,7 +18,15 @@ function CustomerRegisteration() {
     pwd_confirm: "",
     gen: "",
     date: "",
+    building: "",
+    street: "",
+    city: "",
+    state: "",
+    country: "",
+    pincode: "",
   });
+
+  const [showPwd, setShowPwd] = useState(false);
 
   const inputHandler = (event) => {
     setRegisterFormData({
@@ -29,7 +37,7 @@ function CustomerRegisteration() {
 
   const validate = () => {
     let newErrors = {};
-    const { fname, lname, email, number, pwd, pwd_confirm, gen, date } =
+    const { fname, lname, email, number, pwd, pwd_confirm, gen, date, building, street, city, state, country, pincode } =
       registerFormData;
 
     if (!/^[a-zA-Z]{1,20}$/.test(fname)) {
@@ -81,6 +89,13 @@ function CustomerRegisteration() {
       }
     }
 
+    if (!building) newErrors.building = "Building/Flat No is required.";
+    if (!street) newErrors.street = "Street Name is required.";
+    if (!city) newErrors.city = "City is required.";
+    if (!state) newErrors.state = "State is required.";
+    if (!country) newErrors.country = "Country is required.";
+    if (!/^\d{6}$/.test(pincode)) newErrors.pincode = "Pincode must be exactly 6 digits.";
+
     setErrorMsg(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -114,6 +129,12 @@ const submitHandler = async (event) => {
         pwd_confirm: "",
         gen: "",
         date: "",
+        building: "",
+        street: "",
+        city: "",
+        state: "",
+        country: "",
+        pincode: "",
       });
 
       setTimeout(() => {
@@ -156,16 +177,37 @@ const submitHandler = async (event) => {
                 { label: "Phone Number", name: "number", type: "number" },
                 { label: "Password", name: "pwd", type: "password" },
                 { label: "Confirm Password", name: "pwd_confirm", type: "password" },
+                { label: "Building/Flat No", name: "building", type: "text" },
+                { label: "Street", name: "street", type: "text" },
+                { label: "City", name: "city", type: "text" },
+                { label: "State", name: "state", type: "text" },
+                { label: "Country", name: "country", type: "text" },
+                { label: "Pincode", name: "pincode", type: "number" },
               ].map((field) => (
-                <div className="reg-input-box" key={field.name}>
+                <div className="reg-input-box" key={field.name} style={{ position: "relative" }}>
                   <span className="reg-details">{field.label}</span>
                   <input
-                    type={field.type}
+                    type={field.type === "password" && showPwd ? "text" : field.type}
                     placeholder={`Enter your ${field.label.toLowerCase()}`}
                     name={field.name}
                     value={registerFormData[field.name]}
                     onChange={inputHandler}
+                    style={field.type === "password" ? { paddingRight: "40px" } : {}}
                   />
+                  {field.type === "password" && (
+                    <span
+                      onClick={() => setShowPwd(!showPwd)}
+                      style={{
+                        position: "absolute",
+                        right: "15px",
+                        top: "38px",
+                        cursor: "pointer",
+                        userSelect: "none"
+                      }}
+                    >
+                      {showPwd ? "🙈" : "👁️"}
+                    </span>
+                  )}
                   {errorMsg[field.name] && (
                     <span className="error-message">
                       {errorMsg[field.name]}
