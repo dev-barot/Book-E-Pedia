@@ -1,124 +1,133 @@
-# Book-E-Pedia 📚✨
+# Book‑E‑Pedia 📚✨
 
 [![Live Website](https://img.shields.io/badge/Live-Website-blue?style=for-the-badge&logo=vercel)](https://book-e-pedia.vercel.app/)
 
-**Book-E-Pedia** is a premium, full-stack digital ecosystem designed to bridge the gap between traditional physical reading and modern digital media consumption. Built with a sophisticated **Glassmorphism** aesthetic, it serves as an all-in-one platform for book lovers, offering seamless access to Physical Books, Audio Books, Video Books, and E-Books.
+**Book‑E‑Pedia** is a premium full‑stack digital ecosystem that unifies physical books, audiobooks, video books, and e‑books under a single, glassmorphic UI. Built with React 19, Django 4, and a sleek vanilla‑CSS design, it offers a luxurious reading experience for both customers and staff.
 
 ---
 
-## 🚀 Experience it Live
-The application is deployed and ready for exploration:
-👉 **[book-e-pedia.vercel.app](https://book-e-pedia.vercel.app/)**
+## 🚀 Live Demo
+Explore the live application here: **[book‑e‑pedia.vercel.app](https://book-e-pedia.vercel.app/)**
 
 ---
 
-## 🎯 What is Book-E-Pedia?
-In an era where content is fragmented across multiple platforms, **Book-E-Pedia** serves to solve the problem of media silos. It provides a unified platform where users don't just buy a book; they choose their preferred way to experience it. 
-
-### What it solves:
-- **Media Fragmentation**: No need for separate apps for audiobooks, PDFs, and video courses.
-- **Operational Complexity**: Provides a robust backend for staff to manage a diverse inventory of physical and digital assets.
-- **User Engagement**: Combines luxury design with high-performance media players to keep readers immersed.
+## 🎯 Project Vision
+In a world of fragmented media platforms, **Book‑E‑Pedia** eliminates silos by providing a single portal where users can choose *how* they consume a book—physically, as audio, video, or e‑text. It also equips staff with powerful tools to manage inventory, monitor sales, and streamline order fulfillment.
 
 ---
 
-## 🏛️ System Modules & Entity Features
+## 🏛️ Core Modules
+### 🛍️ Customer (Shop) Module
+- **Immersive Catalog** – Dynamic filtering by category, format, and search.
+- **Integrated Media Suite** – Custom audio/video players and a secure e‑book reader.
+- **Smart Cart** – Persistent cart, recommendations, and PDF invoicing.
+- **Account Hub** – Profile management, order history, and help‑center.
 
-### 🛍️ Customer Module (The Shop)
-- **Immersive Catalog**: Browse a high-end storefront with dynamic filtering (Category, Format, Search).
-- **Integrated Media Suite**: Custom Audio/Video players and a secure E-Book reader.
-- **Personalized Commerce**: Smart cart with persistence, recommendations, and PDF invoicing.
-- **Account Hub**: Manage profile details, track orders, and access "Help & Support".
+### 🧑‍💼 Employee (Operations) Module
+- **Analytics Dashboard** – Real‑time sales and fulfillment metrics.
+- **Inventory Control** – Add and edit titles across all media types.
+- **Order Processing** – Track orders from pending to completed.
 
-### 🧑‍💼 Employee Module (Operational Tools)
-- **Analytics Dashboard**: Real-time insights into sales performance and fulfillment rates.
-- **Inventory Control**: Manage inventory and add new book titles across all media types.
-- **Order Fulfillment**: Track and process customer purchases from pending to completed.
-
-### 👑 Admin Module (Executive Control)
-- **Workforce Management**: Hire and manage platform employees.
-- **Risk Mitigation**: Automated **Low-Stock Alerts** with visual indicators.
-- **Platform Analytics**: Generate reports and track trending books for business decisions.
-- **System Configuration**: Global control over categories, booktypes, and settings.
+### 👑 Admin (Executive) Module
+- **Workforce Management** – Hire and manage platform employees.
+- **Risk Mitigation** – Automated low‑stock alerts with visual cues.
+- **Platform Analytics** – Trend reports for data‑driven decisions.
+- **Global Settings** – Manage categories, book types, and system configuration.
 
 ---
 
 ## 🛠️ Tech Stack
-
-| Layer | Technologies |
-| :--- | :--- |
-| **Frontend** | React 19, React Router v7, Context API |
-| **Styling** | Vanilla CSS (Glassmorphism), Bootstrap 5, FontAwesome 6 |
-| **Backend** | Django (Python), Django REST Framework |
-| **Database** | PostgreSQL (Production), SQLite (Local) |
-| **Storage** | Cloudinary (Scalable Media Hosting) |
+| Layer      | Technologies |
+|------------|--------------|
+| **Frontend** | React 19, React Router v7, Context API |
+| **Styling**  | Vanilla CSS (Glassmorphism), Bootstrap 5, FontAwesome 6 |
+| **Backend**  | Django 4, Django REST Framework |
+| **Database** | PostgreSQL (prod), SQLite (dev) |
+| **Storage**  | Cloudinary (media hosting) |
 
 ---
 
 ## 📂 Project Structure
-
-```text
-Book-E-Pedia/
-├── frontend/
-│   └── src/
-│       ├── components/
-│       │   ├── HomeScreen/
-│       │   ├── ProductScreen/
-│       │   ├── CategoryScreen/
-│       │   ├── AdminPanel/
-│       │   └── ...
-│       ├── App.js
-│       └── Context.js
-│
-└── backend/
-    └── bookepedia_backend/
-        ├── api/
-        │   ├── models.py
-        │   ├── views.py
-        │   ├── urls.py
-        │   └── migrations/
-        └── bookepedia_backend/
-            ├── settings.py
-            └── urls.py
+```
+Book‑E‑Pedia/
+├─ frontend/
+│   └─ src/
+│       ├─ components/
+│       │   ├─ HomeScreen/
+│       │   ├─ ProductScreen/
+│       │   ├─ CategoryScreen/
+│       │   ├─ AdminPanel/
+│       │   └─ …
+│       ├─ App.js
+│       └─ Context.js
+└─ backend/
+    └─ bookepedia_backend/
+        ├─ api/
+        │   ├─ models.py
+        │   ├─ views.py
+        │   ├─ urls.py
+        │   └─ migrations/
+        └─ bookepedia_backend/
+            ├─ settings.py
+            └─ urls.py
 ```
 
 ---
 
-## 📡 API Structure
+## 📡 API Overview
+All endpoints are prefixed with `/api/`.
 
-All APIs are routed through the `/api/` prefix.
-
-### Core Endpoints:
-- `/api/category/` — Manage book categories.
-- `/api/products/` — Fetch and manage book inventory.
-- `/api/book-types/` — Manage different media formats.
-- `/api/employees/` — Admin tool for staff management.
-- `/api/cart/<id>/` — Fetch user-specific shopping cart data.
-- `/api/admin/low-stock/` — Inventory monitoring and alerts.
-- `/api/admin/trending-books/` — Sales analytics for trending titles.
+**Core Endpoints**
+- `GET /api/category/` – Manage book categories.
+- `GET /api/products/` – Retrieve and manage inventory.
+- `GET /api/book-types/` – Media format management.
+- `GET /api/employees/` – Staff CRUD operations.
+- `GET /api/cart/<id>/` – User‑specific cart data.
+- `GET /api/admin/low-stock/` – Low‑stock monitoring.
+- `GET /api/admin/trending-books/` – Sales analytics.
 
 ---
 
-## ⚙️ Local Installation
+## ⚙️ Local Setup
+### Prerequisites
+- **Node.js** ≥ 20
+- **Python** ≥ 3.10
+- **Git**
 
-### 1. Backend Setup
+### Backend
 ```bash
 cd backend/bookepedia_backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Activate virtualenv
+# Windows
+venv\\Scripts\\activate
+# macOS / Linux
+source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
+The API will be available at `http://127.0.0.1:8000/api/`.
 
-### 2. Frontend Setup
+### Frontend
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev   # Starts Vite dev server on http://localhost:5173
 ```
+The frontend will proxy API calls to the Django backend.
+
+---
+
+## 📸 Screenshots
+![Home Screen Mockup](file:///C:/Users/kbs38/.gemini/antigravity/brain/5e2dfc54-4d9f-4930-85da-41a4975068af/home_screen_mockup_1777358651593.png)
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! Fork the repo, create a feature branch, and submit a pull request. Follow the existing code style and run the test suite before pushing.
 
 ---
 
 ## 📄 License
-This project is for **educational purposes only**. All rights reserved.
+Educational use only. All rights reserved.
