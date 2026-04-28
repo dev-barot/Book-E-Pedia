@@ -1265,8 +1265,6 @@ def create_order(request):
                 total_amount += amount
                 total_quantity += qty
             master_order.T_Amount = total_amount * Decimal("1.12")
-
-            master_order.T_Amount = total_amount * 1.12
             master_order.T_Quantity = total_quantity
             master_order.save()
 
