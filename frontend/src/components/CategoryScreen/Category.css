@@ -13,34 +13,37 @@
 }
 
 /* PARALLAX LAYERING SYSTEM */
-/* Adjusted fixed header positioning */
 .category-header-parallax-fixed {
   position: fixed;
-  top: 120px; /* reduced offset to keep header visible */
+  top: 160px;
+  /* Reduced offset */
   left: 0;
   width: 100%;
   z-index: 1;
+  /* BACKGROUND LAYER */
   text-align: center;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
-/* Spacer increased to accommodate new header position */
 .parallax-spacer {
-  height: 260px; /* provides enough space before content appears */
+  height: 220px;
+  /* Adjusted to reveal subtitle */
   width: 100%;
   background: transparent;
   pointer-events: none;
 }
 
-/* Ensure content layer starts below header with ample padding */
 .categories-content-layer {
   position: relative;
   z-index: 10;
+  /* FOREGROUND LAYER - OVERLAPS FIXED TEXT */
   background-color: #D3E8F9;
-  padding-top: 80px; /* space above grid */
+  /* Solid color to cover the background text */
+  padding-top: 20px;
   min-height: 100vh;
   box-shadow: 0 -50px 100px -20px rgba(0, 0, 0, 0.1);
+  /* Visual depth edge */
 }
 
 /* HEADINGS matching Home.css */
