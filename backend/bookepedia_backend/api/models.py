@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import EmailValidator, RegexValidator
 import datetime
+import re
 from cloudinary.models import CloudinaryField
 
 # Customer Details Model (Ported for Login/Registration only)
@@ -101,6 +102,20 @@ class TBL_Category_Details(models.Model):
 def booktype_file_path(instance, filename):
     return f"BookType_Files/{instance.Book_Name}/{filename}"
 
+def clean_cloudinary_public_id(value):
+    public_id = str(value).replace("\\", "/")
+    if "/upload/" in public_id:
+        public_id = public_id.split("/upload/", 1)[1]
+    public_id = re.sub(r"^v\d+/", "", public_id)
+
+    previous = None
+    while previous != public_id:
+        previous = public_id
+        public_id = re.sub(r"^(image|video|audio|raw)/upload/", "", public_id)
+        public_id = re.sub(r"^v\d+/", "", public_id)
+
+    return public_id
+
 class TBL_BookType(models.Model):
     IS_ACTIVE_CHOICES = [('1', 'Active'), ('0', 'Inactive')]
 
@@ -119,6 +134,15 @@ class TBL_BookType(models.Model):
     E_Book_File = CloudinaryField(null=True, blank=True, resource_type="auto")
 
     IsActive = models.CharField(max_length=1, choices=IS_ACTIVE_CHOICES, default='1')
+
+    def save(self, *args, **kwargs):
+        for field_name in ("Audio_File", "Video_File", "E_Book_File"):
+            value = getattr(self, field_name)
+            if value:
+                cleaned_value = clean_cloudinary_public_id(value)
+                if str(value) != cleaned_value:
+                    setattr(self, field_name, cleaned_value)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.Book_Name

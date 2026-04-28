@@ -17,6 +17,7 @@ from .models import (
     TBL_Order_Details,
     TBL_MasterOrder_Details,
     TBL_Feedback_Details,
+    clean_cloudinary_public_id,
     # TBL_PasswordResetToken
 )
 logger = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ from django.http import FileResponse, HttpResponse
 from django.conf import settings
 import mimetypes
 import cloudinary.uploader
+import cloudinary.utils
 from django.db.models import Sum
 from django.db.models import Count
 from django.views.static import serve
@@ -38,6 +40,17 @@ from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.utils.http import urlsafe_base64_decode
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+def build_cloudinary_media_url(value, resource_type):
+    if not value:
+        return None
+    public_id = clean_cloudinary_public_id(value)
+    url, _ = cloudinary.utils.cloudinary_url(
+        public_id,
+        resource_type=resource_type,
+        secure=True
+    )
+    return url
 from rest_framework import status
 import secrets  # For generating the secure token
 from django.core.mail import send_mail
@@ -612,9 +625,9 @@ def get_book_types(request):
                 "video": book.Video_Book,
 
                 # 🔥 FILE URLS - Explicitly set resource_type for safe URL generation
-                "audio_file": book.Audio_File.build_url(resource_type="video") if book.Audio_File else None,
-                "video_file": book.Video_File.build_url(resource_type="video") if book.Video_File else None,
-                "ebook_file": book.E_Book_File.build_url(resource_type="raw") if book.E_Book_File else None,
+                "audio_file": build_cloudinary_media_url(book.Audio_File, "video"),
+                "video_file": build_cloudinary_media_url(book.Video_File, "video"),
+                "ebook_file": build_cloudinary_media_url(book.E_Book_File, "raw"),
 
                 "is_active": book.IsActive
             })
@@ -630,9 +643,15 @@ def add_book_type(request):
             video_file = request.FILES.get("Video_File")
             ebook_file = request.FILES.get("E_Book_File")
 
+            if request.POST.get("Audio_Book") == "1" and not audio_file:
+                return JsonResponse({
+                    "bool": False,
+                    "msg": "Audio file is required when Audio Book is selected"
+                }, status=400)
+
             audio_upload = None
             if audio_file:
-                audio_upload = cloudinary.uploader.upload(audio_file, resource_type="video")["public_id"]
+                audio_upload = cloudinary.uploader.upload_large(audio_file, resource_type="video")["public_id"]
 
             video_upload = None
             if video_file:
@@ -703,8 +722,14 @@ def update_book_type(request, id):
             book.Video_Book = request.POST.get("Video_Book", book.Video_Book)
 
             if request.FILES.get("Audio_File"):
-                audio_upload = cloudinary.uploader.upload(request.FILES.get("Audio_File"), resource_type="video")
+                audio_upload = cloudinary.uploader.upload_large(request.FILES.get("Audio_File"), resource_type="video")
                 book.Audio_File = audio_upload["public_id"]
+
+            if book.Audio_Book == "1" and not book.Audio_File:
+                return JsonResponse({
+                    "bool": False,
+                    "msg": "Audio file is required when Audio Book is selected"
+                }, status=400)
 
             if request.FILES.get("Video_File"):
                 video_upload = cloudinary.uploader.upload(request.FILES.get("Video_File"), resource_type="video")
@@ -1386,9 +1411,9 @@ def get_customer_orders(request, cust_id):
                             "Audio_Book": book_type.Audio_Book,
                             "Video_Book": book_type.Video_Book,
                             "E_Book": book_type.E_Book,
-                            "Audio_File": book_type.Audio_File.build_url(resource_type="video") if book_type.Audio_File else None,
-                            "Video_File": book_type.Video_File.build_url(resource_type="video") if book_type.Video_File else None,
-                            "E_Book_File": book_type.E_Book_File.build_url(resource_type="raw") if book_type.E_Book_File else None,
+                            "Audio_File": build_cloudinary_media_url(book_type.Audio_File, "video"),
+                            "Video_File": build_cloudinary_media_url(book_type.Video_File, "video"),
+                            "E_Book_File": build_cloudinary_media_url(book_type.E_Book_File, "raw"),
 
                         }
                     }
