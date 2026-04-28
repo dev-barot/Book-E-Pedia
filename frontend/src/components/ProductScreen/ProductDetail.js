@@ -155,7 +155,7 @@ function ProductDetail() {
       if (data.bool) {
         alert(data.msg);
       } else {
-        alert("Failed to add to cart");
+        alert(data.msg || "Failed to add to cart");
       }
     } catch (err) {
       console.error("Cart error:", err);

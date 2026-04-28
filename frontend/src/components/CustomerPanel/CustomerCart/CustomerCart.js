@@ -162,7 +162,7 @@ const CustomerCart = () => {
       if (data.bool) {
         window.location.reload();
       } else {
-        alert("Failed to add to cart");
+        alert(data.msg || "Failed to add to cart");
       }
     } catch (err) {
       console.error(err);

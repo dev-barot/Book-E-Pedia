@@ -1047,6 +1047,11 @@ def add_to_cart(request):
             new_quantity = quantity
             if cart_item:
                 new_quantity = cart_item.Product_Quantity + quantity
+            if stock <= 0:
+                return JsonResponse({
+                    "bool": False,
+                    "msg": "Stock is low and this product can't be added to cart"
+                })
 
             if new_quantity > stock:
                 return JsonResponse({
