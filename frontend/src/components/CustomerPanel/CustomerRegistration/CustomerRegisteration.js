@@ -58,7 +58,7 @@ function CustomerRegisteration() {
     }
 
     if (
-      !/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/.test(pwd)
+      !/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%-_^&*])[A-Za-z\d!@#-$%_^&*]{8,15}$/.test(pwd)
     ) {
       newErrors.pwd = "Must be 8-15 chars, include uppercase, digit, special char.";
     }
@@ -250,8 +250,8 @@ function CustomerRegisteration() {
             </div>
 
             {/* ── Address ── */}
-            <div 
-              className="address-toggle-header" 
+            <div
+              className="address-toggle-header"
               onClick={() => setShowAddress(!showAddress)}
               style={{ cursor: "pointer", transition: "all 0.3s ease" }}
             >
