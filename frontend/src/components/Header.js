@@ -1,17 +1,40 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Link, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import './HeaderFooter.css'; // Import your CSS file for styling
-import { CartContext, UserContext } from '../Context';
+import { UserContext } from '../Context';
+import { BASE_URL } from '../utils/config';
 
 const Header = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
-  const { cartData } = useContext(CartContext);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
 
+  useEffect(() => {
+    const fetchCartCount = () => {
+      const customerId = localStorage.getItem('customer_id');
+      if (customerId) {
+        fetch(`${BASE_URL}/api/cart/${customerId}/`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.bool && data.data) {
+              const totalCount = data.data.reduce((acc, item) => acc + (item.quantity || 1), 0);
+              setCartItemsCount(totalCount);
+            } else {
+              setCartItemsCount(0);
+            }
+          })
+          .catch(err => console.error("Error fetching cart count:", err));
+      } else {
+        setCartItemsCount(0);
+      }
+    };
 
-  const cartItems = cartData ? cartData.length : 0;
+    fetchCartCount();
+    window.addEventListener('cartUpdated', fetchCartCount);
+    return () => window.removeEventListener('cartUpdated', fetchCartCount);
+  }, []);
 
   // Logout function
   const handleLogout = () => {
@@ -73,9 +96,9 @@ const Header = () => {
               <li>
                 <Nav.Link as={Link} to="/cart" style={{ textDecoration: 'none', color: 'white', position: 'relative' }}>
                   <i className="fas fa-shopping-cart"></i> Cart
-                  {cartItems > 0 && (
+                  {cartItemsCount > 0 && (
                     <span className="cart-badge-lux">
-                      {cartItems}
+                      {cartItemsCount}
                     </span>
                   )}
                 </Nav.Link>

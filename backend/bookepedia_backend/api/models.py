@@ -114,7 +114,7 @@ class TBL_BookType(models.Model):
 
     # 🔥 RESTORED MEDIA FIELDS
     # 🔥 FIXED: Use explicit keyword arguments for resource_type
-    Audio_File = CloudinaryField(null=True, blank=True, resource_type="audio")
+    Audio_File = CloudinaryField(null=True, blank=True, resource_type="video")
     Video_File = CloudinaryField(null=True, blank=True, resource_type="video")
     E_Book_File = CloudinaryField(null=True, blank=True, resource_type="auto")
 

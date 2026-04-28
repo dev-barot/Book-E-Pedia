@@ -1235,7 +1235,7 @@ def create_order(request):
                     has_physical = True
                     break
 
-            initial_status = "Pending" if has_physical else "Completed"
+            initial_status = "Pending"
 
             master_order = TBL_MasterOrder_Details.objects.create(
                 Cust_ID=customer,
@@ -1357,8 +1357,9 @@ def get_customer_orders(request, cust_id):
     if request.method == "GET":
         try:
             orders = TBL_Order_Details.objects.filter(
-                MasterOrder_ID__Cust_ID=cust_id
-            ).select_related("Product_ID", "MasterOrder_ID")
+                MasterOrder_ID__Cust_ID=cust_id,
+                MasterOrder_ID__tbl_payment__Payment_Status='1'
+            ).select_related("Product_ID", "MasterOrder_ID").distinct()
 
             data = []
 
@@ -1385,9 +1386,10 @@ def get_customer_orders(request, cust_id):
                             "Audio_Book": book_type.Audio_Book,
                             "Video_Book": book_type.Video_Book,
                             "E_Book": book_type.E_Book,
-                            "Audio_File": book_type.Audio_File.url if book_type.Audio_File else None,
-                            "Video_File": book_type.Video_File.url if book_type.Video_File else None,
-                            "E_Book_File": book_type.E_Book_File.url if book_type.E_Book_File else None,
+                            "Audio_File": book_type.Audio_File.build_url(resource_type="video") if book_type.Audio_File else None,
+                            "Video_File": book_type.Video_File.build_url(resource_type="video") if book_type.Video_File else None,
+                            "E_Book_File": book_type.E_Book_File.build_url(resource_type="raw") if book_type.E_Book_File else None,
+
                         }
                     }
                 })

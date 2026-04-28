@@ -87,6 +87,7 @@ const Payment = () => {
 
             if (data.bool) {
               alert("Payment Successful! Your order is confirmed.");
+              window.dispatchEvent(new Event('cartUpdated'));
               navigate("/customer/dashboard");
             } else {
               alert("Payment confirmed by Razorpay but failed on our server: " + data.msg);

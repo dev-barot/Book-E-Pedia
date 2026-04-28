@@ -113,6 +113,7 @@ const CustomerCart = () => {
                 : item
             )
           );
+          window.dispatchEvent(new Event('cartUpdated'));
         }
       } catch (err) {
         console.error(err);
@@ -131,6 +132,7 @@ const CustomerCart = () => {
 
       if (data.bool) {
         setCartItems((prev) => prev.filter((item) => item.id !== cartId));
+        window.dispatchEvent(new Event('cartUpdated'));
       }
     } catch (err) {
       console.error(err);
@@ -160,6 +162,7 @@ const CustomerCart = () => {
 
       const data = await res.json();
       if (data.bool) {
+        window.dispatchEvent(new Event('cartUpdated'));
         window.location.reload();
       } else {
         alert(data.msg || "Failed to add to cart");
