@@ -332,7 +332,7 @@ const CustomerCart = () => {
                 <div
                   key={book.id}
                   className="similar-book-card"
-                  onClick={() => navigate(`/product/${encodeURIComponent(book.name.replace(/\\s+/g, '-'))}/${book.id}`)}
+                  onClick={() => navigate(`/product/${book.id}/${book.id}`)}
                 >
                   <img src={book.image} alt={book.name} className="similar-book-img" />
                   <div className="similar-book-info">

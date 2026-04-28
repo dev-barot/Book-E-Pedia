@@ -43,6 +43,7 @@ import secrets  # For generating the secure token
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.cache import cache_page
+from decimal import Decimal
 
 def file_iterator(file_path, offset, length, chunk_size=8192):
     with open(file_path, 'rb') as f:
@@ -1219,7 +1220,7 @@ def create_order(request):
             if not cart_items.exists():
                 return JsonResponse({"bool": False, "msg": "Cart is empty"})
 
-            total_amount = 0
+            total_amount = Decimal("0.00")
             total_quantity = 0
 
             # Determine if any item is a physical book
@@ -1263,6 +1264,7 @@ def create_order(request):
 
                 total_amount += amount
                 total_quantity += qty
+            master_order.T_Amount = total_amount * Decimal("1.12")
 
             master_order.T_Amount = total_amount * 1.12
             master_order.T_Quantity = total_quantity
